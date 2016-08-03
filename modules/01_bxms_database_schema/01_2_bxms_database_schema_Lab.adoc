@@ -1,0 +1,9 @@
+:scrollbar:
+:data-uri:
+:toc2:
+
+= BxMS Database Schema Lab
+
+
+ifdef::showscript[]
+endif::showscript[]

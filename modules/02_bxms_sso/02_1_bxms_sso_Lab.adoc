@@ -1,0 +1,9 @@
+:scrollbar:
+:data-uri:
+:toc2:
+
+= BxMS SSO Lab
+
+
+ifdef::showscript[]
+endif::showscript[]

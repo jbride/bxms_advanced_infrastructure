@@ -1,0 +1,163 @@
+:scrollbar:
+:data-uri:
+:toc2:
+
+
+==  Environment Setup Lab
+
+Assets for this course include a virtual machine preinstalled with the required client-side developer tools. This VM is provided in VDI format and can be run on your local workstation using VirtualBox. You run the exercises for the labs in this course entirely within the VM.
+
+.Prerequisites
+* Installation of the 64-bit VirtualBox application on your local workstation
+* A minimum of two 64-bit CPUs and 2 GB RAM dedicated to the VM used in the course
+
+.Lab Assets
+
+There are two lab assets used in this course:
+
+* *advanced-process-development-labs*: A project of resources that are cloned and imported into BPM Central
+* *advanced-process-development-labs-etc*: Domain model objects and business services that
+support the resources in the `advanced-process-development-labs` project
+
+.VM Components
+
+The `gpte-bpms-advanced-630.vdi` VM image has these characteristics:
+
+* VirtualBox VDI format, built with VirtualBox version 5.0.14
+* Operating system: CentOS 7
+* Graphical environment: MATE
+* Java JDK: OpenJDK 8
+* Maven version 3.2.5
+* MariaDB version 5.5.x
+* Installed applications:
+** Red Hat JBoss BPM Suite 6, configured to use MariaDB as database and Quartz for timer management
+** Red Hat JBoss Developer Studio 8 with Integration Stack
+
+.VM Operating System Credentials
+
+* The default username/password for the VM is `jboss/jboss`.
+* The JBoss user has `sudo` access.
+
+:numbered:
+
+== Install VirtualBox and Lab VM
+
+In this section you install VirtualBox on your local workstation. There are two methods: either download VirtualBox directly or use BitTorrent. If you are familiar with BitTorrent and have a BitTorrent client, this method is usually much faster and more reliable.
+
+. Download the `gpte-bpms-advanced-630.vdi` VirtualBox image using one of the two methods:
+
+* Direct: Download `gpte-bpms-advanced-630.vdi` directly from https://drive.google.com/open?id=0B8mmXW6hJKdiaVpndWxFV3Nmbkk
+
+
+* BitTorrent: Download `gpte-bpms-advanced-630.torrent` found at https://github.com/gpe-mw-training/advanced-process-development-labs-etc/raw/master/etc/gpte-bpms-advanced-630.vdi.torrent. Using your BitTorrent client, open the torrent file and download `gpte-bpms-advanced-630.vdi`.
+
+. Install VirtualBox on your local workstation by following instructions here: https://www.virtualbox.org/wiki/Downloads.
++
+[NOTE]
+The `gpte-bpms-advanced-630.vdi` is a 64-bit VM, so make sure that the `amd64` version of VirtualBox is installed and that virtualization is enabled in your host machine's BIOS. Refer to VirtualBox's online documentation for assistance in configuring it for your workstation.
+
+. Start VirtualBox and navigate to: *Machine -> New*.
+. In the *Create Virtual Machine* panel, populate its fields:
+* *Name:* `gpte-bpms-advanced`
+* *Type:* `Linux`
+* *Version:* `Red Hat (64-bit)`
+. Click *Next*.
+. In the *Memory* panel, specify `4096 MB` of RAM and click *Next*.
+. In the *Hard Disk* panel:
+.. Select *Use an existing virtual hard disk file*.
+.. Browse your hard drive and select the previously downloaded `gpte-bpms-advanced-630.vdi` image.
+.. Click *Create*.
+. Click *Start*.
+
+== Lab Assets Overview
+
+This course includes two lab asset projects that are publicly available in GitHub:
+
+* *advanced-process-development-labs-etc*
++
+Includes various SOAP based services (and supporting domain model) used throughout this course.
+Also includes a SOAP UI project used in a later lab that load tests the BPM process engine.
+
+* *advanced-process-development-labs*
++
+This project contains various BPM Suite KIE projects used throughout this course.
+
+
+== Clone, Build, and Deploy Web Services Project
+
+The process definitions of several of the labs for this course make calls to two web services. In this section, you build and deploy the web services on the JBoss BPM Suite application server.
+
+. In your new lab environment, open a terminal window.
+. Change to the `~/lab` directory, and clone the web services project from GitHub:
++
+[subs="verbatim,macros"]
+----
+$ pass:quotes[*cd ~/lab*]
+$ pass:quotes[*git clone https://github.com/gpe-mw-training/advanced-process-development-labs-etc.git*]
+----
+
+NOTE: If the `advanced-process-development-labs-etc` project has already been cloned in your lab environment, then pull the latest:
+.. cd `advanced-process-development-labs-etc`
+.. git pull origin master
+
+. Build the project with Maven:
++
+[subs="verbatim,macros"]
+----
+$ pass:quotes[*cd advanced-process-development-labs-etc*]
+$ pass:quotes[*mvn clean install*]
+----
+
+. Deploy the web service `.war` archives to the JBoss BPM Suite application server:
++
+[subs="verbatim,macros"]
+----
+$ pass:quotes[*cp flight-service/target/flight-service-1.0.war ~/lab/bpms/standalone/deployments*]
+$ pass:quotes[*cp hotel-service/target/hotel-service-1.0.war ~/lab/bpms/standalone/deployments*]
+$ pass:quotes[*cp data-model/target/data-model-1.0.jar ~/lab/bpms/standalone/deployments/business-central.war/WEB-INF/lib*]
+----
++
+[NOTE]
+There are different ways to deploy applications to the application server. In this lab, you simply copy the archives to the server's `deployments` directory. They are automatically deployed when the server starts up.
+
+== Start JBoss BPM Suite and Log In to BPM Central
+
+. Open a terminal, change to the `~/lab` directory, and run the `start-bpms.sh` script:
++
+[subs="verbatim,macros"]
+----
+$ pass:quotes[*cd ~/lab*]
+$ pass:quotes[*./start-bpms.sh*]
+----
++
+* The script starts up JBoss BPM Suite in the foreground.
+* Keep the terminal window open for the duration of the lab.
+* If you want to return to JBoss BPM Suite, press `Ctrl+C`, and restart it with the script.
+
+. In the log, verify that you see the following, which indicates a successful start:
++
+----
+22:44:18,460 INFO  [org.jboss.as] (Controller Boot Thread) JBAS015874: JBoss EAP 6.4.4.GA (AS 7.5.4.Final-redhat-4) started in 67035 ms - Started 1241 of 1278 services (88 services lazy, passive or on-demand)
+----
+
+. Open a browser, and navigate to JBoss BPM Central: `http://localhost:8080/business-central`.
+. Log in with the `jboss/bpms` username/password.
+
+== Clone Lab Repository
+
+The `advanced-process-development-labs` git repository contains several KIE projects for this course.
+The objective of this section of the lab is to clone this repository in the `business-central` web application of your BPM Suite lab environment:
+Do so using the following details:
+
+* *Business Central userId / password* : jboss / bpms
+* *Organizational Unit Manager* : acme
+* *Repository Name* : bpms-advanced
+* *Git URL:* `https://github.com/gpe-mw-training/advanced-process-development-labs.git`
+
+== Reset Lab Environment
+
+At the conclusion of each lab, you need to reset the lab environment.
+
+. At the command line of the lab environment, make sure you are using the `jboss` operating system.
+. Change your working directory to  `$HOME/lab`.
+. Run: `./reset.sh`.
