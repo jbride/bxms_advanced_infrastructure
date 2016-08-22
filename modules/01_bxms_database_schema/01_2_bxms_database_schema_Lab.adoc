@@ -44,7 +44,7 @@ $ ./jboss-cli.sh --connect
 . At the EAP CLI prompt, enter the following command:
 +
 ----
-[standalone@localhost:9999 /] module add --name=com.mysql --resources=/usr/share/java/mysql-connector-java.jar --dependencies=javax.api,javax.transaction.api
+[standalone@localhost:9999 /] module add --name=com.mysql --resources=mysql-connector-java.jar --dependencies=javax.api,javax.transaction.api
 ----
 +
 This will configure a EAP module for the JDBC driver which was installed on the virtual machine with RPM.
@@ -76,6 +76,11 @@ Note that the connection URL to the database instance uses system property place
 [standalone@localhost:9999 /] /subsystem=datasources/data-source=quartzDS:enable
 ----
 . Exit from the CLI prompt (type `exit`), and shut down the application server.
+. Crrate a soft link to the MySQL JDBC driver in the MySQL module directory:
++
+----
+$ ln -s /usr/share/java/mysql-connector-java.jar /home/jboss/lab/bpms/bc/modules/com/mysql/main/mysql-connector-java.jar
+----
 . If you want to review the changes you made to the server configuration file, open `/home/jboss/lab/bpms/bc/standalone/configuration/standalone.xml` in a text editor, and review the `datasources` subsystem.
 
 === Modify application configuration files
@@ -225,7 +230,7 @@ The steps required to configure Kie-server to use MariaDB rather than the built-
 
 The difference lies in the fact that there is no `persistence.xml` configuration file we need to adapt. With Kie-server, the persistence unit is built programmatically when the BPM extension is started. Configuration is provided through system properties.
 
-. Repeat the steps performed above to define the datasource, but now use the KIE-server installation that you can find in `home/jboss/lab/bpms/kie-server`. +
+. Repeat the steps performed above to define the driver module datasource, but now use the KIE-server installation that you can find in `home/jboss/lab/bpms/kie-server`. +
 Remember we use a port offset of 150 to launch Kie-server. So to connect to the server from the CLI, use the following command:
 +
 ----
