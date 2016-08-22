@@ -66,10 +66,10 @@ The `gpte-bxms-advanced-infrastructure-630.vdi` is a 64-bit VM, so make sure tha
 
 == Install BPMS Business-Central and Kie-server on the virtual machine.
 
-The virtual machines comes with a script that will install and configure BPMS Business-Central and Kie-server. +
+The virtual machine comes with a script that will install and configure BPMS Business-Central and Kie-server. +
 The script will install a separate instance of Business-Central and Kie-server. This reflects a realistic installation setup where Business-Central is used at development time, where Kie-server is used as process/rules execution runtime.
 
-To install the BPMS instamces on the virtual machines:
+To install the BPMS instances on the virtual machines:
 
 . In the virtual machine, open a terminal window.
 . Change to the `/home/jboss/lab` directory, and execute the `install-bpms.sh` script. Make sure to execute the script as user `jboss`. The script will create two instances of BPMS:
@@ -101,6 +101,6 @@ This course includes a lab asset projects that is publicly available in GitHub:
 
 * *bxms-advanced-infrastructure-lab*
 +
-This project contains a BPM Suite KIE project with a couple of sample process definitions.
+This project contains the BPM Suite KIE projects used in the labs, as well as an AngularJS web application to test integration with Red Hat SSO.
 
 

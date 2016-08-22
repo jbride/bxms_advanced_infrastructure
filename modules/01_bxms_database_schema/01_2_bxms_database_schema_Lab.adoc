@@ -6,7 +6,8 @@
 
 .Goals
 
-TODO
+* Configure BPMS Business-Central and Kie-server to use MariaDB rather than the built-in H2 database.
+* Understand the database schema of BPMS.
 
 :numbered:
 
