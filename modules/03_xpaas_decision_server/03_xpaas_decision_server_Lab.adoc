@@ -10,7 +10,7 @@ In this lab we will explore the Red Hat xPaas Decision Server. The Decision Serv
 
 The lab consists of two parts:
 
-* exploring the source-to-image (s2i) functionality of the OpenShift xPaas Decision Server.
+* exploring the source-to-image (S2I) functionality of the OpenShift xPaas Decision Server.
 * example of binary deployment with the OpenShift xPaas Decision Server. In this scenario the kjar to depoy is built by a build server, which then triggers a binary deployment on the Decision Server.
 
 == Prerequisites and setup
@@ -34,18 +34,18 @@ Also, make sure you can access the Openshift Web Console. Open a browser, and na
 
 :numbered:
 
-== xPaas Decision Server Lab 1 : s2i deployment
+== xPaas Decision Server Lab 1 : S2I deployment
 
 === Gogs Git Server
 
 For this and the following xPaas labs we need a Git server where we will host the code that will be built and deployed on the xPaas Decision Server and Process Server. For this we will use Gogs, a Github-like Git server, written in Go (https://gogs.io/).
 
-. In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the templates for the Decision Server lab.
+. In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the XPaaS labs.
 +
 ----
-$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 ----
-. Review the `decisionserver-gogs-persistent.yaml` template. This is a template for an installation of Gogs backed by a PostgreSQL database. +
+. Review the `xpaas-gogs-persistent.yaml` template. This is a template for an installation of Gogs backed by a PostgreSQL database. +
 The template defines:
 * A Service for the Gogs server and the PostgreSQL server.
 * A Route for the Gogs server.
@@ -61,13 +61,13 @@ The template defines:
 ** VOLUME_CAPACITY: the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
 +
 [NOTE]
-In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `decisionserver-gogs.yaml` template, which does not use persistent storage. +
+In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `xpaas-gogs.yaml` template, which does not use persistent storage. +
 Be aware that your data and configuration will be lost when the Gogs and PostgreSQL pods disappear.
 
 . Create an application based on the template. Specify values for the parameters, if you don't want to use the defaults:
 +
 ----
-$ oc process -f decisionserver-gogs-persistent.yaml -v APPLICATION_NAME=gogs,POSTGRESQL_USER=gogs,GOGS_POSTGRESQL_PASSWORD=gogs,VOLUME_CAPACITY=512Mi | oc create -f -
+$ oc process -f xpaas-gogs-persistent.yaml -v APPLICATION_NAME=gogs,POSTGRESQL_USER=gogs,GOGS_POSTGRESQL_PASSWORD=gogs,VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 . Check the deployment of the Gogs application in the OpenShift web console. Once all components are up, we need to setup the Gogs server. Open a browser, and navigate to the URL of the gogs route. +
 You should be greeted by the Gogs installation screen:
@@ -116,22 +116,26 @@ Note that this will cause a redeployment of the Gogs pod.
 . Create an account and a repository on the Gogs server. In the Gogs browser window, click on the `Register` link. If the browser window is no longer open on the Gogs login page, navigate to the Gogs server homepage (the URL of the gogs route), and click on the `Register` link.
 * Create an account. Remember the username and password combination.
 * Log in with your username/password combination.
-* Create a repository with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
+* Create an organization named 	`decision-server-s2i`. +
+Click on the `+` symbol in the upper right, and select `New Organization`. +
+Fill in the name, and click the `Create Organization` button. +
+Check that you are a member of the new organization. You should be listed as `owner`.
+* Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
 Later in the lab we will push our BRMS project to this repository.
 
 === Nexus maven repository server
 
-The s2i build of the Decision Server relies heavily on maven to build and deploy the BRMS project source code. To avoid having to download the maven dependencies at every build cycle, we can configure a Nexus repository as a proxy. The maven build will download the dependencies it needs from the
+The S2I build of the Decision Server relies heavily on maven to build and deploy the BRMS project source code. To avoid having to download the maven dependencies at every build cycle, we can configure a Nexus repository as a proxy. The maven build will download the dependencies it needs from the
 Nexus proxy rather than the internet, which will drastically improve the build speed.
 
-In this section we will install and a configure a Nexus server in our OpenShift project.
+In this section we will install and configure a Nexus server in our OpenShift project.
 
-. In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the templates for the Decision Server lab.
+. In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the XPaaS labs.
 +
 ----
-$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 ----
-. Review the `decisionserver-nexus-persistent.yaml` template. This is a template for the installation of Nexus. +
+. Review the `xpaas-nexus-persistent.yaml` template. This is a template for the installation of Nexus. +
 The template defines:
 * A Service for the Nexus server.
 * A Route for the Nexus server.
@@ -143,13 +147,13 @@ The template defines:
 ** VOLUME_CAPACITY: the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
 +
 [NOTE]
-In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `decisionserver-nexus.yaml` template, which does not use persistent storage. +
+In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `xpaas-nexus.yaml` template, which does not use persistent storage. +
 Be aware that your data and configuration (including the cached dependencies) will be lost when the Nexus pod disappears.
 
 . Create an application based on the template. Specify values for the parameters, if you don't want to use the defaults:
 +
 ----
-$ oc process -f decisionserver-nexus-persistent.yaml -v APPLICATION_NAME=nexus,VOLUME_CAPACITY=512Mi | oc create -f -
+$ oc process -f xpaas-nexus-persistent.yaml -v APPLICATION_NAME=nexus,VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
 . Once all components of our application are up, we need to configure the Nexus server. More specifically, we need to add the Red Hat enterprise maven repository to the list of proxied repo's.
@@ -171,7 +175,7 @@ image::images/nexus-redhat-repo.png[]
 +
 ** Click `Save`.
 
-=== Decision Server s2i Template
+=== Decision Server S2I Template
 
 To create Decision Server applications on OpenShift, we can start from a template that we will import into our OpenShift project. As we can have several templates using the same Decision Server image, we will first create an image stream for the Decision Server image, so that we can reuse the image stream in several templates.
 
@@ -188,7 +192,7 @@ $ oc create -f decisionserver-63-is.yaml
 ----
 . Review the `decisionserver-basic-s2i.yaml` template. +
 This template defines:
-* A BuildConfig for the s2i build. +
+* A BuildConfig for the S2I build. +
 The BuildConfig defines a source build, pointing to a git repo, as well as the builder image, through the ImageStream we defined earlier. +
 The build will be triggered through a webhook (triggered whenever we push new code to the git repository), or by a change in the builder image.
 * An ImageStream for the image created as a result of the build.
@@ -213,7 +217,7 @@ The build will be triggered through a webhook (triggered whenever we push new co
 . Import the template into your OpenShift project:
 +
 ----
-$ oc create -f decisionserver-basic-s2i.yaml
+$ oc create -f decisionserver-basic-S2I.yaml
 ----
 
 === Policyquote sample application
@@ -221,15 +225,15 @@ $ oc create -f decisionserver-basic-s2i.yaml
 The Policyquote sample application is a fairly simple BRMS application to calculate the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a ruleflow process), and a domain model in a single maven project.
 
 [NOTE]
-The s2i build mechanism imposes certain limitations on the project structure. Multi-module maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a maven repository before the build kicks off. +
+The S2I build mechanism imposes certain limitations on the project structure. Multi-module maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a maven repository before the build kicks off. +
 When using binary deployments, you have more flexibility on how to structure your project.
 
-In this part of the lab, we will clone the Policyquote project from Github, and push it into our Gogs server on OpenShift to act as source for our s2i builds.
+In this part of the lab, we will clone the Policyquote project from Github, and push it into our Gogs server on OpenShift to act as source for our S2I builds.
 
 . In the virtual machine, open a terminal and change to the lab home folder.
 +
 ----
-$ cd cd /home/jboss/lab
+$ cd /home/jboss/lab
 ----
 . Clone the Policyquote project from the GPTE Github site:
 +
@@ -240,7 +244,7 @@ $ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote
 +
 ----
 $ cd bxms-xpaas-policyquote
-$ git remote add http://<gogs username>:<gogs password>@<url of the gogs route>/<gogs username>/policyquote.git
+$ git remote gogs add http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-2i/policyquote.git
 ----
 +
 Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with the appropriate values for your environment.
@@ -258,19 +262,19 @@ Everything is in place now to create a OpenShift application for our BRMS projec
 +
 ----
 $ application_name=policyquote-app
-$ source_repo=<gogs route url>/<gogs username>/policyquote.git
-$ nexus_url=<nexus route url>
+$ source_repo=http://gogs:3000/decision-server-s2i/policyquote.git
+$ nexus_url=http://nexus:8081
 $ kieserver_password=kieserver1!
 $ is_namespace=<name of your OpenShift project>
 $ kie_container_deployment="policyquote=com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT"
-$ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment,KIE_CONTAINER_REDIRECT_ENABLED=false,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
+$ oc new-app --template=decisionserver63-basic-S2I -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment,KIE_CONTAINER_REDIRECT_ENABLED=false,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
 +
 * Note that the KIE_CONTAINER_REDIRECT_ENABLED environment variable is set to false. This means that the name of the KieContainer for our application will be `policyquote`, as defined in KIE_CONTAINER_DEPLOYMENT.
 
 . Check the progress of the build and deployment of the application in the OpenShift console.
-* As this is the first build, it will take quite some time: the builder image needs to be downloaded from the Red Hat docker repository, and the maven proxy needs to be seeded with the build dependencies.
-* The s2i build is happening in a builder pod, named `policyquote-app-1-build`. Check the logs for this pod in the web console, or use the Openshift CLI:
+* As this is the first build, it will take quite some time: the builder image needs to be downloaded from the Red Hat docker repository, and the Nexus maven proxy needs to be seeded with the build dependencies.
+* The S2I build is happening in a builder pod, named `policyquote-app-1-build`. Check the logs for this pod in the web console, or use the Openshift CLI:
 +
 ----
 $ oc logs -f policyquote-app-1-build
@@ -286,13 +290,13 @@ I0908 06:48:48.139575       1 sti.go:272] Pushing 172.30.1.250:5000/xpaas/policy
 I0908 06:51:52.519695       1 sti.go:288] Successfully pushed 172.30.1.250:5000/xpaas/policyqote-app:latest
 ----
 * The image built by the builder pod is pushed to the OpenShift internal registry. This will trigger the deployment of the image.
-* To check the logs of the application pod, locate the pod (name `policyqote-app-1-xxxxx`), and check the logs in the OpenShift console or with the CLI.
+* To check the logs of the application pod, locate the pod (name `policyquote-app-1-xxxxx`), and check the logs in the OpenShift console or with the CLI.
 * After some time, you will see something like:
 +
 ----
 06:53:27,949 INFO  [org.kie.server.services.impl.KieServerImpl] (EJB default - 1) Container policyquote (for release id com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT) successfully started
 ----
-* By that time, the service and the route will be started, and our BRMS application is ready to serve requests.
+* By that time, the service and the route will be started, and our Decision Server application is ready to serve requests.
 +
 image::images/policyquote-application-ose.png[]
 
@@ -450,7 +454,7 @@ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json
 === Application lifecycle
 
 Now we can introduce a change in one of the rules of our application, and observe what's happening when we push the change to the git repository. +
-First we need to define a webhook in our policyquote repository on Gogs, that will be triggered by a push of new code. Te webhook calls the Openshift API in order to start a new s2i build.
+First we need to define a webhook in our policyquote repository on Gogs, that will be triggered by a push of new code. The webhook calls the Openshift API in order to start a new S2I build.
 
 . In a terminal window, issue the following command:
 +
@@ -537,8 +541,8 @@ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json
 
 === Scaling out and Rolling Deployment
 
-You will have noticed during the build and deployment triggered by a code change, there is a time span during which the application is unavailable. This happens grosso modo between the moment that the s2i build is finished, and the new deployment is active. This includes the time needed by the Decision Server to start up. +
-In a development phase, this is probably not so dramatic, but it is probably not acceptable in a production environment.
+As you will have noticed during the build and deployment triggered by a code change, there is a time span during which the application is unavailable. This happens grosso modo between the moment that the S2I build is finished, and the new deployment is active. This includes the time needed by the Decision Server to start up. +
+In a development phase, this is not so dramatic, but it is probably not acceptable in a production environment.
 By scaling out our application, and defining a rolling upgrade strategy, we can ensure that our application remains available, even if that means that during a limited time span both the old as the new version will be deployed concurrently.
 
 We are going to introduce the changes required directly in the DeploymentConfig of our application. Alternatively, you could create the changes in the template, load it into the OpenShift project, tear down the existing application and create a new one based on the modified template.
@@ -575,7 +579,7 @@ We raised the number of required pods for our application to 2, and defined a Ro
 image::images/policyquote-deployment-scaled.png[]
 +
 Requests to the application will now be balanced between the two pods. You can use curl to test that our application is still working fine.
-. Repeat the instructions etailed above to make a change in the code of the application. +
+. Repeat the instructions detailed above to make a change in the code of the application. +
 This time, change the price in the Risky Adult rule to 400. Don't forget to change the unit test accordingly. Build locally, commit and push the change.
 . To monitor the availability of the application, use the curl command in a loop.
 +
@@ -599,6 +603,373 @@ $ oc delete route policyquote-app
 $ oc delete is policyquote-app
 $ oc delete bc policyquote-app
 ----
+
+== xPaas Decision Server Lab 1 : 'binary' S2I deployment using Jenkins
+
+In the first part of this lab the rules kjar is built during the S2I process on the decision server image. This approach is suited for development phase, but falls short once we want to promote the kjar through different environments:
+
+* There is no proper version management of the built artifact, so it is difficult to track what exactly is running in Openshift.
+* Using S2I, the kjar is rebuilt from source code at every depoyment. This goes against the _build once, deploy everywhere_ principle.
+* Unit tests and other tests suites are not executed as part of the S2I build.
+* The S2I build is not really suited for multi-module maven projects.
+
+In this section of the lab we will follow an alternative approach which is more in line with generally accepted build and deployment best practices. +
+A Jenkins instance will be responsible for building the kjar, as well as for managing the kjar artifact version. After a succesful build, the kjar is pushed to a Nexus repository. Jenkins triggers a new build of the decision-server image, but this time not starting from source code, but from the binary kjar artifact in Nexus.
+
+We will reuse the Gogs server and the Nexus server from the previous lab.
+
+=== Gogs git server
+
+. Create organizations, users and teams on Gogs.
+.. Open a browser window, navigate to the Gogs server home page and log in with your username/password.
+.. Create a new Organization and call it `decision-server-jenkins`.
+.. Log out of the Gogs server, and register a new user with username `jenkins` and password `password`.
+.. Log in again with your usual username, and add user `jenkins` to the `owner` team of the `decision-server-jenkins` organization.
+. Create a repository named `policyquote` in the `decision-server-jenkins` organization on the Gogs server.
+. Clone the Policyquote project and push to Gogs.
+.. In the virtual machine, open a terminal, change to the lab home folder and clone the Policyquote project from Github:
++
+----
+$ cd /home/jboss/lab
+$ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote policyquote
+----
+.. Add a remote repository to the cloned project pointing to the Gogs server:
++
+----
+$ cd policyquote
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-jenkins/policyquote.git
+
+----
++
+Replace <gogs password>,<url of the gogs route> and <gogs username> with the appropriate values for your environment.
+.. Push the code to the Gogs server:
++
+----
+$ git push gogs master
+----
+. Create a repository for the lab project on Gogs. +
+The lab project contains Docker image definitions that we need for the creation of the Jenkins containers on OpenShift.
+.. On the Gogs server, create a new repository named `bxms-advanced-infrastructure-lab` in the `decision-server-jenkins` organization.
+.. On the virtual machine, open a terminal and change to the directory where you cloned this lab's Github repo.
++
+----
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab
+----
+.. Add a remote git repository pointing to the Gogs server, and push the code to the Gogs server.
++
+----
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-jenkins/bxms-advanced-infrastructure-lab.git
+$ git push gogs master
+----
+
+
+=== Jenkins build server
+
+Jenkins will be coordinating the build and deployment cycle of the Policyquote kjar. Jenkins will:
+
+* Compile, test and package the kjar using maven.
+* Manage the version of the binary artifact.
+* Push the binary artifact to Nexus.
+* Trigger a new build of the decision-server, using the binary kjar artifact as source. For this we will be using a _marker_ project in Gogs.
+
+To manage this build pipeline, we will use the Pipeline plugin of Jenkins, which allows to define build pipelines as Groovy scripts, which themselves can be version-controlled (following the _infrastructure-as-code_ principle).
+
+In this section we will install and configure the Jenkins build server on OpenShift.
+
+As base image for the Jenkins server we will use the Jenkins Openshift image hosted in the Red Hat Docker repository. The images uses a master/slave architecture for Jenkins, were build jobs are executed on slave nodes. The Jenkins master is able to automatically detect and register slave nodes running on the same Openshift cluster. Please refer to the Openshift product documentation on http://access.redhat.com[Red Hat Customer Portal] for more information on the Jenkins image.
+
+. In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the xpaas lab.
++
+----
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
+----
+. Review the `xpaas-jenkins-persistent.yaml` template. This is the template for the installation of Jenkins master and slave. +
+The template defines:
+
+* A RoleBinding object. This is required to give the Jenkins pod enough rights to make API calls to OpenShift, in order to be able to automatically discover slave images available in the registry.
+* An ImageStream for the Jenkins master image. We use the Jenkins image hosted on the Red Hat docker registry (http://registry.access.redhat.com).
+* A BuildConfig for the Jenkins master image. The stock Jenkins image is customized using S2I. The customizations are kept in a Git repository. For this lab, the customizations to apply are in the `xpaas/common/jenkins-master` directory of the lab project. The customizations include:
+** The list of plugins to install - in `plugins.txt`.
+** A custom Maven settings.xml configuration file, which configures the Nexus container as mirror.
+** A Maven task definition
+** Jenkins job definitions - in `configuration/jobs`. +
+The job defines a build pipeline executed by the Pipeline plugin. The pipeline script is initially empty, we'll build it as part of the lab.
+* An ImageStream for the S2I build result.
+* A DeploymentConfig for the S2I build result.
+* A BuildConfig for the Jenkins slave image. The image is built from a Dockerfile and supporting configuration file stored in a Git repository. For this lab, the Docker configuration files are stored in the `xpaas/common/jenkins-slave` directory of the lab project. +
+The slave image starts from a base Centos7 image, on which JDK 8, maven and the oc client are installed.
+* An Imagestream for the built Jenkins slave image. The ImageStream has a label `role=jenkins-slave`, which allows it to be discovered and registered by the Jenkins master under the name `jdk8`.
+* A Service for the Jenkins master.
+* A Route for the Jenkins master.
+* A PersistentVolumeClaim for the Jenkins volume.
+* Parameters:
+** APPLICATION_NAME: the name for the Jenkins applications.Defaults to jenkins.
+** VOLUME_CAPACITY: the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
++
+[NOTE]
+In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `xpaas-jenkins.yaml` template, which does not use persistent storage. +
+Be aware that your data and configuration will be lost when the Jenkins pods disappear.
+** JENKINS_CONFIGURATION_REPOSITORY: the repository URL that holds the configuration for te Jenkins master and slave builds.
+** JENKINS_MASTER_CONFIGURATION_CONTEXT: The directory in the Jenkins configuration repository which has the configuration for the Jenkins master image.
+** JENKINS_SLAVE_CONFIGURATION_CONTEXT: The directory in the Jenkins configuration repository which has the configuration for the Jenkins slave image.
+. Create an Jenkins application based on the template.
++
+----
+$ oc process -f xpaas-jenkins-persistent.yaml -v APPLICATION_NAME=jenkins,JENKINS_CONFIGURATION_REPOSITORY=http://gogs:3000/decision-server-jenkins/bxms-advanced-infrastructure-lab.git,JENKINS_MASTER_CONFIGURATION_CONTEXT=xpaas/common/jenkins-master,JENKINS_SLAVE_CONFIGURATION_CONTEXT=xpaas/common/jenkins-slave | oc create -f -
+----
+. Once all components of the Jenkins application are up and running, we can log into the Jenkins master.
+.. Open a browser window and navigate to the URL of the Jenkins route. Login with `admin/password`.
+.. The Jenkins master home screen shows a predefined build job named `policyquote`.
++
+image::images/jenkins-master.png[]
+.. Click on the `policyquote` job, and then on `Configure`. +
+Notice that the `policyquote` job uses a Pipeline, but has no Pipeline script defined yet. We will add the Pipeline script in the next steps of the lab.
+.. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Manage Plugins`. Click on the `Installed` tab to review the plugins installed. This plugin list corresponds to the `plugins.txt` configuration file in the configuration files for the Jenkins master. The plugins listed in `plugin.txt` are installed when building the image.
+.. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Configure System`. +
+Scroll down to the `Cloud` section. Notice the `jdk-jenkins-slave` pod template which was auto-registered. This is the template we are going to use to spawn worker slave nodes for the build pipeline.
+
+=== Decision Server deployment marker project
+
+In the first part of the lab, we used the S2I mechanism of the Decision Server image to build and deploy the kjar. +
+In the second part of the lab, we use Jenkins to build the kjar, so there is no need to rebuild the same kjar on the Decision Server, but we still need to tell the Decision Server what needs to be deployed.
+
+For this we can use a Git project that contains a properties file which has a property pointing to the release Id (maven group id, artifact id, version) of the kjar to be deployed. On the Decision Server image, the Git project is cloned, the property file is processed, and the kjar(s) specified in the property file are downloaded from the Maven repository (Nexus in our case) and deployed as a KIE container on the Decision Server.
+
+. On the lab virtual machine, open a browser window and navigate to the Gogs server on Openshift. Log in with your username/password.
+. Create a repository named `policyquote-ocp` in the `decision-server-jenkins` organization on the Gogs server.
+. On the lab virtual machine, open a terminal and change to the lab home folder.
++
+----
+$ cd /home/jboss/lab
+----
+. Create a folder called `policyquote-ocp/.s2i`, and change to the `policyquote-ocp` directory.
++
+----
+$ mkdir -p policyquote-ocp/.s2i
+$ cd policyquote-ocp
+----
+. Create a file called `environment` in the `policyquote-ocp/.s2i` folder.
++
+----
+$ touch .s2i/environment
+----
+. Open the `environment` file for edit, and set the contents to:
++
+----
+KIE_CONTAINER_REDIRECT_ENABLED=false
+KIE_CONTAINER_DEPLOYMENT_OVERRIDE=policyquote=com.redhat.gpte.xpaas:policyquote:1.0.0
+----
++
+This tells the S2I build mechanism of the Decision Server to deploy the 1.0.0 version of the policyquote kjar in a KIE container named `policyquote`.
+. Push the project to the Gogs server
++
+----
+$ git init
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-jenkins/policyquote-ocp.git
+$ git add --all
+$ git commit -m "initial commit"
+$ git push gogs master
+----
+
+=== Jenkins Build pipeline
+
+Now we can add the Jenkins build pipeline script to the build job in Jenkins
+
+. Open a browser window and navigate to the Jenkins home page on OpenShift. Log in.
+. Click on the `policyquote` job, and then click on `Configure`. Scroll down to the Pipeline definition section.
++
+image::images/policyquote-pipeline.png[]
+. In the Script pane, paste the following contents:
++
+----
+node('jdk8') {
+
+  def mvnHome = tool 'M3'
+  def mvnCmd = "${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml"
+  def ocCmd = "/usr/bin/oc --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token` --server=https://openshift.default.svc.cluster.local --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt"
+
+  stage 'Build'
+    git url: 'http://jenkins:password@gogs:3000/decision-server-jenkins/policyquote.git'
+    def version = getBuildVersion("pom.xml")
+    echo "Building version ${version}"
+    def branch = 'build-' + version
+    sh "git checkout -b ${branch}"
+    sh "${mvnCmd} versions:set -DgenerateBackupPoms=false -DnewVersion=${version}"
+    sh "${mvnCmd} clean package -DskipTests=true"
+
+  stage 'Test'
+    try {
+      sh "${mvnCmd} test"
+    } catch (err) {
+      step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+      throw err
+    }
+
+  stage 'Publish'
+    sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus:8081/content/repositories/releases"
+    def commit = "Build " + version
+    sh "git add --all && git commit -m \"${commit}\" && git push origin ${branch}"
+    sh "${mvnCmd} clean"
+
+  stage 'Deploy To DEV'
+    git url: 'http://jenkins:password@gogs:3000/decision-server-jenkins/policyquote-ocp.git'
+    sh "sed -r -i \"s/com.redhat.gpte.xpaas:policyquote:[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}/com.redhat.gpte.xpaas:policyquote:${version}/g\" .s2i/environment"
+    sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
+    //sh "${ocCmd} start-build policyquote -n <openshift project>"
+}
+
+
+def getVersionFromPom(pom) {
+  def matcher = readFile(pom) =~ '<version>(.+)</version>'
+  matcher ? matcher[0][1] : null
+}
+
+def String getBuildVersion(pom) {
+  return getVersionFromPom(pom).minus("-SNAPSHOT") + '.' + env.BUILD_NUMBER
+}
+----
+. A Jenkins pipeline script is written in Groovy and is typically divided into stages.
+* All the stages will run on slave nodes labeled `jdk8`.
+* The `Build` stage checks out the kjar source code project from Gogs. +
+The build version is determined by removing `SNAPSHOT` from the original version and appending the Jenkins build number to it. So `1.0-SNAPSHOT` becomes `1.0.1`. A new branch is created, and the version of the project set to the build version using the maven `versions` plugin. +
+If the build is successful, the build branch will be committed. This allows to track back what is running on the Decision Server to a particular branch in the source code project.  +
+Finally the project is built using maven. Test execution is skipped in this phase.
+* In the `Test` stage, unit tests are executed (`mvn test`).
+* If the project also has integration, performance or behaviour-driven test suites, they should be executed in their own stages. Stages can be run in parallel if desired.
+* In the `Publish` stage, the build artifact(s) are published to the Nexus repository (`mvn deploy`). The build branch is committed and pushed to the source code repository.
+* In the `Deploy to Dev` stage, the marker project we created in the previous step is checked out. The version of the kjar to be deployed as specified in the `.s2i/environment` file is set to the build version, and the change is committed and pushed. +
+Then a new build of the `policyquote` application on OpenShift is triggered using the `oc` client, which will replace the current application with a new one containing the latest built kjar. +
+Note that the OpenShift build step is commented out, as the `policyquote` application has not been created yet.
+. Save the script
+. Execute the pipeline. Click `Build Now` on the build job page.
+.. Observe how the build is moving through the different stages.
++
+image::images/policyquote-pipeline-build-2.png[]
++
+Note that the first `Build` stage is rather slow. The reason for this is that the Nexus repo is empty before the first build, so all the build dependencies have to be fetched from the public maven repo's.
+.. The Jenkins build job is executed on a slave node, which runs on a dedicated pod, spawned for the duration of the build.
++
+image::images/jenkins-slave-pod.png[]
+.. The Jenkins pipeline committed a branch `build-1.0.1` to policyquote source repo.
++
+image::images/policyquote-build-branch.png[]
++
+The version of the kjar pom file in the branch file is `1.0.1`.
++
+image::images/policyquote-build-branch-version.png[]
+.. The Nexus repository contains the `1.0.1` version of the kjar binary archive.
++
+image::images/policyquote-kjar-nexus.png[]
+.. The value of the `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` property in the `.s2i/environment` file of the `policyquote-ocp` project is set to version `1.0.1`.
++
+image::images/policyquote-deployment-override.png[]
+
+=== Decision Server Application
+
+Now we can deploy the Decision Server application running the policyquote kjar.
+
+. In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the templates for the Decision Server lab.
++
+----
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
+----
+. Review the `decisionserver-binary.yaml` template file. +
+The template file is almost identical to the template file we used in the first part of this lab. +
+The main difference is that the `KIE_CONTAINER_DEPLOYMENT` and `KIE_CONTAINER_REDIRECT_ENABLED` parameters are removed. These are no longer required as their value is specified in the policyquote marker project.
+. Create an application based on the template  (replace expressions between <> with correct values for your environment):
++
+----
+$ application_name=policyquote
+$ kieserver_password=kieserver1!
+$ source_repo=http://gogs:3000/decision-server-jenkins/policyquote-ocp.git
+$ is_namespace=<name of your OpenShift project>
+$ nexus_url=http://nexus:8081
+$ oc process -f decisionserver-binary.yaml -v KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/ | oc create -f -
+----
+. A build and deployment of the Decision Server applicaton is started
++
+image::images/policyquote-binary-build.png[]
++
+image::images/policyquote-binary-build-completed.png[]
+. Check the logs of the build pod (`oc logs policyquote-1-build`). Notice that there is no maven build of the kjar, but rather the kjar and all its dependencies are downloaded from Nexus using `mvn dependency:offline`.
+. Once the deployment of the Decision Server is finished, use curl to check the KIE container deployed. You should get the following response:
++
+----
+{
+  "type" : "SUCCESS",
+  "msg" : "List of created containers",
+  "result" : {
+    "kie-containers" : {
+      "kie-container" : [ {
+        "status" : "STARTED",
+        "messages" : [ {
+          "severity" : "INFO",
+          "timestamp" : 1476393016127,
+          "content" : [ "Container policyquote successfully created with module com.redhat.gpte.xpaas:policyquote:1.0.1." ]
+        } ],
+        "container-id" : "policyquote",
+        "release-id" : {
+          "version" : "1.0.1",
+          "group-id" : "com.redhat.gpte.xpaas",
+          "artifact-id" : "policyquote"
+        },
+        "resolved-release-id" : {
+          "version" : "1.0.1",
+          "group-id" : "com.redhat.gpte.xpaas",
+          "artifact-id" : "policyquote"
+        },
+        "config-items" : [ ]
+      } ]
+    }
+  }
+}
+----
+. Test the application with curl - refer to the first part of the lab for examples of the curl commands.
+
+=== Complete and automate the Jenkins build pipeline
+
+To complete the pipeline, we can trigger a Jenkins build when code is committed into the policyquote source repository, and have the Jenkins build start a new build of the Decision Server at the end of the build pipeline.
+
+. Open a browser, navigate to the Gogs server, log in, and go the `decision-server-jenkins/policyquote` repository. Click on `Settings`, and then on `Git Hooks`.
+. Click on the pencil icon next to `post-receive`.
+. In the `Hook Content` text box, paste the following scriptlet:
++
+----
+#!/bin/bash
+
+while read oldrev newrev refname
+do
+    branch=$(git rev-parse --symbolic --abbrev-ref $refname)
+    if [[ "$branch" == "master" ]]; then
+    	curl -X GET --user admin:password http://jenkins:8080/job/policyquote/build?token=mysecret
+    fi
+done
+----
++
+This will signal the Jenkins policyquote build job every time a commit is received in the master branch. +
+Click `Update Hook`.
+. Go to the Jenkins server page, select the `policyquote` job, click `Configure`. +
+In the pipeline script, uncomment the last line of the `Deploy to DEV` stage.
++
+----
+  stage 'Deploy To DEV'
+    git url: 'http://jenkins:password@gogs:3000/decision-server-jenkins/policyquote-ocp.git'
+    sh "sed -r -i \"s/com.redhat.gpte.xpaas:policyquote:[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}/com.redhat.gpte.xpaas:policyquote:${version}/g\" .s2i/environment"
+    sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
+    sh "${ocCmd} start-build policyquote -n <openshift project>"
+----
++
+Replace <openshift project> with the name of your Openshift project. +
+Save the pipeline
+
+=== Application lifecycle
+
+. Follow the instructions detailed in the first part of the lab to introduce a change in the policyquote project source code.
+. Push your changes to the `decision-server-jenkins/policyquote` repository on Gogs.
+. This should trigger a new build on Jenkins, and if the different build steps are successful, trigger a build and deployment of the Decision Server on Openshift.
+. Using curl, verify that a new version of the policyquote kjar has been deployed on the Decision Server.
+
+
 
 ifdef::showscript[]
 endif::showscript[]
