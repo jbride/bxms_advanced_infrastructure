@@ -44,10 +44,10 @@ $ ./jboss-cli.sh --connect
 . At the EAP CLI prompt, enter the following command:
 +
 ----
-[standalone@localhost:9999 /] module add --name=com.mysql --resources=mysql-connector-java.jar --dependencies=javax.api,javax.transaction.api
+[standalone@localhost:9999 /] module add --name=com.mysql --resources=/usr/share/java/mysql-connector-java.jar --dependencies=javax.api,javax.transaction.api
 ----
 +
-This will configure a EAP module for the JDBC driver which was installed on the virtual machine with RPM.
+This will configure a EAP module for the JDBC driver which was installed on the virtual machine with RPM. The JDBC driver is copied to the `com.mysql` module.
 . At the EAP CLI prompt, enter the following command:
 +
 ----
@@ -76,11 +76,6 @@ Note that the connection URL to the database instance uses system property place
 [standalone@localhost:9999 /] /subsystem=datasources/data-source=quartzDS:enable
 ----
 . Exit from the CLI prompt (type `exit`), and shut down the application server.
-. Crrate a soft link to the MySQL JDBC driver in the MySQL module directory:
-+
-----
-$ ln -s /usr/share/java/mysql-connector-java.jar /home/jboss/lab/bpms/bc/modules/com/mysql/main/mysql-connector-java.jar
-----
 . If you want to review the changes you made to the server configuration file, open `/home/jboss/lab/bpms/bc/standalone/configuration/standalone.xml` in a text editor, and review the `datasources` subsystem.
 
 === Modify application configuration files
