@@ -84,18 +84,19 @@ The `gpte-bxms-advanced-infrastructure-630.vdi` VM image has these characteristi
 * MariaDB version 5.5.x
 
 
-== Install BPMS Business-Central and Kie-server on the virtual machine.
+== BPMS Business-Central and Kie-server
 
 The virtual machine comes with a script that will install and configure BPMS Business-Central and Kie-server. +
-The script will install a separate instance of Business-Central and Kie-server. This reflects a realistic installation setup where Business-Central is used at development time, where Kie-server is used as process/rules execution runtime.
+The script will install a separate instance of Business-Central and Kie-server. This reflects a realistic installation setup where Business-Central is used at design time, where Kie-server is used as process/rules execution runtime.
 
-To install the BPMS instances on the virtual machines:
+=== Review
 
 . In the virtual machine, open a terminal window.
-. Change to the `/home/jboss/lab` directory, and execute the `install-bpms.sh` script. Make sure to execute the script as user `jboss`. The script will create two instances of BPMS:
+. Ensure you are using the _jboss_ operating system user and change to the `/home/jboss/lab` directory.
+. Review the `install-bpms.sh` shell script.  Notice that the script will create two instances of BPMS:
 .. `home/jboss/lab/bpms/bc` : Business-Central workbench and DashBuilder. No Kie-server.
 .. `home/jboss/lab/bpms/kieserver` : Kie-server execution runtime, no Business-Central nor DashBuilder.
-. Review the `install-bpms.sh` script. The script itself delegates to the `install-bpms-instance.sh` script in the `/opt/install/scripts/bpms` directory.
+. Also notice that the script itself delegates to the `install-bpms-instance.sh` script in the `/opt/install/scripts/bpms` directory.
 . As part of the installation, a number of system properties have been set in the `standalone.conf` file in `home/jboss/lab/bpms/bc/bin` and `home/jboss/lab/bpms/kieserver/bin`. +
 Review these system property values as they give a good idea of the system properties that should be set for a BPMS installation.
 . The Kie-server instance is configured with a port-offset of 150 - the HTTP port will be 8230 rather than 8080. This allows to run both the Business-Central as the Kie-server instance concurrently.
@@ -114,6 +115,34 @@ Review these system property values as they give a good idea of the system prope
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=kieserver"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=kieserver1!"
 ----
+
+. Based on your review of the provided scripts and configuration files, try to answer the following questions:
+.. What two users will be configured for both the `kieserver` and `business-central` environments and what will be their passwords ?
+.. Where will you be able to find all of the Java system properties that define the runtime behavior of the `kieserver` and `business-central` environments ?
+.. Once started, what network interfaces of the virtual machine would you expect your `kieserver` and `business-central` runtimes to bind to ?
+.. Is a MySQL JDBC driver jar file already included in the virtual machine ?
+
+ifdef::showscript[]
+
+1) jboss / bpms  & admin / admin    :   found in install-bpms-instance.sh
+2) $JBOSS_HOME/bin/standalone.conf
+3) All of them:   0.0.0.0           :   found in install-bpms.sh
+4) yes : /usr/share/java/mysql-connector-java.jar   :    found in install-bpms-instance.sh
+
+
+endif::showscript[]
+
+=== Install
+To install the BPMS instances on the virtual machines:
+
+. If not already there, change to the `/home/jboss/lab` directory, and execute the `install-bpms.sh` script.
++
+-----
+./install-bpms.sh
+-----
+
+. The script should complete without errors.
+
 
 == Appendix
 
