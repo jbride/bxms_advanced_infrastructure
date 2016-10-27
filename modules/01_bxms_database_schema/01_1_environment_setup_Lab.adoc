@@ -1,50 +1,51 @@
 :scrollbar:
 :data-uri:
 :toc2:
-
+:numbered:
 
 ==  Environment Setup Lab
 
 Assets for this course include a virtual machine preinstalled with the required tools. This VM is provided in VDI format and can be run on your local workstation using VirtualBox. You run the exercises for the labs in this course entirely within the VM.
 
 .Prerequisites
-* Installation of the 64-bit VirtualBox application on your local workstation
+* Installation of the 64-bit link:https://www.virtualbox.org/wiki/Downloads[VirtualBox application] on your local workstation.
++
+NOTE:  64 bit Virtual Box is mandatory.  32 bit Virtual Box will not work for this course.
+
 * A minimum of two 64-bit CPUs and 2 GB RAM dedicated to the VM used in the course
 
 .Lab Assets
 
 There is one lab asset used in this course:
 
-* *bxms-advanced-infrastructure-lab*: A project of resources that are cloned and imported into BPM Central
+* https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab[*bxms-advanced-infrastructure-lab*]: A project of resources that are cloned and imported into BPM Central
++
+This project contains the BPM Suite KIE projects used in the labs, as well as an AngularJS web application to test integration with Red Hat SSO.
 
-.VM Components
+== Lab Virtual Machine
+In this section you install the course VirtualBox virtual machine on your local workstation.
 
-The `gpte-bxms-advanced-infrastructure-630.vdi` VM image has these characteristics:
+=== Acquire
+If you are participating in an on-site Instructore Led Training (ILT), the instructor will pass around a thumb drive with the course virtual machine.
 
-* VirtualBox VDI format, built with VirtualBox version 5.0.14
-* Operating system: CentOS 7
-* Graphical environment: MATE
-* Java JDK: OpenJDK 8
-* Maven version 3.2.5
-* MariaDB version 5.5.x
+If you are taking this course remotely, then you'll have to gain access to the course virtual machine through different means.
 
-.VM Operating System Credentials
+There are two methods: either download VirtualBox directly or use BitTorrent.
 
-* The default username/password for the VM is `jboss/jboss`.
-* The JBoss user has `sudo` access.
+If you are familiar with BitTorrent and have a BitTorrent client, this method is usually much faster and more reliable.
 
-:numbered:
-
-== Install VirtualBox and Lab VM
-
-In this section you install VirtualBox on your local workstation. There are two methods: either download VirtualBox directly or use BitTorrent. If you are familiar with BitTorrent and have a BitTorrent client, this method is usually much faster and more reliable.
-
-. Download the `gpte-bxms-advanced-infrastructure-630.vdi` VirtualBox image using one of the two methods:
+Download the `gpte-bxms-advanced-infrastructure-630.vdi` VirtualBox image using one of the two methods:
 
 * Direct: Download `gpte-bxms-advanced-infrastructure-630.vdi` directly from https://drive.google.com/open?id=0B8mmXW6hJKdiaVpndWxFV3Nmbkk
 
-
 * BitTorrent: Download `gpte-bxms-advanced-infrastructure-630.torrent` found at https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab-etc/raw/master/etc/gpte-bpms-advanced-630.vdi.torrent. Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
+
+=== VM Operating System Credentials
+
+* The default username/password for the VM is `jboss/jboss`.
+* The `jboss` operating system user has `sudo` access.
+
+=== Install
 
 . Install VirtualBox on your local workstation by following instructions here: https://www.virtualbox.org/wiki/Downloads.
 +
@@ -63,6 +64,25 @@ The `gpte-bxms-advanced-infrastructure-630.vdi` is a 64-bit VM, so make sure tha
 .. Browse your hard drive and select the previously downloaded `gpte-bxms-advanced-infrastructure-630.vdi` image.
 .. Click *Create*.
 . Click *Start*.
+The virtual machine should start and display the `MATE` window manager login.
++
+Enter a userId of `jboss` and a password of `jboss`.
++
+image:images/wm_login.png[]
+
+. Recommended:  Enable <<vbga>> so as to leverage the full display resolution of your host machine.
+
+=== VM Components
+
+The `gpte-bxms-advanced-infrastructure-630.vdi` VM image has these characteristics:
+
+* VirtualBox VDI format, built with VirtualBox version 5.0.14
+* Operating system: CentOS 7
+* Graphical environment: MATE
+* Java JDK: OpenJDK 8
+* Maven version 3.2.5
+* MariaDB version 5.5.x
+
 
 == Install BPMS Business-Central and Kie-server on the virtual machine.
 
@@ -95,12 +115,64 @@ Review these system property values as they give a good idea of the system prope
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=kieserver1!"
 ----
 
-== Lab Assets Overview
+== Appendix
 
-This course includes a lab asset projects that is publicly available in GitHub:
+[[vbga]]
+=== Virtual Box Guest Additions
+The default display resolution of the virtual machine is rather low (1042 x 768) .
+The small display can lead to a frustrating experience as you're trying to work through the labs of this course.
 
-* *bxms-advanced-infrastructure-lab*
+Virtual Box allows virtual machines to use the full resolution of a hosts display via its `Guest Additions`.
+
+Assuming you are using a host laptop with high resolution, enabling your Virtual Box environment to make use of `Guest Additions` is highly recommended.
+
+Do so as follows:
+
+==== Install `Guest Additions` for your host
+
+===== Linux
+The Virtual Box install available from https://www.virtualbox.org/wiki/Linux_Downloads comes pre-installed with `Guest Additions`.
+
+No futher tasks needed if you've installed Virtual Box from the above download site.
+
+===== OSX
+
+===== Windows
+
+==== Enable `Guest Additions` in the virtual machine
+
+. Ensure the virtual machine is started.
+. In the top panel of the virtual box window, click `Devices -> Insert Guest Additions CD Image`.
 +
-This project contains the BPM Suite KIE projects used in the labs, as well as an AngularJS web application to test integration with Red Hat SSO.
+image::images/select_ga.png[]
 
+. You will be prompted with an option to run the contents of the `Guest Additions` CD.
++
+Ensure that `Open Autorun Prompt`option from the drop-down is selected and click `OK`.
++
+image::images/ga_prompt.png[]
+. The next prompt will ask whether you choose to run the `Guest Additions` software.  Click `Run`.
++
+image::images/ga_run.png[]
+. You will be prompted for the password of the `root` operating system user.
++
+Enter `jboss` and click `Authenticate`.
+. A terminal window in the VM should automatically pop-up and begin to build the `Guest Additions kernel modules` in the VM.
++
+Give it a minute or two.  Eventually you will be prompted to `Press Return to close the window`.
++
+image::images/ga_building.png[]
 
+. Bounce your virtual machine
+
+==== Increase screen resolution of VM
+
+. Once the VM is restarted, navigate to the following in the virtual machine: `System -> Preferences -> Hardware -> Displays`
++
+image::images/nav_display.png[]
+. Click the `Resolution` selection drop down.
++
+Notice that you now have many more resolution options.  Select the highest display resolution provided by your host operating system.
++
+image::images/display_options.png[]
+. At the bottom of the `Monitor Preferences` pop-up, click:  `Apply`.
