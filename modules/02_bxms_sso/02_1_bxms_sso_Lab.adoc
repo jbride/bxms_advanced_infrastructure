@@ -10,17 +10,17 @@
 
 The out-of-the-box installation of BPMS Business-Central and Kie-server use properties files for the management of users and roles. This effectively reduces the barrier to get started with the BPMS platform, but is not suitable for an enterprise deployment.
 
-In most enterprises, users and roles are managed centrally, using a central user directory such as LDAP. Both Business-Central and Kie-server can be configured to use a central user directory for authentication and authorization. Business-Central as well as Kie-server delegate the handling of authentication and authorization to the security subsystem of the underlying application server, which is based on JAAS (Java Authentication adn Authorization Service). +
-To use e.g. an LDAP server for authentication and authorization requires to configure the application server to use a login module implementation for LDAP rather than the default one.
+In most enterprises, users and roles are managed centrally, using a central user directory such as LDAP. Both Business-Central and Kie-server can be configured to use a central user directory for authentication and authorization. Business-Central as well as Kie-server delegate the handling of authentication and authorization to the security subsystem of the underlying application server, which is based on JAAS (Java Authentication and Authorization Service). +
+To use e.g. an LDAP server for authentication and authorization requires configuration of the application server to use a login module implementation for LDAP rather than the default one.
 
-But especially in the case of Kie-server, a couple of issues remain. Kie-server is a runtime component, meant to be used a remote business rules and process execution engine. It will typically be accessed over the REST/HTTP remote API (note that there is also a JMS based API, which can be useful in integration scenario's). The REST/HTTP API uses basic authentication. That means the Kie-server client (e.g. a front-end GUI application) needs to include the username/password combination of the user with every request. The client application(s) need to know or have access to the user names and passwords. Moreover, with BASIC authentication, the username and password are passed in clear, base64 encoded text.
+But especially in the case of Kie-server, a couple of issues remain. Kie-server is a runtime component, meant to be used as a remote business rules and process execution engine. It will typically be accessed over the REST/HTTP remote API (note that there is also a JMS based API, which can be useful in integration scenario's). The REST/HTTP API uses basic authentication. That means the Kie-server client (e.g. a front-end GUI application) needs to include the username/password combination of the user with every request. The client application(s) need to know or have access to the user names and passwords. Moreover, with BASIC authentication, the username and password are passed in clear, base64 encoded text.
 
-Kie-server allows to log in as a _system user_, and perform operations on behalf of the real user. In this case the username is passed in as a query parameter in the REST calls. So if Kie-server is configured to bypass the real user, only the username and password of the system user needs to be known by the front-end. +
+Kie-server allows for authentication as a _system user_, so as to perform operations on behalf of the real user. In this case the username is passed in as a query parameter in the REST calls. So if Kie-server is configured to bypass the real user, only the username and password of the system user needs to be known by the front-end. +
 This is already more practical, but still not a very good solution: you would still need to somehow hard-code the system user password in the client application, and you cannot really restrict access to the Kie-server based on the real user.
 
 A way better solution to this problem is to use a Single Sign On solution (SSO).
 
-In this case the user, when accessing the front-end application, is redirected to the SSO server, where he needs to log in. On successful login, a token is issued by the SSO server. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Kie-server backend, the token is passed to the Kie-server as a HTTP header. On the Kie-server, the token is verified, and if valid, access is granted to the user.
+In this case the user, when accessing the front-end application (which interacts directly with kie-server), is redirected to the SSO server, where authentication occurs. On successful login, a token is issued by the SSO server. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Kie-server backend, the token is passed to the Kie-server as a HTTP header. On the Kie-server, the token is verified, and if valid, access is granted to the user.
 
 Red Hat SSO is an integrated SSO and IDM solution for browser apps and RESTful web services. It is built on top of the OAuth 2.0, Open ID Connect, JSON Web Token (JWT) and SAML 2.0 specifications.
 The upstream project of Red Hat SSO is Keycloak (http://keycloak.jboss.org/).
@@ -465,7 +465,7 @@ The steps required to integrate Business-Central are very much similar to the st
 </subsystem>
 ----
 . Start the BPMS Business-Central instance, and in a browser window navigate to `http://127.0.0.1:8080/business-central`. +
-You will be redirected to the RH SSO login screen. Login with the `jboss:bpms` user. After sucdessful login you are redirected to the Business-Central home page.
+You will be redirected to the RH SSO login screen. Login with the `jboss:bpms` user. After successful login you are redirected to the Business-Central home page.
 
 ifdef::showscript[]
 endif::showscript[]
