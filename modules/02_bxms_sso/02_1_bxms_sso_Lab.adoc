@@ -20,7 +20,9 @@ This is already more practical, but still not a very good solution: you would st
 
 A way better solution to this problem is to use a Single Sign On solution (SSO).
 
-In this case the user, when accessing the front-end application (which interacts directly with kie-server), is redirected to the SSO server, where authentication occurs. On successful login, a token is issued by the SSO server. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Kie-server backend, the token is passed to the Kie-server as a HTTP header. On the Kie-server, the token is verified, and if valid, access is granted to the user.
+image::images/sso_dataflow.gif[]
+
+In this case the user, when accessing the front-end application, is redirected to the SSO server, where authentication occurs. On successful login, a token is issued by the SSO server. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Kie-server backend, the token is passed to the Kie-server as a HTTP header. On the Kie-server, the token is verified, and if valid, access is granted to the user.
 
 Red Hat SSO is an integrated SSO and IDM solution for browser apps and RESTful web services. It is built on top of the OAuth 2.0, Open ID Connect, JSON Web Token (JWT) and SAML 2.0 specifications.
 The upstream project of Red Hat SSO is Keycloak (http://keycloak.jboss.org/).
