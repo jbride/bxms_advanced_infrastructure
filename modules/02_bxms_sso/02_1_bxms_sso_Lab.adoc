@@ -45,7 +45,7 @@ To install and start the Red Hat SSO server:
 
 . In the virtual machine, open a terminal and change to the `/home/jboss/lab` directory.
 . Execute the `install-rhsso.sh` script as user `jboss`.
-. Review the `install-rhsso.sh` script. The script itself delegates to the `install-rhsso-instance.sh` script in the `/opt/install/scripts/bpms` directory.
+. Review the `install-rhsso.sh` script. The script itself delegates to the `install-rhsso-instance.sh` script in the `/opt/install/scripts/rhsso` directory.
 . Change to the `/home/jboss/lab/rhsso/bin` directory, and launch the server:
 +
 ----
@@ -59,11 +59,16 @@ image::images/rhsso-server-start-screen.png[]
 
 == Red Hat SSO configuration
 
-=== Create a Realm
+=== Manual Configuration
+==== Create a Realm
 
 First step is to create a SSO realm for our application.
 
-. On the RH SSO start screen, hover over the Realm dropdown. Click on the `Add Realm` button.
+. On the RH SSO start screen, hover over the Realm dropdown.
++
+image::images/click_add_realm.png[]
++
+Click on the `Add Realm` button.
 . In the `Name` field, type `kieserver`. Leave `Enabled` to `ON`.
 +
 image::images/rhsso-server-create-realm.png[]
@@ -75,7 +80,7 @@ image::images/rhsso-server-login-tab.png[]
 +
 Note: on a production system it is strongly recommended to use SSL for all communication between the applications and the RH SSO server.
 
-=== Create Clients
+==== Create Clients
 
 For each of the applications involved (Kie-server back-end, front-end application) we need to create a client configuration in our realm. We will also create a client for curl to be able to access the Kie-server REST API from the command line.
 
@@ -113,7 +118,7 @@ On the settings page, enter the following values:
 Click `Save` +
 The _curl_ client will allow us to obtain a valid token from the RH SSO server using curl. This token can then be used to access the Kie-server REST API. This is probably something you will not allow on a production system, or at least restricted to select users.
 
-=== Create Roles
+==== Create Roles
 
 Authorization is determined by the roles of the user. To be able to access the Kie-server REST APIs, a user must have the role `kie-server`.
 
@@ -125,7 +130,7 @@ We will also create some application-specific roles for use within Kie-server.
 . Click `Save`.
 . Repeat to create application roles (e.g. `group1, group2`).
 
-=== Create Users
+==== Create Users
 
 Next step is to create some users.
 
@@ -152,13 +157,13 @@ image::images/rhsso-server-user-roles.png[]
 
 === Import the RH SSO configuration
 
-Rather than entering the RH SSO assets (realms, clients, users, roles) by hand, they can be imported at startup from one or more JSON files.
+Rather than entering the RH SSO assets (realms, clients, users, roles) by hand, they can alternatively be imported at startup from one or more JSON files.
 
-In the `/opt/install/scripts/rhsso/import` directory of the virtual machine you'll find the JSON files for the `kieserver` realm and the users defined for this realm.
+In the `/opt/install/scripts/rhsso/import` directory of the virtual machine you'll find JSON files for the `kieserver` realm and the users defined for this realm.
 
 All users have the password `user`.
 
-To import the files in to the RH SSO server:
+These JSON files can be imported into the RH SSO server as a replacement of what you've previously manually created.
 
 . Shutdown the RH SSO server. +
 Hit `Ctrl-C` in the terminal window where you started RH SSO.
@@ -330,7 +335,7 @@ image::images/ticket-process-definition.png[]
 
 To deploy this process archive, we need first to build it with maven, and to deploy it to the local maven repository.
 
-. In a terminal window, `cd` to the `/home/jboss/lab/bxms-advanced-infrastructure-lab/process-kjar` directory and build and install the project in the local maven repository.
+. In a terminal window, `cd` to the `/home/jboss/lab/bxms-advanced-infrastructure-lab/ticket-kjar` directory and build and install the project in the local maven repository.
 +
 ----
 $ cd ~/lab/bxms-advanced-infrastructure-lab/ticket-kjar
@@ -342,7 +347,7 @@ Execute the following commands
 To obtain a token:
 +
 ----
-$ export TKN=$(curl -X POST 'http://localhost:8380/auth/realms/kieserver/protocol/openid-connect/token' \
+$ export TKN=$(curl -X POST 'http://127.0.0.1:8380/auth/realms/kieserver/protocol/openid-connect/token' \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=user1" \
  -d 'password=user' \
