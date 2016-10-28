@@ -129,13 +129,13 @@ To install the BPMS instances on the virtual machines:
 
 . The script should complete without errors.
 . The Kie-server instance is configured as an unmanaged instance. If you would like to use the Business-Central instance as a controller for Kie-server, uncomment the following lines:
-.. `home/jboss/lab/bpms/bc/bin/standalone.conf`
+.. `/home/jboss/lab/bpms/bc/bin/standalone.conf`
 +
 ----
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.user=jboss"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.pwd=bpms"
 ----
-.. `home/jboss/lab/bpms/bc/bin/standalone.conf`
+.. `/home/jboss/lab/bpms/bc/bin/standalone.conf`
 +
 ----
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller=http://127.0.0.1:8080/business-central/rest/controller"
@@ -207,4 +207,11 @@ image::images/display_options.png[]
 . At the bottom of the `Monitor Preferences` pop-up, click:  `Apply`.
 
 ifdef::showscript[]
+
+Add the following to the VM;
+
+1)  firewall-cmd --zone=public --add-port=8380/tcp --permanent
+    firewall-cmd --zone=public --add-port=8230/tcp --permanent
+    firewall-cmd --zone=public --add-port=8000/tcp --permanent
+2)  path of ~/lab/bpms  :   https://github.com/redhat-gpe/OPEN_virtual/blob/master/automation/bxms-advanced-infrastructure/bxms-advanced-infrastructure-virtual-machine/ansible/roles/bpms/vars/main.yml#L1
 endif::showscript[]
