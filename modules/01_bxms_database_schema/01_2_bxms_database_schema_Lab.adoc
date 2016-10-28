@@ -17,9 +17,12 @@ Install BxMS Business Central and Kie-server as detailed in the Environment Setu
 
 == Configure BPMS Business-Central to use MariaDB
 
-The installation as performed by the `install-bpms.sh` installation script yields an installation of Business-Central configured to use the built-in H2 database, which is not recommended not supported for production useage.
+The installation as performed by the `install-bpms.sh` installation script yields an installation of Business-Central configured to use the built-in H2 database, which is not supported for production useage.
 
-Several configuration steps must be performed to configure Business-Central to use MariaDB instead. In this lab we will also configure Business-Central to use the Quartz scheduler library to implement timers and timer based functionalities in Business-Central.
+Several configuration steps must be performed to configure Business-Central to use MariaDB instead.
+These same steps in this lab can conceptually be followed to configure BPM Suite to run on https://access.redhat.com/articles/704703[other supported relational databases].
+
+In this lab we will also configure Business-Central to use the Quartz scheduler library to implement timers and timer based functionalities in Business-Central.
 
 === Define the datasources
 
@@ -158,9 +161,25 @@ $ sed -i s@java:jboss/datasources/ExampleDS@java:jboss/datasources/jbpmDS@ jboss
 
 </jboss-web>
 ----
-. To use the Quartz library, we also need to provide a Quartz properties file, which will be used by the Quartz library to configure itself. +
-A Quartz properties has been provided on the virtual machine in the `/opt/install/scripts/bpms/quartz` directory. +
-Review the `quartz.properties` configuration file. More details on how to configure quartz can be found at http://www.quartz-scheduler.org/documentation. BPMS uses version 1.8.5 of the Quartz library.
+
+ifdef::showscript[]
+=== Understand the Configuration
+
+.  Notice that the _persistence.xml_ that you just modified includes the following property:
++
+-----
+<property name="hibernate.hbm2ddl.auto" value="update" />
+-----
+.. What are the alternative values for this property ?
+.. Why would the value currently being used be ideal for a production environment ?
+.. What does this value imply about the state of the BPMS schema in the database that our runtime will connect to ?
+
+
+
+1.a : create-drop, create, validate, none
+1.b : so that
+
+endif::showscript[]
 
 === Create the tables in the MariaDB database
 
@@ -204,8 +223,11 @@ Now we can start the Business-Central instance and validate our configuration.
 $ pluma bin/standalone.conf
 ----
 . In the `standalone.conf`, the system properties for the MariaDB database have already been added (around line 77). +
-However, to configure the BPMS engine to use Quartz, we need to point the `org.quartz.properties` system variable to the Quartz properties file. +
-At the end of the file, add the following line:
+However, to configure the BPMS engine to use Quartz, we need to point the `org.quartz.properties` system variable to the Quartz properties file.
+.. A Quartz properties has been provided on the virtual machine in the `/opt/install/scripts/bpms/quartz` directory. +
+Review the `quartz.properties` configuration file. More details on how to configure quartz can be found at http://www.quartz-scheduler.org/documentation. BPMS uses version 1.8.5 of the Quartz library.
+
+.. At the end of the file, add the following line:
 +
 ----
 JAVA_OPTS="$JAVA_OPTS -Dorg.quartz.properties=/opt/install/scripts/bpms/quartz/quartz.properties"
@@ -225,14 +247,17 @@ The steps required to configure Kie-server to use MariaDB rather than the built-
 
 The difference lies in the fact that there is no `persistence.xml` configuration file we need to adapt. With Kie-server, the persistence unit is built programmatically when the BPM extension is started. Configuration is provided through system properties.
 
-. Repeat the steps performed above to define the driver module datasource, but now use the KIE-server installation that you can find in `home/jboss/lab/bpms/kie-server`. +
-Remember we use a port offset of 150 to launch Kie-server. So to connect to the server from the CLI, use the following command:
+. Repeat the steps to create the tables in a new schema in the MariaDB called: `bpmskieserver` .
++
+As Kie-server does not use Dashbuilder, there is no need to import the dashboard tables.
+. Repeat the steps performed previously to define a driver module datasource for the KIE-server installation (located at: `/home/jboss/lab/bpms/kieserver`). +
+Remember that a port offset of 150 is used to launch Kie-server. So to connect to the server from the CLI, use the following command:
 +
 ----
 $ ./jboss-cli.sh --connect --controller=127.0.0.1:10149
 ----
-. Repeat the steps to create the tables in the database, but this time create and use the `bpmskieserver` schema. As Kie-server does not use Dashbuilder, there is no need to import the dashboard tables.
-. Open the `/home/jboss/lab/bpms/kie-server/bin/standalone.conf` file for editing. At the bottom of the file, add the following lines:
+
+. Open the `/home/jboss/lab/bpms/kieserver/bin/standalone.conf` file for editing. At the bottom of the file, add the following lines:
 +
 ----
 JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.persistence.ds=java:jboss/datasources/jbpmDS"
@@ -262,6 +287,9 @@ $ git clone https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab
 $ cd ~/lab/bxms-advanced-infrastructure-lab/process-kjar
 $ mvn clean install
 ----
++
+Research the following question:  What is the URL to the supported Red Hat Maven repository where the BPM dependencies used to build this kie-project came from ?
+
 . Create a user `user1` belonging to group `group1` in Kie-server. We will use this user to work with User Tasks in our sample processes. +
 In a terminal window, `cd` to the `bin` dirrectory of Kie-server, and issue the following command:
 +
@@ -643,8 +671,14 @@ PREV_FIRE_TIME: -1
 1 row in set (0.00 sec)
 ----
 . If you wait a couple of minutes (the timer delay has been set to 5 minutes), the timer will fire, and the row in the `qrtz_triggers` table is removed.
-. When using `PER_PROCESS_INSTANCE` runtime strategy, the same ksession will be used during the lifetime of the process instance. In this case the session state wil be persisted into the `sessioninfo` database table and linked to the process instance. Every request for a process instance will start with rehydrating a ksession from the persisted state. To illustrate this:
-.. In a terminal window, `cd` to `/home/jboss/cd lab/bxms-advanced-infrastructure-lab/process-kjar/`.
+
+=== Behavior with different Session Strategies
+
+==== PER_PROCESS_INSTANCE
+
+When using `PER_PROCESS_INSTANCE` runtime strategy, the same ksession will be used during the lifetime of the process instance. In this case the session state wil be persisted into the `sessioninfo` database table and linked to the process instance. Every request for a process instance will start with rehydrating a ksession from the persisted state. To illustrate this:
+
+.. In a terminal window, `cd` to: `/home/jboss/lab/bxms-advanced-infrastructure-lab/process-kjar/`.
 .. Open the `src/main/resources/META-INF/kie-deployment-descriptor.xml` for editing.
 .. In the file, replace `<runtime-strategy>PER_REQUEST</runtime-strategy>` with `<runtime-strategy>PER_PROCESS_INSTANCE</runtime-strategy>`. +
 Save the file.
@@ -704,8 +738,15 @@ MariaDB [bpmskieserver]> select * from contextmappinginfo;
 The `context_id` column contains the id of the processinstance.
 .. When the process instance completes, the matching rows in the `sessioninfo` and `contextmappinginfo` tables are deleted. +
 You can verify this by completing the User Task of the process created above.
-. When using "SINGLETON" runtime strategy, one ksession is shared by all process instances of a deployment. The session state is kept in memory as long as the server is up. When shutting down the server, the session state is serialized to disk. +
+
+==== SINGLETON
+When using "SINGLETON" runtime strategy, one ksession is shared by all process instances of a deployment. The session state is kept in memory as long as the server is up. When shutting down the server, the session state is serialized to disk. +
 So in this case the `sessioninfo` table will not be used.
 
 ifdef::showscript[]
+
+1)  hibernate.hbm2ddl.auto system property  ?
+2)  ~/.m2/repository ownership set to:   temp / users
+3)  what if the same database was used for both biz central, kie-server and dashbuilder ?
+
 endif::showscript[]
