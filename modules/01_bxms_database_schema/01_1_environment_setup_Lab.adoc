@@ -101,20 +101,6 @@ The script will install a separate instance of Business-Central and Kie-server. 
 Review these system property values as they give a good idea of the system properties that should be set for a BPMS installation.
 . The Kie-server instance is configured with a port-offset of 150 - the HTTP port will be 8230 rather than 8080. This allows to run both the Business-Central as the Kie-server instance concurrently.
 . The installed instances are configured to use the built-in H2 database. As part of the labs you will complete the configuration to point to MariaDB instead.
-. The Kie-server instance is configured as an unmanaged instance. If you would like to use the Business-Central instance as a controller for Kie-server, uncomment the following lines:
-.. `home/jboss/lab/bpms/bc/bin/standalone.conf`
-+
-----
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.user=jboss"
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.pwd=bpms"
-----
-.. `home/jboss/lab/bpms/bc/bin/standalone.conf`
-+
-----
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller=http://127.0.0.1:8080/business-central/rest/controller"
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=kieserver"
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=kieserver1!"
-----
 
 . Based on your review of the provided scripts and configuration files, try to answer the following questions:
 .. What two users will be configured for both the `kieserver` and `business-central` environments and what will be their passwords ?
@@ -142,6 +128,20 @@ To install the BPMS instances on the virtual machines:
 -----
 
 . The script should complete without errors.
+. The Kie-server instance is configured as an unmanaged instance. If you would like to use the Business-Central instance as a controller for Kie-server, uncomment the following lines:
+.. `home/jboss/lab/bpms/bc/bin/standalone.conf`
++
+----
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.user=jboss"
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.pwd=bpms"
+----
+.. `home/jboss/lab/bpms/bc/bin/standalone.conf`
++
+----
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller=http://127.0.0.1:8080/business-central/rest/controller"
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=kieserver"
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=kieserver1!"
+----
 
 
 == Appendix
@@ -205,3 +205,6 @@ Notice that you now have many more resolution options.  Select the highest displ
 +
 image::images/display_options.png[]
 . At the bottom of the `Monitor Preferences` pop-up, click:  `Apply`.
+
+ifdef::showscript[]
+endif::showscript[]
