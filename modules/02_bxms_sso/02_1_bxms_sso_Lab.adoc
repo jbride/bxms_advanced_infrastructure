@@ -474,5 +474,13 @@ The steps required to integrate Business-Central are very much similar to the st
 . Start the BPMS Business-Central instance, and in a browser window navigate to `http://127.0.0.1:8080/business-central`. +
 You will be redirected to the RH SSO login screen. Login with the `jboss:bpms` user. After successful login you are redirected to the Business-Central home page.
 
+== Extra Credit
+Nice job!
+
+Thus far you have been able to set up optimal security of your web app and business-central using RH SSO where all components are bound to the _localhost_ loopback of your virtual machine.
+
+Next, try to reproduce what you've already done but this time bind all JVMs to an external NIC of the VM (ie:  eth0).
+Use the browser on the host machine to interact with RH SSO and your _angulajs-ticket-app_ in your VM.
+
 ifdef::showscript[]
 endif::showscript[]
