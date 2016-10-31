@@ -191,7 +191,6 @@ node('jdk8') {
 
   def mvnHome = tool 'M3'
   def mvnCmd = "${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml"
-  def ocCmd = "/usr/bin/oc --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token` --server=https://openshift.default.svc.cluster.local --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
   stage 'Build'
     git url: 'http://jenkins:password@gogs:3000/decision-server-jenkins/policyquote.git'
@@ -220,7 +219,7 @@ node('jdk8') {
     git url: 'http://jenkins:password@gogs:3000/decision-server-jenkins/policyquote-ocp.git'
     sh "sed -r -i \"s/com.redhat.gpte.xpaas:policyquote:[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}/com.redhat.gpte.xpaas:policyquote:${version}/g\" .s2i/environment"
     sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
-    //sh "${ocCmd} start-build policyquote -n <openshift project>"
+    //openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
 }
 
 
@@ -359,7 +358,7 @@ In the pipeline script, uncomment the last line of the `Deploy to DEV` stage.
     git url: 'http://jenkins:password@gogs:3000/decision-server-jenkins/policyquote-ocp.git'
     sh "sed -r -i \"s/com.redhat.gpte.xpaas:policyquote:[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}/com.redhat.gpte.xpaas:policyquote:${version}/g\" .s2i/environment"
     sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
-    sh "${ocCmd} start-build policyquote -n <openshift project>"
+    openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
 ----
 +
 Replace <openshift project> with the name of your Openshift project. +
