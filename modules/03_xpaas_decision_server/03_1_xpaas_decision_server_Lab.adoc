@@ -48,11 +48,9 @@ If not, execute the following:
 $ git clone https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab.git
 -----
 
-== xPaas Decision Server Lab 1 : S2I deployment
+== Gogs Git Server
 
-=== Gogs Git Server
-
-For this and the following xPaas labs we need a Git server where we will host the code that will be built and deployed on the xPaas Decision Server and Process Server. For this we will use Gogs, a Github-like Git server, written in Go (https://gogs.io/).
+For all _xPaas_ labs in this course, we need a Git server where we will host the code that will be built and deployed on the xPaas Decision Server and Process Server. For this we will use Gogs, a Github-like Git server, written in Go (https://gogs.io/).
 
 . In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the XPaaS labs.
 +
@@ -137,7 +135,7 @@ Check that you are a member of the new organization. You should be listed as `ow
 * Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
 Later in the lab we will push our BRMS project to this repository.
 
-=== Nexus maven repository server
+== Nexus maven repository server
 
 The S2I build of the Decision Server relies heavily on maven to build and deploy the BRMS project source code. To avoid having to download the maven dependencies at every build cycle, we can configure a Nexus repository as a proxy. The maven build will download the dependencies it needs from the
 Nexus proxy rather than the internet, which will drastically improve the build speed.
@@ -234,7 +232,7 @@ The build will be triggered through a webhook (triggered whenever we push new co
 $ oc create -f decisionserver-basic-S2I.yaml
 ----
 
-=== Policyquote sample application
+== Policyquote sample application
 
 The Policyquote sample application is a fairly simple BRMS application to calculate the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a ruleflow process), and a domain model in a single maven project.
 
@@ -268,7 +266,7 @@ Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with t
 $ git push gogs master
 ----
 
-=== Openshift Decision Server Application
+== Openshift Decision Server Application
 
 Everything is in place now to create a OpenShift application for our BRMS project.
 
@@ -465,7 +463,7 @@ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json
 ----
 . Feel free to change some values in the payload file (`policyquote-payload.json`) for the Driver and Policy objects, and check if get another result from the server. You can review the rules in the project to have an idea what fields need to be changed to influence the calculated price.
 
-=== Application lifecycle
+== Application lifecycle
 
 Now we can introduce a change in one of the rules of our application, and observe what's happening when we push the change to the git repository. +
 First we need to define a webhook in our policyquote repository on Gogs, that will be triggered by a push of new code. The webhook calls the Openshift API in order to start a new S2I build.
