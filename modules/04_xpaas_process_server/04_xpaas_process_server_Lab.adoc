@@ -581,7 +581,6 @@ image::images/policyquote-pipeline.png[]
 node('jdk8') {
   def mvnHome = tool 'M3'
   def mvnCmd = "${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml -f policyquote-process/pom.xml"
-  def ocCmd = "/usr/bin/oc --token=`cat /var/run/secrets/kubernetes.io/serviceaccount/token` --server=https://openshift.default.svc.cluster.local --certificate-authority=/run/secrets/kubernetes.io/serviceaccount/ca.crt"
 
   stage 'Build'
     git url: 'http://jenkins:password@gogs:3000/process-server-jenkins/policyquote-process.git', branch: "${branch}"
@@ -609,8 +608,7 @@ node('jdk8') {
       sh "sed -r -i \"s/^KIE_CONTAINER_DEPLOYMENT_OVERRIDE=.*/&policyquote-process=${groupId}:${artifactId}:${version}/\" .s2i/environment"
       def commit = "Release " + version
       sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
-      //sh "${ocCmd} start-build policyquote -n <openshift project>"
-
+      //openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
   }
 
 }
@@ -784,7 +782,7 @@ In the pipeline script, uncomment the last line of the `Deploy to Staging` stage
       sh "sed -r -i \"s/^KIE_CONTAINER_DEPLOYMENT_OVERRIDE=.*/&policyquote-process=${groupId}:${artifactId}:${version}/\" .s2i/environment"
       def commit = "Release " + version
       sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
-      sh "${ocCmd} start-build policyquote -n <openshift project>"
+      openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
 ----
 +
 Replace <openshift project> with the name of your Openshift project. +
@@ -926,7 +924,7 @@ image::images/policyquote-process-deployment-override-2.png[]
 Note that you need to use the real container name here, not the alias.
 +
 ----
-$ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_passord "$policyquote_app/kie-server/services/rest/server/queries/containers/991b463bc066da010a051daf87ff581d/process/instances"
+$ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password "$policyquote_app/kie-server/services/rest/server/queries/containers/991b463bc066da010a051daf87ff581d/process/instances"
 ----
 +
 Response:
