@@ -12,13 +12,13 @@ In this module of the course, we will explore the Red Hat xPaas Decision Server.
 This module of the course consists of two labs:
 
 * exploring the source-to-image (S2I) functionality of the OpenShift xPaas Decision Server.
-* example of binary deployment with the OpenShift xPaas Decision Server. In this scenario the kjar to depoy is built by a build server, which then triggers a binary deployment on the Decision Server.
+* example of binary deployment with the OpenShift xPaaS Decision Server. In this scenario the kjar to depoy is built by a build server, which then triggers a binary deployment on the Decision Server.
 
 *Prerequisites*
 
 In order to do this lab you will need :
 
-* access to a project on a Openshift V3 (OSE) hosted environment.
+* access to a project on a Openshift V3 (OCP) hosted environment.
 * required tools on your local workstation: OpenShift CLI client (`oc`), git, maven, curl. +
 The lab virtual machine used in this course has these tools installed.
 * access to Github to clone the projects used in this lab.
@@ -67,13 +67,13 @@ The template defines:
 * A PersistentVolumeClaim for the Gogs volume
 * A PersistentVolumeClaim for the PostgreSQL volume.
 * Parameters:
-** APPLICATION_NAME: the name for the application, defaults to `gogs`.
-** POSTGRESQL_USER: the name of the user for the PostgreSQL database, generated.
-** GOGS_POSTGRESQL_PASSWORD: the password of the user for the PostgreSQL database, generated.
-** VOLUME_CAPACITY: the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
+** APPLICATION_NAME : the name for the application, defaults to `gogs`.
+** POSTGRESQL_USER : the name of the user for the PostgreSQL database, generated.
+** GOGS_POSTGRESQL_PASSWORD : the password of the user for the PostgreSQL database, generated.
+** VOLUME_CAPACITY : the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
 +
 [NOTE]
-In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `xpaas-gogs.yaml` template, which does not use persistent storage. +
+In the case that your OCP environment doesn't have access to persistent volumes, you will have to use the `xpaas-gogs.yaml` template, which does not use persistent storage. +
 Be aware that your data and configuration will be lost when the Gogs and PostgreSQL pods disappear.
 
 . Create an application based on the template. Specify values for the parameters, if you don't want to use the defaults:
@@ -155,11 +155,11 @@ The template defines:
 * A DeploymentConfig for the Nexus pod.
 * A PersistentVolumeClaim for the Nexus volume, to hold the Nexus configuration and storage.
 * Parameters:
-** APPLICATION_NAME: the name for the application, defaults to `nexus`.
-** VOLUME_CAPACITY: the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
+** APPLICATION_NAME : the name for the application, defaults to `nexus`.
+** VOLUME_CAPACITY : the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
 +
 [NOTE]
-In the case that your OSE environment doesn't have access to persistent volumes, you will have to use the `xpaas-nexus.yaml` template, which does not use persistent storage. +
+In the case that your OCP environment doesn't have access to persistent volumes, you will have to use the `xpaas-nexus.yaml` template, which does not use persistent storage. +
 Be aware that your data and configuration (including the cached dependencies) will be lost when the Nexus pod disappears.
 
 . Create an application based on the template. Specify values for the parameters, if you don't want to use the defaults:
@@ -208,28 +208,28 @@ This template defines:
 The BuildConfig defines a source build, pointing to a git repo, as well as the builder image, through the ImageStream we defined earlier. +
 The build will be triggered through a webhook (triggered whenever we push new code to the git repository), or by a change in the builder image.
 * An ImageStream for the image created as a result of the build.
-* A DeploymentConfig for the the image created as result of the build. The number of replica's is set to one.
+* A DeploymentConfig for the pod(s) running the image created as result of the build. The number of replica's is set to one.
 * A Service for the Decision Server.
 * A Route for the Decision Server.
 * Parameters:
 ** KIE_CONTAINER_DEPLOYMENT : describes what kjar(s) needs to be deployed on the Decision Server, in the format `containerId=groupId:artifactId:version|c2=g2:a2:v2`
 ** KIE_CONTAINER_REDIRECT_ENABLED : Enable redirect functionality for KIE containers. Defaults to true. Should be true when different versions of the same kjar are to be deployed side-by-side.
-** KIE_SERVER_USER: the user name to access the KIE Server REST or JMS interface. Defaults to `kieserver`.
-** KIE_SERVER_PASSWORD: The password to access the KIE Server REST or JMS interface. Defaults to  a generated value.
-** APPLICATION_NAME: the name for the application.
+** KIE_SERVER_USER : the user name to access the KIE Server REST or JMS interface. Defaults to `kieserver`.
+** KIE_SERVER_PASSWORD : The password to access the KIE Server REST or JMS interface. Defaults to a generated value.
+** APPLICATION_NAME : the name for the application.
 ** HOSTNAME_HTTP : Custom hostname for the http service route. Leave blank for default hostname generated by OpenShift.
-** SOURCE_REPOSITORY_URL: Git source URI for application. Required.
-** SOURCE_REPOSITORY_REF: the Git branch/tag reference to build. Defaults to `master`.
-** CONTEXT_DIR: The path within the Git project to build. Leave blank for the root project directory.
+** SOURCE_REPOSITORY_URL : Git source URI for application. Required.
+** SOURCE_REPOSITORY_REF : the Git branch/tag reference to build. Defaults to `master`.
+** CONTEXT_DIR : The path within the Git project to build. Leave blank for the root project directory.
 ** GITHUB_WEBHOOK_SECRET : GitHub trigger secret. Will be added to the webhook URL. Defaults to a generated value.
 ** GENERIC_WEBHOOK_SECRET: Generic build trigger secret. Will be added to the webhook URL. Defaults to a generated value.
-** IMAGE_STREAM_NAMESPACE : Namespace in which the ImageStreams for Red Hat xPaas images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project (which is the case in our lab).
+** IMAGE_STREAM_NAMESPACE : Namespace in which the ImageStreams for Red Hat xPaaS images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project (which is the case in our lab).
 ** MAVEN_MIRROR_URL : The URL of the maven mirror (Nexus server)
 * Note: this template does not contain a database service (Decision Server does not use persistence). The Decision Server uses an insecure route (http, no https).
 . Import the template into your OpenShift project:
 +
 ----
-$ oc create -f decisionserver-basic-S2I.yaml
+$ oc create -f decisionserver-basic-s2i.yaml
 ----
 
 == Policyquote sample application
@@ -279,10 +279,10 @@ $ nexus_url=http://nexus:8081
 $ kieserver_password=kieserver1!
 $ is_namespace=<name of your OpenShift project>
 $ kie_container_deployment="policyquote=com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT"
-$ oc new-app --template=decisionserver63-basic-S2I -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment,KIE_CONTAINER_REDIRECT_ENABLED=false,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
+$ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment,KIE_CONTAINER_REDIRECT_ENABLED=false,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
 +
-* Note that the KIE_CONTAINER_REDIRECT_ENABLED environment variable is set to false. This means that the name of the KieContainer for our application will be `policyquote`, as defined in KIE_CONTAINER_DEPLOYMENT.
+* Note that the KIE_CONTAINER_REDIRECT_ENABLED environment variable is set to false. This means that the name of the KIE-Container for our application will be `policyquote`, as defined in KIE_CONTAINER_DEPLOYMENT.
 
 . Check the progress of the build and deployment of the application in the OpenShift console.
 * As this is the first build, it will take quite some time: the builder image needs to be downloaded from the Red Hat docker repository, and the Nexus maven proxy needs to be seeded with the build dependencies.
@@ -347,7 +347,7 @@ Response:
   }
 }
 ----
-. To see what containers are deployed on the server:
+. To check which KIE-Containers are deployed on the server:
 +
 ----
 $ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password "$policyquote_app/kie-server/services/rest/server/containers"
@@ -387,7 +387,7 @@ Response:
 . To test our application, we need to send a correctly formatted payload. The `/xpaas/decision-server` directory of the lab contains an example, formatted as JSON. Make sure you are in that directory, and execute:
 +
 ----
-curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote"
+$ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote"
 ----
 +
 Response:
@@ -455,13 +455,13 @@ Of particular importance in the response is the price field of the Policy, which
 To filter out the price field, use `grep`:
 +
 ----
-curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote" | grep '"price"'
+$ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote" | grep '"price"'
 ----
 +
 ----
   "price" : 300,
 ----
-. Feel free to change some values in the payload file (`policyquote-payload.json`) for the Driver and Policy objects, and check if get another result from the server. You can review the rules in the project to have an idea what fields need to be changed to influence the calculated price.
+. Feel free to change some values in the payload file (`policyquote-payload.json`) for the Driver and Policy objects, and check if you get another result from the server. You can review the rules in the project to have an idea what fields need to be changed to influence the calculated price.
 
 == Application lifecycle
 
@@ -521,7 +521,7 @@ Open the `src/test/java/com/redhat/gpte/policyquote/rules/RiskyAdultsTest.java` 
 ----
 Assert.assertEquals(350, policy.getPrice().intValue());
 ----
-. Optionally, you can test if the project builds fine by doing a local maven build:
+. Optionally, you can test if the project builds sucessfully by doing a local maven build:
 +
 ----
 $ mvn clean package
@@ -537,8 +537,8 @@ $ git push gogs master
 +
 image::images/openshift-s2i-new-build.png[]
 +
-This build should not take as long as the first one.
-. Once the new build is completed, the original application pod is shut down, while the new build pod is being deployed.
+Note that this build does not take as long as the first one.
+. Once the new build is completed, the original application pod is teared down, while the new build pod is being deployed.
 +
 image::images/openshift-s2i-new-deployment.png[]
 . Test the new deployment. Change the directory to the `/xpaas/decision-server` directory of the lab folder first. The price should now be 350 instead of 300.
