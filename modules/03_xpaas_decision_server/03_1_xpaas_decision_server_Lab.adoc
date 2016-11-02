@@ -9,19 +9,24 @@
 
 In this module of the course, we will explore the Red Hat xPaas Decision Server. The Decision Server runtime is a BRMS KIE Server configured for deployment on OpenShift. The Decision Server supports source-to-image builds, as well as binary deployments starting from pre-built kjars.
 
-This module of the course consists of two labs:
+In this lab, we explore the source-to-image (S2I) functionality of the OpenShift xPaas Decision Server.
+Goals are as follows:
 
-* exploring the source-to-image (S2I) functionality of the OpenShift xPaas Decision Server.
-* example of binary deployment with the OpenShift xPaaS Decision Server. In this scenario the kjar to depoy is built by a build server, which then triggers a binary deployment on the Decision Server.
+* Provisioning of the Red Hat BPM Decision Server in an OpenShift Container Platform (OCP) environment.
+* Deployment of a rules based _kie-project_ to the Decision Server.
+* Automated build and redeployment when code changes are made to our _kie-project_.
+* Investigation of various OCP Deployment Strategies so as to reduce down-time.
 
 *Prerequisites*
 
 In order to do this lab you will need :
 
-* access to a project on a Openshift V3 (OCP) hosted environment.
-* required tools on your local workstation: OpenShift CLI client (`oc`), git, maven, curl. +
-The lab virtual machine used in this course has these tools installed.
-* access to Github to clone the projects used in this lab.
+* Access to a project on a Openshift V3 (OCP) hosted environment.
+* Required tools on your local workstation: OpenShift CLI client (`oc`), git, maven, curl.
++
+NOTE: The lab virtual machine used in this course has these tools installed.
+* Access to Github to clone the projects used in this lab.
+* Completion of Red Hat GPTE's _Application Development using OpenShift_ course.
 
 == Lab Set-Up
 
@@ -171,15 +176,15 @@ As a next step, we can extract this configuration file from the Gogs pod, and mo
 ----
 $ oc exec $gogspod -- cat /etc/gogs/conf/app.ini > gogs-app.ini
 ----
-. Create a ConfigMap from the saved file:
-+
-----
-$ oc create configmap gogs --from-file=gogs-app.ini
-----
 . We need to configure Gogs to be able to work with the default self-signed OpenShift certificates. Execute the following command:
 +
 ----
 $ sed -i 's/SKIP_TLS_VERIFY = false/SKIP_TLS_VERIFY = true/g' gogs-app.ini
+----
+. Create a ConfigMap from the saved file:
++
+----
+$ oc create configmap gogs --from-file=gogs-app.ini
 ----
 . Mount the configmap as a volume in the Gogs pod:
 +
@@ -203,9 +208,11 @@ image::images/gogs_register.png[]
 image::images/gogs_new_org.png[]
 .. Fill in the name, and click the `Create Organization` button. +
 .. Check that you are a member of the new organization. You should be listed as `owner`.
-. Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
+. Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked.  +
 +
 image::images/create_new_repo.png[]
++
+Click `Create repository`.
 +
 Later in the lab we will push our BRMS project to this repository.
 
@@ -259,7 +266,7 @@ image::images/nexus-redhat-repo.png[]
 +
 ** Click `Save`.
 
-=== Decision Server S2I Template
+== Decision Server S2I Templates
 
 To create Decision Server applications on OpenShift, we can start from a template that we will import into our OpenShift project. As we can have several templates using the same Decision Server image, we will first create an image stream for the Decision Server image, so that we can reuse the image stream in several templates.
 
@@ -337,6 +344,10 @@ Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with t
 ----
 $ git push gogs master
 ----
+. Using your browser, return to the home page of your `decision-server-s2i` repository hosted in your _gogs_ container
++
+image::images/seeded_gogs_repo.png[]
+. Notice that your repo is now seeded with the _policyquote_ project.
 
 == Openshift Decision Server Application
 
@@ -538,6 +549,8 @@ $ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/js
 == Application lifecycle
 
 Now we can introduce a change in one of the rules of our application, and observe what's happening when we push the change to the git repository. +
+
+=== Configure WebHook to OCP BuildConfig object
 First we need to define a webhook in our policyquote repository on Gogs, that will be triggered by a push of new code. The webhook calls the Openshift API in order to start a new S2I build.
 
 . In a terminal window, issue the following command:
@@ -551,14 +564,16 @@ From the response, copy the URL of the GitHub Webhook. This should look like:
 ----
 https://<OpenShift URL>:8443/oapi/v1/namespaces/xpaas/buildconfigs/policyquote-app/webhooks/<secret>/github
 ----
-. Open a browser window and navigate to the policyquote repository on Gogs. Click on the `Settings` link in the top left.
+. Open a browser window and navigate to the policyquote repository on Gogs. Click on the `Settings` link in the top right.
 +
 image::images/gogs-repository-settings.png[]
 . In the settings window menu, click on `Webhooks`, and then on `Add Webhook`. Choose the `Gogs` format.
 . Paste the webhook URL obtained from the from the BuildConfig into the `Payload URL` text box. +
 Leave `Content Type` to application/json, and leave `Secret` blank. +
-Make sure the `Just the push event` radio button and the `Active` check box is selected. +
+Make sure the `Just the push event` radio button and the `Active` check box are selected. +
 Click `Add Webhook`.
+
+=== Test Change to Rules
 . In a terminal window, change to the root of the cloned `bxms-xpaas-policyquote` project.
 +
 ----
@@ -602,6 +617,11 @@ $ mvn clean package
 +
 ----
 $ git add --all
+$ cat << EOF > ~/.gitconfig
+[user]
+email = gptestudent@gptestudent.com
+name = gptestudent
+EOF
 $ git commit -m "raised the price for risky adults"
 $ git push gogs master
 ----
@@ -613,7 +633,9 @@ Note that this build does not take as long as the first one.
 . Once the new build is completed, the original application pod is teared down, while the new build pod is being deployed.
 +
 image::images/openshift-s2i-new-deployment.png[]
-. Test the new deployment. Change the directory to the `/xpaas/decision-server` directory of the lab folder first. The price should now be 350 instead of 300.
+. Test the new deployment.
+.. Change the directory to: `~/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server`
+.. Execute:
 +
 ----
 curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote" | grep '"price"'
@@ -622,6 +644,7 @@ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json
 ----
   "price" : 350,
 ----
+.. The price should now be 350 instead of 300.
 
 === Scaling out and Rolling Deployment
 
@@ -676,10 +699,13 @@ image::images/policyquote-deployment-rolling.png[]
 +
 If you launched the curl command in a loop you should haved noticed no interruption in the responsiveness of the application. When the new application pods become active, the application responds with a price of 400 rather than 350.
 
-This concludes the first part of this lab. To save resources on Openshift, you can tear down the policyquote application. Leave the Nexus and Gogs applications running, as we will need them for the remainder of the lab.
+== Cleanup
+This concludes the first lab of this module.
+To save resources on Openshift, you can tear down the policyquote application.
+Leave the Nexus and Gogs applications running, as we will need them for the next lab.
 
-. In a terminal window, issue the following commands:
-+
+In a terminal window, issue the following commands:
+
 ----
 $ oc delete dc policyquote-app
 $ oc delete service policyquote-app
@@ -689,4 +715,16 @@ $ oc delete bc policyquote-app
 ----
 
 ifdef::showscript[]
+
+nice job with decision server lab.  still going through it.  really like the use of the ConfigMap object for the gogs server
+i think it would be valuable to:￼
+1)  point out to students that there are existing decisionserver templates in the openshift namespace
+2)  our rationale for not leveraging those templates directly as is.  Sounds like one reason is the desire to isolate and re-use the decision server image stream (edited)
+
+Actually there are a couple of reasons to use our own template and image stream:
+* The imagestream and templates are not installed by default on OCP < 3.3 (at least not the latest versions)
+* The templates in the openshift namespace miss the MAVEN_MIRROR parameter, which makes it a lot harder to leverage nexus as a maven proxy
+* The templates in the openshift namespace have a lot of parameters (especially the process server templates) that are not required and might confuse students
+* In general I think in real life most people will come up with templates customized to their needs, rather than using the provided ones. These should be more considered as examples or blueprints
+
 endif::showscript[]
