@@ -129,7 +129,7 @@ $ oc process -f xpaas-jenkins-persistent.yaml -v APPLICATION_NAME=jenkins,JENKIN
 image::images/jenkins-master-policyquote.png[]
 .. Click on the `policyquote` job, and then on `Configure`. +
 Notice that the `policyquote` job uses a Pipeline, but has no Pipeline script defined yet. We will add the Pipeline script in the next steps of the lab.
-.. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Manage Plugins`. Click on the `Installed` tab to review the plugins installed. This plugin list corresponds to the `plugins.txt` configuration file in the configuration files for the Jenkins master. The plugins listed in `plugin.txt` are installed when building the image.
+.. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Manage Plugins`. Click on the `Installed` tab to review the plugins installed. This plugin list corresponds to the `plugins.txt` configuration file in the configuration directory for the Jenkins master. The plugins listed in `plugins.txt` are installed when building the image.
 .. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Configure System`. +
 Scroll down to the `Cloud` section. Notice the `jdk-jenkins-slave` pod template which was auto-registered. This is the template we are going to use to spawn worker slave nodes for the build pipeline.
 
