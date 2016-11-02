@@ -233,10 +233,6 @@ The template defines:
 * Parameters:
 ** APPLICATION_NAME : the name for the application, defaults to `nexus`.
 ** VOLUME_CAPACITY : the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
-+
-[NOTE]
-In the case that your OCP environment doesn't have access to persistent volumes, you will have to use the `xpaas-nexus.yaml` template, which does not use persistent storage. +
-Be aware that your data and configuration (including the cached dependencies) will be lost when the Nexus pod disappears.
 
 . Create an application based on the template. Specify values for the parameters, if you don't want to use the defaults:
 +
@@ -244,17 +240,17 @@ Be aware that your data and configuration (including the cached dependencies) wi
 $ oc process -f xpaas-nexus-persistent.yaml -v APPLICATION_NAME=nexus,VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
-. Once all components of our application are up, we need to configure the Nexus server. More specifically, we need to add the Red Hat enterprise maven repository to the list of proxied repo's.
-* In a browser window, navigate to the URL of the Nexus route.
-* Log in with the `admin/admin123` username/password.
-* Click on the `Repositories` on the left menu, and next on the `Add...` icon in the top menu. Choose to create a `Proxy Repository`
-* In the `New Proxy Repository` form, fill in the following values:
+. Once all components of our application are up, configure the Nexus server. More specifically, we need to add the Red Hat enterprise maven repository to the list of proxied repo's.
+. In a browser window, navigate to the URL of the Nexus route.
+. Log in with the `admin/admin123` username/password.
+. Click on the `Repositories` on the left menu, and next on the `Add...` icon in the top menu. Choose to create a `Proxy Repository`
+. In the `New Proxy Repository` form, fill in the following values:
 ** Repository ID: redhat-ga
 ** Repository Name: Red Hat GA
 ** Remote Storage Location : https://maven.repository.redhat.com/ga/
 ** Leave the other fields as is.
 ** Click `Save`
-* Add the Red Hat GA repository to the public repository group.
+. Add the Red Hat GA repository to the public repository group.
 ** Click on the `Repositories` on the left menu, and then on the `Public Repositories` in the list of repositories.
 ** In the bottom pane, click on the `Configuration` tab.
 ** Make sure that the `Red Hat GA` repository is in the `Ordered Group Repositories` pane.
