@@ -332,7 +332,7 @@ $ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote
 +
 ----
 $ cd bxms-xpaas-policyquote
-$ git remote gogs add http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-2i/policyquote.git
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-s2i/policyquote.git
 ----
 +
 Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with the appropriate values for your environment.
