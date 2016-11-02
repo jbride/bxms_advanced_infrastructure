@@ -50,7 +50,9 @@ $ git clone https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab.
 
 == Gogs Git Server
 
-For all _xPaas_ labs in this course, we need a Git server where we will host the code that will be built and deployed on the xPaas Decision Server and Process Server. For this we will use Gogs, a Github-like Git server, written in Go (https://gogs.io/).
+=== Install
+
+For all _xPaas_ labs in this course, we need a Git server where we will host the code that will be built and deployed on the xPaas Decision Server and Process Server. For this we will use _Gogs_, a Github-like Git server, written in Go (https://gogs.io/).
 
 . In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the XPaaS labs.
 +
@@ -67,73 +69,147 @@ The template defines:
 * A PersistentVolumeClaim for the Gogs volume
 * A PersistentVolumeClaim for the PostgreSQL volume.
 * Parameters:
-** APPLICATION_NAME : the name for the application, defaults to `gogs`.
-** POSTGRESQL_USER : the name of the user for the PostgreSQL database, generated.
-** GOGS_POSTGRESQL_PASSWORD : the password of the user for the PostgreSQL database, generated.
-** VOLUME_CAPACITY : the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
-+
-[NOTE]
-In the case that your OCP environment doesn't have access to persistent volumes, you will have to use the `xpaas-gogs.yaml` template, which does not use persistent storage. +
-Be aware that your data and configuration will be lost when the Gogs and PostgreSQL pods disappear.
+** *APPLICATION_NAME* : the name for the application, defaults to `gogs`.
+** *POSTGRESQL_USER* : the name of the user for the PostgreSQL database, generated.
+** *GOGS_POSTGRESQL_PASSWORD* : the password of the user for the PostgreSQL database, generated.
+** *VOLUME_CAPACITY* : the volume capacity for the PersistentVolumeClaim, defaults to 512 Mi.
 
 . Create an application based on the template. Specify values for the parameters, if you don't want to use the defaults:
 +
 ----
 $ oc process -f xpaas-gogs-persistent.yaml -v APPLICATION_NAME=gogs,POSTGRESQL_USER=gogs,GOGS_POSTGRESQL_PASSWORD=gogs,VOLUME_CAPACITY=512Mi | oc create -f -
 ----
-. Check the deployment of the Gogs application in the OpenShift web console. Once all components are up, we need to setup the Gogs server. Open a browser, and navigate to the URL of the gogs route. +
+
+. Wait a few minutes for the _gogs_ and _postgreslq-gogs_ containers to build and deploy.  Soon enough, you should see only these two containers with a status of _Running_:
++
+-----
+$ oc get pods
+NAME                      READY   STATUS    RESTARTS   AGE
+gogs-1-89oy3              1/1     Running   0          3m
+postgresql-gogs-1-ctngm   1/1     Running   0          4m
+-----
+
+=== Understand the code
+Research and attempt to answer the following questions:
+
+. What is the full URL to where the _Gogs_ image used in this lab is hosted? How did you determine that and what information does the homepage of the _Gogs_ image provide?
+. What is the port exposed by the service to the postgresql container that the _Gogs_ application connects to ?
+
+ifdef::showscript[]
+
+1)https://hub.docker.com/r/openshiftdemos/gogs/
+  - ImageStream of DockerImage is:  openshiftdemos/gogs:latest    ..... which implies Dockerhub.
+  - URL provides link to source code of gogs image used for OCP
+2)  5432
+
+endif::showscript[]
+
+=== Set-up
+Once all OpenShift resources are up, we need to setup the Gogs server.
+
+The Gogs configurations are stored in a file within the running container at:  /etc/gogs/conf/app.ini .
+
+We'll make the initial configuration changes (via a web UI).
+We'll then ensure that those changes are made permanent such that if/when a new _gogs_ container replaces this existing one, those config changes continue to be utilized.
+
+==== Modify entries in /etc/gogs/conf/app.ini
+
+. Determine the URL of your _Gogs_ server:
++
+-----
+$ oc get route
+-----
+.  Open a browser, and navigate to the URL of the gogs route. +
 You should be greeted by the Gogs installation screen:
 +
 image::images/gogs-installation-screen.png[]
 . Fill in the following values:
-* Database type : PostgreSQL
-* Database Host : postgresql-gogs:5432
-* Database user: gogs
-* Database password: gogs
-* Database name : gogs
-* SSL Mode: disable
-* Application URL: set to the URL of the gogs route (e.g. http://gogs-xpaas.cloudapps.example.com)
+* *Database type* : PostgreSQL
+* *Database Host :* postgresql-gogs:5432
+* *Database user:* gogs
+* *Database password:* gogs
+* *Database name :* gogs
+* *SSL Mode:* disable
+* *Application URL:* http://<gogs route>
 * Leave all other settings as is
 . Click `Install Gogs`. +
 You are redirected to the Sign in screen. +
 Leave the browser window open for now.
-. The Gogs configuration is stored in a configuration file. As a next step, we can extract this configuration file from the Gogs pod, and mount it as a ConfigMap in the container to make it persistent.
-* Find the name of the Gogs pod:
+
+. Find the name of the Gogs pod:
 +
 ----
 $ gogspod=$(oc get pod | grep "^gogs" | awk '{print $1}')
 ----
-* Create a local file with the contents of the `/etc/gogs/conf/app.ini` file:
+. Review the changes made to the _gogs_ configuration file in the existing container:
++
+-----
+$  oc exec $gogspod -- cat /etc/gogs/conf/app.ini | more
+
+...
+
+ROOT_URL = http://gogs-bxmsadvdserver.cloudapps.test-ml.opentlc.com/
+
+...
+
+DB_TYPE  = postgres
+HOST     = postgresql-gogs:5432
+NAME     = gogs
+USER     = gogs
+PASSWD   = gogs
+
+...
+
+-----
+
+==== Make _gogs_ config changes permanent
+
+As a next step, we can extract this configuration file from the Gogs pod, and mount it as a ConfigMap in the container to make it persistent.
+
+. Create a local file with the contents of the `/etc/gogs/conf/app.ini` file:
 +
 ----
 $ oc exec $gogspod -- cat /etc/gogs/conf/app.ini > gogs-app.ini
 ----
-* Create a ConfigMap from the saved file:
+. Create a ConfigMap from the saved file:
 +
 ----
 $ oc create configmap gogs --from-file=gogs-app.ini
 ----
-* We need to configure Gogs to be able to work with the default self-signed OpenShift certificates. Execute the following command:
+. We need to configure Gogs to be able to work with the default self-signed OpenShift certificates. Execute the following command:
 +
 ----
 $ sed -i 's/SKIP_TLS_VERIFY = false/SKIP_TLS_VERIFY = true/g' gogs-app.ini
 ----
-* Mount the configmap as a volume in the Gogs pod:
+. Mount the configmap as a volume in the Gogs pod:
 +
 ----
 $ oc set volume dc/gogs --add --overwrite --name=config-volume -m /etc/gogs/conf/ --source='{"configMap":{"name":"gogs","items":[{"key":"gogs-app.ini","path":"app.ini"}]}}'
 ----
 +
 Note that this will cause a redeployment of the Gogs pod.
-. Create an account and a repository on the Gogs server. In the Gogs browser window, click on the `Register` link. If the browser window is no longer open on the Gogs login page, navigate to the Gogs server homepage (the URL of the gogs route), and click on the `Register` link.
-* Create an account. Remember the username and password combination.
-* Log in with your username/password combination.
-* Create an organization named 	`decision-server-s2i`. +
-Click on the `+` symbol in the upper right, and select `New Organization`. +
-Fill in the name, and click the `Create Organization` button. +
-Check that you are a member of the new organization. You should be listed as `owner`.
-* Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
+. Wait until the _gogs_ pod has been re-created and is in a status of:  _RUNNING_.
+. Create an account and a repository on the Gogs server.
+.. Return back to the Gogs login page in your browser.
+.. Click on the `Register` link.
++
+image::images/gogs_register.png[]
+
+. Create an account. Remember the username and password combination.
+. Log in with your username/password combination.
+. Create an organization named 	`decision-server-s2i`.
+.. Click on the `+` symbol in the upper right, and select `New Organization`.
++
+image::images/gogs_new_org.png[]
+.. Fill in the name, and click the `Create Organization` button. +
+.. Check that you are a member of the new organization. You should be listed as `owner`.
+. Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
++
+image::images/create_new_repo.png[]
++
 Later in the lab we will push our BRMS project to this repository.
+
+
 
 == Nexus maven repository server
 
