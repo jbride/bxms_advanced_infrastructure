@@ -139,7 +139,7 @@ $ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote-process
 +
 ----
 $ cd bxms-xpaas-policyquote-process
-$ git remote gogs add http://<gogs username>:<gogs password>@<url of the gogs route>/process-server-s2i/policyquote.git
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/process-server-s2i/policyquote.git
 ----
 +
 Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with the appropriate values for your environment.
@@ -416,7 +416,7 @@ $ curl -X PUT -H "Accept: application/json" --user user1:user "$policyquote_app/
 . Still as `user1`, the task can be completed. We specify the policy price as payload of this call, using the `task_price` task output variable.
 +
 ----
-$ curl -X PUT -H "Accept: application/json" --user user1:user -d { "task_price" : 300 } "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/tasks/1/states/completed"
+$ curl -X PUT -H "Accept: application/json" --user user1:user -d '{ "task_price" : 300 }' "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/tasks/1/states/completed"
 ----
 +
 Note: the tasks definitions in our process, including the input and output data associations, can be obtained through the following REST call:
@@ -442,6 +442,12 @@ In a development or test environment we could recreate a complete new applicatio
 In that case, we need to be able to retain the previous process deployments next to the new ones, at least as long as we have running process instances for these previous versions.
 
 The Process Server xPaaS images provide a mechanism to achieve this, by using KIE-Container aliases and redirects. We will explore this mechanism in the second part of this lab.
+
+Before proceeding with the second part of the lab, tear down the `policyquote` application:
+
+----
+$ oc delete all -l "application=policyquote"
+----
 
 == xPaaS Process Server Lab 2 : 'binary' S2I deployment with alias redirection
 
@@ -511,11 +517,11 @@ $ cd /home/jboss/lab
 . Create the directories `policyquote-process-ocp/.s2i` and `policyquote-process/configuration`, and change to the `policyquote-process-ocp` directory.
 +
 ----
-$ mkdir -p policyquote-ocp/.s2i
-$ mkdir -p policyquote-ocp/configuration
-$ cd policyquote-ocp
+$ mkdir -p policyquote-process-ocp/.s2i
+$ mkdir -p policyquote-process-ocp/configuration
+$ cd policyquote-process-ocp
 ----
-. Create a file called `environment` in the `policyquote-ocp/.s2i` folder.
+. Create a file called `environment` in the `policyquote-process-ocp/.s2i` folder.
 +
 ----
 $ touch .s2i/environment
@@ -523,10 +529,10 @@ $ touch .s2i/environment
 . Open the `environment` file for edit, and set the contents to:
 +
 ----
-KIE_CONTAINER_DEPLOYMENT_OVERRIDE=policyquote-process=
+KIE_CONTAINER_DEPLOYMENT_OVERRIDE=
 ----
 +
-The GAV (groupId, artifactId, version) of the kjar(s) to be deployed will be appended to this line as part of the build job on Jenkins.
+The GAV (groupId, artifactId, version) of the kjar(s) and the KIE-container alias to be deployed will be appended to this line as part of the build job on Jenkins.
 . Create a file called `application-users.properties` in the `configuration` directory.
 +
 ----
@@ -671,7 +677,7 @@ $ mvn versions:set -f policyquote-process/pom.xml -DgenerateBackupPoms=false -Dn
 $ git add policyquote-process/pom.xml
 $ git commit -m "master version 1.1-SNAPSHOT"
 ----
-. On the Jenkins server, execute the `policyquote-process` pipeline. Click `Build With parameters` on the `policyquote-process` build job page. +
+. On the Jenkins server, execute the `policyquote-process` pipeline. Click `Build with Parameters` on the `policyquote-process` build job page. +
 Specify `release` for the branch parameter. Click `Build`.
 +
 image::images/policyquote-process-pipeline-branch.png[]
