@@ -154,8 +154,8 @@ $ oc process -f xpaas-jenkins-persistent.yaml -v APPLICATION_NAME=jenkins,JENKIN
 image::images/jenkins-master-policyquote.png[]
 .. Click on the `policyquote` job, and then on `Configure`. +
 Notice that the `policyquote` job uses a Pipeline, but has no Pipeline script defined yet. We will add the Pipeline script in the next steps of the lab.
-.. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Manage Plugins`. Click on the `Installed` tab to review the plugins installed. This plugin list corresponds to the `plugins.txt` configuration file in the configuration directory for the Jenkins master. 
-The plugins listed in `plugins.txt` are installed when building the image.
+.. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Manage Plugins`. Click on the `Installed` tab to review the plugins installed. This plugin list corresponds to the `plugins.txt` configuration file in the configuration files for the Jenkins master.
+The plugins listed in `plugin.txt` are installed when building the image.
 .. Return to the Jenkins home screen, click on the `Manage Jenkins` link, and then on `Configure System`. +
 Scroll down to the `Cloud` section. Notice the `jdk-jenkins-slave` pod template which was auto-registered. This is the template we are going to use to spawn worker slave nodes for the build pipeline.
 
@@ -363,13 +363,23 @@ image::images/policyquote-binary-build-completed.png[]
 
 To complete the pipeline, we can trigger a Jenkins build when code is committed and pushed into the policyquote source repository, and have the Jenkins build start a new build of the Decision Server application at the end of the build pipeline.
 
+In this section of the lab, we'll make use of https://git-scm.com/docs/githooks[Git Hooks].
+In particular, the _post-receive_ hook.
+Functionality added to this hook will execute from our _Gogs_ container.
+
 . Open a browser, navigate to the Gogs server, log in, and go the `decision-server-jenkins/policyquote` repository. Click on `Settings`, and then on `Git Hooks`.
++
+image::images/policyquote-githooks.png[]
+
 . Click on the pencil icon next to `post-receive`.
 . In the `Hook Content` text box, paste the following scriptlet:
 +
 ----
 #!/bin/bash
 
+# 1)  Read from stdin the line (composed of 3 Strings) received from git when the post-receive hook is invoked
+#     Example stdin line could be:  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
+# 2)  Invoke an HTTP POST on remote Jenkins container only when a commit to the master branch is received
 while read oldrev newrev refname
 do
     branch=$(git rev-parse --symbolic --abbrev-ref $refname)
@@ -381,8 +391,8 @@ done
 +
 This will signal the Jenkins policyquote build job every time a commit is received in the master branch. +
 Click `Update Hook`.
-. Go to the Jenkins server page, select the `policyquote` job, click `Configure`. +
-In the pipeline script, uncomment the last line of the `Deploy to DEV` stage.
+. Go to the Jenkins server page, select the `policyquote` job, click `Configure`
+.. In the pipeline script, uncomment the last line of the `Deploy to DEV` stage.
 +
 ----
   stage 'Deploy To DEV'
@@ -391,9 +401,9 @@ In the pipeline script, uncomment the last line of the `Deploy to DEV` stage.
     sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
     openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
 ----
-+
-Replace <openshift project> with the name of your Openshift project. +
-Save the pipeline.
+
+.. Replace <openshift project> with the name of your Openshift project. +
+.. Save the pipeline.
 
 == Application lifecycle
 
@@ -415,6 +425,8 @@ Leave the Jenkins, Nexus and Gogs applications running, as we will need them for
 ifdef::showscript[]
 
 jdk-jenkins-slave-57670ffb65ae1
+
+1)  compare/contrast : Webhooks and githooks
 
 
 
