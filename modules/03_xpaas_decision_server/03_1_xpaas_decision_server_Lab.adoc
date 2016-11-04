@@ -717,6 +717,7 @@ $ oc delete service policyquote-app
 $ oc delete route policyquote-app
 $ oc delete is policyquote-app
 $ oc delete bc policyquote-app
+$ for pod in `oc get pod | grep "\-build" | awk '{print $1}'`; do oc delete pod $pod; done
 ----
 
 ifdef::showscript[]

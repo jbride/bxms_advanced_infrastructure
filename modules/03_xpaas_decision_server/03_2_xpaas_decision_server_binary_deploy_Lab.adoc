@@ -418,6 +418,7 @@ Before moving the the next lab, tear down the `policyquote` application:
 
 ----
 $ oc delete all -l "application=policyquote"
+$ for pod in `oc get pod | grep "\-build" | awk '{print $1}'`; do oc delete pod $pod; done
 ----
 
 Leave the Jenkins, Nexus and Gogs applications running, as we will need them for the next lab.
