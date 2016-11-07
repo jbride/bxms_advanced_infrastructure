@@ -44,7 +44,7 @@ Some tasks in this lab are identical to the xPaaS Decision Server Lab, for examp
 If you did the xPaaS Decision Server Lab, the Gogs server should be up and running. If not, refer to the xPaaS Decision Server Lab for detailed instructions to install the Gogs server on OpenShift.
 
 . Log in into the Gogs server with your username/password combination.
-. Create an organizatiom called `process-server-s2i`. +
+. Create an organization called `process-server-s2i`. +
 Make sure that you are a member of the new organization. You should be listed as `owner`.
 . Create a repository in the `process-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked. Click `Create repository`. +
 Later in the lab we will push our BPMS project to this repository.
@@ -106,9 +106,6 @@ The build will be triggered through a webhook (triggered whenever we push new co
 ** IMAGE_STREAM_NAMESPACE : Namespace in which the ImageStreams for Red Hat xPaaS images are installed. These ImageStreams are normally installed in the openshift namespace. You should only need to modify this if you've installed the ImageStreams in a different namespace/project (which is the case in our lab).
 ** MAVEN_MIRROR_URL : The URL of the maven mirror (Nexus server)
 ** VOLUME_CAPACITY : the volume capacity for the PersistentVolumeClaim for the database, defaults to 512 Mi.
-+
-[NOTE]
-In the case that your OCP environment doesn't have access to persistent volumes, you will have to use the `processserver-mysql-persistent-s2i.yaml` template, which does not use persistent storage for the database.
 * Note: The Process Server uses an insecure route (http, no https).
 . Import the template into your OpenShift project:
 +
@@ -149,7 +146,7 @@ Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with t
 ----
 $ git push gogs master
 ----
-. We need to define users and roles for our application. By default the Decision Server uses properties files to define users and roles, and we are going to use the same mechanism for our lab. +
+. We need to define users and roles for our application. By default the Process Server uses properties files to define users and roles, and we are going to use the same mechanism for our lab. +
 The Process Server image comes with empty properties files for application users and roles, so we need to add them as part of the S2I build. This can be done by adding the properties files to a folder called `configuration` in the build root folder of our project. As part of the S2I build, the contents of the `configuration` folder is copied to the `$JBOSS_HOME/standalone/configuration` folder on the image. The user defined in the template (`KIE_SERVER_USER/KIE_SERVER_PASSWORD`) will also be added to the properties files during the S2I build.
 .. Change to the `policyquote-process` directory of the cloned Policyquote-process project. This is the directory that contains the POM file for the application.
 +
@@ -201,7 +198,7 @@ $ git push gogs master
 . In the virtual machine, open a terminal, change to the directory in the cloned lab project that contains the templates for the Process Server lab:
 +
 ----
-$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/process-server
 ----
 . Issue the following commands (replace expressions between `<>` with correct values for your environment) to create the application:
 +
@@ -369,7 +366,7 @@ There is 1 KIE-Container deployed, named `policyquote-process`, which resolves t
 $ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" --user kieserver:$kieserver_password -d @policyquote-start-process-payload.json "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/processes/policyquote.PolicyQuoteProcess/instances"
 ----
 +
-Note: `policyquote-process` is the name of the KIE-Container we target, `policyquote.PolicyQuoteProcess` is the id of the process in our app.
+NOTE: `policyquote-process` is the name of the KIE-Container we target, `policyquote.PolicyQuoteProcess` is the id of the process in our app.
 +
 The response of this call is the process instance id of the process that was created.
 . To check that we have a running process instance, we can issue the following REST call:
@@ -420,7 +417,7 @@ $ curl -X PUT -H "Accept: application/json" --user user1:user "$policyquote_app/
 $ curl -X PUT -H "Accept: application/json" --user user1:user -d '{ "task_price" : 300 }' "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/tasks/1/states/completed"
 ----
 +
-Note: the tasks definitions in our process, including the input and output data associations, can be obtained through the following REST call:
+. The tasks definitions in our process, including the input and output data associations, can be obtained through the following REST call:
 +
 ----
 $ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/processes/definitions/policyquote.PolicyQuoteProcess/tasks/users"
