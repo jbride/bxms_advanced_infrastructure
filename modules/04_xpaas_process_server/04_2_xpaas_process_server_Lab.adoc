@@ -1,0 +1,539 @@
+:scrollbar:
+:data-uri:
+:toc2:
+
+= XPaaS Process Server: Binary Deployment with Alias Redirection Lab
+
+In the second part of the Process Server lab, we will use the binary variant of the S2I build. When deploying a new version of the application, the previous versions (KIE-Containers) will be retained. This allows exiting process instances to continue executing in their original container. New process instances will be started in the new container. This is transparent to the clients.
+
+To demonstrate that the OpenShift and xPaas is not limited to DevOps (where every commit potentially results in a new production deployment), we will simulate a more traditional git release process. In our release model development is done on the master branch, and when ready to be released, master is merged to the release branch. Deployment is triggered from the release branch.
+
+=== Gogs git server
+
+{empty} +
+
+. Create organizations, users and teams on Gogs.
+.. Open a browser window, navigate to the Gogs server home page and log in with your username/password.
+.. Create a new Organization and call it `process-server-jenkins`.
+.. Add user `jenkins` to the `owner` team of the `process-server-jenkins` organization.
+. Create a repository named `policyquote-process` in the `process-server-jenkins` organization on the Gogs server.
+. On the virtual machine, make a new clone of the policyquote-process project and push to Gogs.
+.. Open a terminal, change to the lab home folder and clone the Policyquote-process project from Github:
++
+----
+$ cd /home/jboss/lab
+$ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote-process policyquote-process
+----
+.. Add a remote repository to the cloned project pointing to the Gogs server:
++
+----
+$ cd policyquote-process
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/process-server-jenkins/policyquote-process.git
+
+----
++
+Replace <gogs password>,<url of the gogs route> and <gogs username> with the appropriate values for your environment.
+.. Push the code to the Gogs server:
++
+----
+$ git push gogs master
+----
+
+=== Jenkins Build server
+
+The Jenkins build server has been set up in the previous lab. The Jenkins server has been pre-configured with two build jobs, `policyquote` and `policyquote-process`. In this lab we will use the `policyquote-process` build job.
+
+image::images/jenkins-master-policyquote-process.png[]
+
+. Click on the `policyquote-process` job, and then on `Configure`.
+. Notice that the `policyquote-process` job uses a Pipeline, but has no Pipeline script defined yet. We will add the Pipeline script in the next steps of the lab. +
+The `policyquote-process` is a parameterized build. It takes the branch name to build as a parameter, allowing Jenkins to make a distinction between builds of the master and release branch (only release branch builds will trigger a deployment on OpenShift).
+
+=== Process Server deployment marker project
+
+In this part of the Process Server lab, we use Jenkins to build the kjar, so there is no need to rebuild the same kjar on the Process Server, but we still need to tell the Process Server what needs to be deployed.
+
+For this we can use a Git project that contains a properties file which has a property pointing to the release Id (maven group id, artifact id, version) of the kjars to be deployed. We will also add the files containing the users and roles to this project.
+
+. On the lab virtual machine, open a browser window and navigate to the Gogs server on Openshift. Log in with your username/password.
+. Create a repository named `policyquote-process-ocp` in the `process-server-jenkins` organization on the Gogs server.
+. On the lab virtual machine, open a terminal and change to the lab home folder.
++
+----
+$ cd /home/jboss/lab
+----
+. Create the directories `policyquote-process-ocp/.s2i` and `policyquote-process/configuration`, and change to the `policyquote-process-ocp` directory.
++
+----
+$ mkdir -p policyquote-process-ocp/.s2i
+$ mkdir -p policyquote-process-ocp/configuration
+$ cd policyquote-process-ocp
+----
+. Create a file called `environment` in the `policyquote-process-ocp/.s2i` folder.
++
+----
+$ touch .s2i/environment
+----
+. Open the `environment` file for editing, and set the contents to:
++
+----
+KIE_CONTAINER_DEPLOYMENT_OVERRIDE=
+----
++
+The GAV (groupId, artifactId, version) of the kjar(s) and the KIE-container alias to be deployed will be appended to this line as part of the build job on Jenkins.
+. Create a file called `application-users.properties` in the `configuration` directory.
++
+----
+$ touch configuration/application-users.properties
+----
+. Using a text editor, open the `configuration/application-users.properties` file. Paste the following contents in the file and save:
++
+----
+user1=e6e3515c498a9dd0d3f9ff109a563d70
+user10=aab70ed7128574f33830762d5a7706b8
+user11=d52988665526b974adda93cbd3af9657
+user2=60a186310ff25f5eaf61371df513e9dd
+user20=63b620eaa18caf1df6a29891a24f5338
+user21=37e033fbd7f1398e9897b7bba355338b
+----
+. Create a file called `application-roles.properties` in the `configuration` directory.
++
+----
+$ touch configuration/application-roles.properties
+----
+. Using a text editor, open the `configuration/application-roles.properties` file. Paste the following contents in the file and save:
++
+----
+user1=kie-server,agent
+user10=kie-server,agent
+user11=kie-server,agent
+user2=kie-server,reviewer
+user21=kie-server,reviewer
+user22=kie-server,reviewer
+----
+. Push the project to the Gogs server
++
+----
+$ git init
+$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/process-server-jenkins/policyquote-process-ocp.git
+$ git add --all
+$ git commit -m "initial commit"
+$ git push gogs master
+----
+
+=== Jenkins Build pipeline
+
+Now we can add the Jenkins build pipeline script to the `policyquote-process` build job in Jenkins.
+
+. Open a browser window and navigate to the Jenkins home page on OpenShift. Log in.
+. Click on the `policyquote-process` job, and then click on `Configure`. Scroll down to the Pipeline definition section.
++
+image::images/policyquote-pipeline.png[]
+. In the Script pane, paste the following contents:
++
+----
+node('jdk8') {
+  def mvnHome = tool 'M3'
+  def mvnCmd = "${mvnHome}/bin/mvn -s ${env.JENKINS_HOME}/settings.xml -f policyquote-process/pom.xml"
+
+  stage 'Build'
+    git url: 'http://jenkins:password@gogs:3000/process-server-jenkins/policyquote-process.git', branch: "${branch}"
+    def groupId = getGroupIdFromPom("policyquote-process/pom.xml")
+    def artifactId = getArtifactIdFromPom("policyquote-process/pom.xml")
+    def version = getVersionFromPom("policyquote-process/pom.xml")
+    echo "Building branch ${branch} - version ${version}"
+    sh "${mvnCmd} clean package -DskipTests=true"
+
+  stage 'Test'
+    try {
+      sh "${mvnCmd} test"
+    } catch (err) {
+      step([$class: 'JUnitResultArchiver', testResults: '**/target/surefire-reports/TEST-*.xml'])
+      throw err
+    }
+
+  if ("${branch}".startsWith("release")) {
+    stage 'Publish'
+      sh "${mvnCmd} deploy -DskipTests=true -DaltDeploymentRepository=nexus::default::http://nexus:8081/content/repositories/releases"
+
+    stage 'Deploy to STAGING'
+      git url: 'http://jenkins:password@gogs:3000/process-server-jenkins/policyquote-process-ocp.git'
+      sh "sed -r -i \"s/^KIE_CONTAINER_DEPLOYMENT_OVERRIDE=(.*)[0-9]*\\.[0-9]*\\.[0-9]*\$/&|/\" .s2i/environment"
+      sh "sed -r -i \"s/^KIE_CONTAINER_DEPLOYMENT_OVERRIDE=.*/&policyquote-process=${groupId}:${artifactId}:${version}/\" .s2i/environment"
+      def commit = "Release " + version
+      sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
+      //openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
+  }
+
+}
+
+def getVersionFromPom(pom) {
+  def matcher = readFile(pom) =~ '<version>(.+)</version>'
+  matcher ? matcher[0][1] : null
+ }
+
+def getGroupIdFromPom(pom) {
+  def matcher = readFile(pom) =~ '<groupId>(.+)</groupId>'
+  matcher ? matcher[0][1] : null
+ }
+
+def getArtifactIdFromPom(pom) {
+  def matcher = readFile(pom) =~ '<artifactId>(.+)</artifactId>'
+  matcher ? matcher[0][1] : null
+}
+----
+. The Jenkins pipeline consists of the following stages:
+* All the stages will run on slave nodes labeled `jdk8`.
+* The `Build` stage checks out the kjar source code project from Gogs. +
+The GAV of the project is determined from the project POM file.
+The project is built using maven. Test execution is skipped in this phase.
+* In the `Test` stage, unit tests are executed (`mvn test`).
+* If the project also has integration, performance or behaviour-driven test suites, they should be executed in their own stages following the test stage. Stages can be run in parallel to speed up build time.
+* The `Publish` and `Deploy to Staging` phases are only executed if the branch being built is a release branch.
+* In the `Publish` stage, the build artifact(s) are published to the Nexus repository (`mvn deploy`).
+* In the `Deploy to Staging` stage, the marker project we created in the previous step is checked out. The GAV of the project is appended to the value of the `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` with the `policyquote-process` container alias. The change is committed and pushed. +
+Then a new build of the `policyquote` application on OpenShift is triggered using the `oc` client, which will replace the current Process Server application with a new one which contains a KIE-Container for each of the GAV's specified in `KIE_CONTAINER_DEPLOYMENT_OVERRIDE`. +
+Note that the OpenShift build step is commented out, as the `policyquote` application has not been created yet.
+. Save the script
+
+=== Prepare for release and execute the first build
+
+. On the virtual machine, change to the directory with the cloned `policyquote-process` project:
++
+----
+$ cd /home/jboss/lab/policyquote-process
+----
+. Create the `release` branch, checkout the branch and bump up the project version to `1.0.0`.
++
+----
+$ git branch release
+$ git checkout release
+$ mvn versions:set -f policyquote-process/pom.xml -DgenerateBackupPoms=false -DnewVersion=1.0.0
+$ git add policyquote-process/pom.xml
+$ git commit -m "release 1.0.0"
+----
+. Push the release branch to Gogs:
++
+----
+$ git push gogs release
+----
+. Bump the version of the master branch to `1.1-SNAPSHOT`.
++
+----
+$ git checkout master
+$ mvn versions:set -f policyquote-process/pom.xml -DgenerateBackupPoms=false -DnewVersion=1.1-SNAPSHOT
+$ git add policyquote-process/pom.xml
+$ git commit -m "master version 1.1-SNAPSHOT"
+----
+. On the Jenkins server, execute the `policyquote-process` pipeline. Click `Build with Parameters` on the `policyquote-process` build job page. +
+Specify `release` for the branch parameter. Click `Build`.
++
+image::images/policyquote-process-pipeline-branch.png[]
+.. Observe how the build is moving through the different stages.
++
+image::images/policyquote-process-pipeline-build-2.png[]
+.. The Jenkins build job is executed on a slave node, which runs on a dedicated pod, spawned for the duration of the build.
++
+image::images/jenkins-slave-pod.png[]
+.. The Nexus repository contains the `1.0.0` version of the policyquote-process kjar archive.
++
+image::images/policyquote-process-kjar-nexus.png[]
+.. The value of the `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` property in the `.s2i/environment` file of the `policyquote-ocp` project is set to the value `policyquote-process=com.redhat.gpte.xpaas.process-server:policyquote-process:1.0.0`.
++
+image::images/policyquote-process-deployment-override.png[]
+
+=== Process Server Application
+
+Now we can deploy the Process Server application for the policyquote-process kjar.
+
+. In the virtual machine, open a terminal, change to the directory in the cloned lab project that contains the templates for the Process Server lab:
++
+----
+$ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/process-server
+----
+. Issue the following commands (replace expressions between `<>` with correct values for your environment) to create the application:
++
+----
+$ application_name=policyquote
+$ source_repo=http://gogs:3000/process-server-jenkins/policyquote-process-ocp.git
+$ nexus_url=http://nexus:8081
+$ kieserver_password=kieserver1!
+$ is_namespace=<name of your OpenShift project>
+$ oc new-app --template=processserver63-mysql-persistent-s2i -p APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,KIE_SERVER_PASSWORD=$kieserver_password,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_REDIRECT_ENABLED=true,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
+----
+. Once the deployment of the Process Server is finished, use curl to check the containers deployed. You should get the following response:
++
+----
+{
+  "type": "SUCCESS",
+  "msg": "List of created containers",
+  "result": {
+    "kie-containers": {
+      "kie-container": [
+        {
+          "status": "STARTED",
+          "messages": [
+            {
+              "severity": "INFO",
+              "timestamp": 1477908565571,
+              "content": [
+                "Container 3a9d813a567dbc0c5c178f538d3be890 successfully created with module com.redhat.gpte.xpaas.process-server:policyquote-process:1.0.0."
+              ]
+            }
+          ],
+          "container-id": "3a9d813a567dbc0c5c178f538d3be890",
+          "release-id": {
+            "version": "1.0.0",
+            "group-id": "com.redhat.gpte.xpaas.process-server",
+            "artifact-id": "policyquote-process"
+          },
+          "resolved-release-id": {
+            "version": "1.0.0",
+            "group-id": "com.redhat.gpte.xpaas.process-server",
+            "artifact-id": "policyquote-process"
+          },
+          "config-items": []
+        }
+      ]
+    }
+  }
+}
+----
++
+Note that the KIE-Container name is a hexadecimal string. This is because of the value of the `KIE_CONTAINER_REDIRECT_ENABLED` parameter, which is set to `true`. From the client side however, we can use the container alias name (`policyquote-process`) as name for the KIE-Container in the REST API calls. The redirection mechanism will resolve the alias to the correct target KIE-Container.
+. Using curl, create a couple of process instances. Use `policyquote-process` as KIE-Container name. +
+Make sure you keep at least one process instance in a User task wait state before proceeding with the remainder of the lab.
+
+=== Complete and automate the Jenkins build pipeline
+
+To complete the pipeline, we can trigger a Jenkins build when code is committed into the policyquote-process source repository, and have the Jenkins build start a new build of the Process Server application at the end of the build pipeline.
+
+. Open a browser, navigate to the Gogs server, log in, and go the `process-server-jenkins/policyquote-process` repository. Click on `Settings`, and then on `Git Hooks`.
+. Click on the pencil icon next to `post-receive`.
+. In the `Hook Content` text box, paste the following scriptlet:
++
+----
+#!/bin/bash
+
+while read oldrev newrev refname
+do
+    branch=$(git rev-parse --symbolic --abbrev-ref $refname)
+    if [[ "$branch" == "master" || "$branch" == release* ]]; then
+    	curl -X POST --user admin:password http://jenkins:8080/job/policyquote-process/buildWithParameters?branch=${branch}&token=mysecret
+    fi
+done
+----
++
+This script will signal the Jenkins policyquote build job every time a commit is received in the master or release branch. +
+Click `Update Hook`.
+. Go to the Jenkins server page, select the `policyquote-jenkins` job, click `Configure`. +
+In the pipeline script, uncomment the last line of the `Deploy to Staging` stage.
++
+----
+    stage 'Deploy to STAGING'
+      git url: 'http://jenkins:password@gogs:3000/process-server-jenkins/policyquote-process-ocp.git'
+      sh "sed -r -i \"s/^KIE_CONTAINER_DEPLOYMENT_OVERRIDE=(.*)[0-9]*\\.[0-9]*\\.[0-9]*\$/&|/\" .s2i/environment"
+      sh "sed -r -i \"s/^KIE_CONTAINER_DEPLOYMENT_OVERRIDE=.*/&policyquote-process=${groupId}:${artifactId}:${version}/\" .s2i/environment"
+      def commit = "Release " + version
+      sh "git add .s2i/environment && git commit -m \"${commit}\" && git push origin master"
+      openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
+----
++
+NOTE: Replace <openshift project> with the name of your OpenShift project. +
+Save the pipeline.
+
+=== Release a new version of the Policyquote-process application.
+
+We can now introduce a change in the Policyquote-process project, and trigger a new release of the application.
+
+. On the virtual machine, change to the directory with the cloned `policyquote-process` project:
++
+----
+$ cd /home/jboss/lab/policyquote-process
+----
+. Check out the master branch.
++
+----
+$ git checkout master
+----
+. To simulate a change in the project, we will change the version of the process definition, and the log statement in the last node of the process instance using `sed`.
++
+----
+$ sed -i 's/drools:version="1.0"/drools:version="2.0"/' policyquote-process/src/main/resources/PolicyQuoteProcess.bpmn2
+$ sed -i 's/Driver /Version 2 : Driver /' policyquote-process/src/main/resources/PolicyQuoteProcess.bpmn2
+----
+. Commit the changes to the master branch
++
+----
+$ git add policyquote-process/src/main/resources/PolicyQuoteProcess.bpmn2
+$ git commit -m "PolicyQuoteProcess version 2"
+----
+. Cherry-pick the commit (in the master branch) to the release branch.
+.. Find the commit hash:
++
+----
+$ git log -n 1
+----
++
+----
+commit 1cab08bf076f60acec878366ac9e13c343593281
+Author: Bernard Tison <bernard.tison@gmail.com>
+Date:   Mon Oct 31 12:16:18 2016 +0100
+
+    PolicyQuoteProcess version 2
+----
+.. Checkout the release branch and cherry-pick the commit:
++
+----
+$ git checkout release
+$ git cherry-pick 1cab08bf076f60acec878366ac9e13c343593281
+----
++
+Note: your commit hash value will be different.
+.. Bump up the project version of the release branch to `1.1.0`:
++
+----
+$ mvn versions:set -f policyquote-process/pom.xml -DgenerateBackupPoms=false -DnewVersion=1.1.0
+$ git add policyquote-process/pom.xml
+$ git commit -m "release 1.1.0"
+----
++
+.. Push the release branch to Gogs:
++
+----
+$ git push gogs release
+----
+. The push to Gogs will trigger the post-receive hook, start a Jenkins build and finally trigger a new build and deployment of the Policyquote app on OpenShift.
++
+image::images/policyquote-process-application-build.png[]
+. A container definition for the version `1.1.0` of the kjar has been added to the `KIE_CONTAINER_REDIRECT_ENABLED` variable in the  `.s2i/environment` file of the `policyquote-ocp` project:
++
+image::images/policyquote-process-deployment-override-2.png[]
+. The Policyquote Process Server app has 2 containers deployed, resolving to the versions `1.0.0` and `1.1.0` of the kjar:
++
+----
+{
+  "type": "SUCCESS",
+  "msg": "List of created containers",
+  "result": {
+    "kie-containers": {
+      "kie-container": [
+        {
+          "status": "STARTED",
+          "messages": [
+            {
+              "severity": "INFO",
+              "timestamp": 1477913467477,
+              "content": [
+                "Container 991b463bc066da010a051daf87ff581d successfully created with module com.redhat.gpte.xpaas.process
+-server:policyquote-process:1.1.0."
+              ]
+            }
+          ],
+          "container-id": "991b463bc066da010a051daf87ff581d",
+          "release-id": {
+            "version": "1.1.0",
+            "group-id": "com.redhat.gpte.xpaas.process-server",
+            "artifact-id": "policyquote-process"
+          },
+          "resolved-release-id": {
+            "version": "1.1.0",
+            "group-id": "com.redhat.gpte.xpaas.process-server",
+            "artifact-id": "policyquote-process"
+          },
+          "config-items": []
+        },
+        {
+          "status": "STARTED",
+          "messages": [
+            {
+              "severity": "INFO",
+              "timestamp": 1477913468207,
+              "content": [
+                "Container 3a9d813a567dbc0c5c178f538d3be890 successfully created with module com.redhat.gpte.xpaas.process
+-server:policyquote-process:1.0.0."
+              ]
+            }
+          ],
+          "container-id": "3a9d813a567dbc0c5c178f538d3be890",
+          "release-id": {
+            "version": "1.0.0",
+            "group-id": "com.redhat.gpte.xpaas.process-server",
+            "artifact-id": "policyquote-process"
+          },
+          "resolved-release-id": {
+            "version": "1.0.0",
+            "group-id": "com.redhat.gpte.xpaas.process-server",
+            "artifact-id": "policyquote-process"
+          },
+          "config-items": []
+        }
+      ]
+    }
+  }
+}
+----
+. Using curl, create a couple of process instances. Use `policyquote-process` as container name.
+. Check that the processes are created in the container corresponding to the `1.1.0` KIE-Container. +
+Note that you need to use the real container name here, not the alias.
++
+----
+$ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password "$policyquote_app/kie-server/services/rest/server/queries/containers/991b463bc066da010a051daf87ff581d/process/instances"
+----
++
+Response:
++
+----
+{
+  "process-instance": [
+    {
+      "initiator": "kieserver",
+      "process-instance-id": 3,
+      "process-id": "policyquote.PolicyQuoteProcess",
+      "process-name": "PolicyQuoteProcess",
+      "process-version": "2.0",
+      "process-instance-state": 1,
+      "container-id": "991b463bc066da010a051daf87ff581d",
+      "start-date": 1477914603000,
+      "process-instance-desc": "PolicyQuoteProcess",
+      "correlation-key": "",
+      "parent-instance-id": -1
+    },
+    {
+      "initiator": "kieserver",
+      "process-instance-id": 4,
+      "process-id": "policyquote.PolicyQuoteProcess",
+      "process-name": "PolicyQuoteProcess",
+      "process-version": "2.0",
+      "process-instance-state": 1,
+      "container-id": "991b463bc066da010a051daf87ff581d",
+      "start-date": 1477914611000,
+      "process-instance-desc": "PolicyQuoteProcess",
+      "correlation-key": "",
+      "parent-instance-id": -1
+    }
+  ]
+}
+----
+. Using curl, complete the process instances. Use `policyquote-process` as KIE-Container name. In the logs of the Process Server pod, you'll see something like:
++
+----
+12:48:41,122 INFO  [stdout] (http-172.17.0.7:8080-1) Version 2 : Driver 1234: Policy price after calculation and review = 300
+----
+. Also complete the process instances created with version `1.0.0`, still using `policyquote-process` as KIE-Container name. For those processes you'll see in the pod logs:
++
+----
+12:51:16,136 INFO  [stdout] (http-172.17.0.7:8080-1) Driver 1234: Policy price after calculation and review = 300
+----
++
+Processes are being executed in the container they were created in. This is transparent from the client perspective.
+
+Before proceeding with the last lab of the module, tear down the `policyquote` application:
+
+----
+$ oc delete all -l "application=policyquote"
+$ oc delete pvc policyquote-mysql-pvc
+----
+
+ifdef::showscript[]
+endif::showscript[]
