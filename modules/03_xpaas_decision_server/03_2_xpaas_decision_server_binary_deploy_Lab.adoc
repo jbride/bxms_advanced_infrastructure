@@ -25,7 +25,9 @@ We will reuse the Gogs server and the Nexus server from the previous lab.
 == Prerequisites
 
 . Completion of the previous lab for this module.
-. The Nexus and Gogs containers provisioned in the previous lab.
++
+NOTE: The Nexus and Gogs containers provisioned in the previous lab need to be available to support this lab as well.
+. Understanding of _Git hooks_.
 
 == Gogs git server
 
@@ -35,6 +37,10 @@ Using your existing _Gogs_ server, lets create a couple of new _organizations_, 
 .. Open a browser window, navigate to the Gogs server home page and log in with your username/password.
 .. Create a new Organization and name it `decision-server-jenkins`.
 .. Register a new user with username `jenkins` and password `password`.
+... This user will need the ability to create _GitHooks_ in its repositories
+... Ensure that the check box that enables the new _jenkins_ user with _permissions to create Git hooks_ is enabled.
++
+image::images/jenkins_user_git_hooks.png[width="80%"]
 .. Add user `jenkins` to the `owner` team of the `decision-server-jenkins` organization.
 . Log out of the _Gogs_ web app and log back in as the new _jenkins_ user.
 . Create a repository named `policyquote` in the `decision-server-jenkins` organization on the Gogs server.
@@ -367,9 +373,12 @@ In this section of the lab, we'll make use of https://git-scm.com/docs/githooks[
 In particular, the _post-receive_ hook.
 Functionality added to this hook will execute from our _Gogs_ container.
 
-. Open a browser, navigate to the Gogs server, log in, and go the `decision-server-jenkins/policyquote` repository. Click on `Settings`, and then on `Git Hooks`.
+. Open a browser, navigate to the Gogs server, and log in as the `jenkins` users
+. Navigate to the `decision-server-jenkins/policyquote` repository. Click on `Settings`, and then on `Git Hooks`.
 +
 image::images/policyquote-githooks.png[]
++
+NOTE: You'll only see the _GitHooks_ option if the _jenkins_ user has been assigned with: _permissions to create Git hooks_.
 
 . Click on the pencil icon next to `post-receive`.
 . In the `Hook Content` text box, paste the following scriptlet:
