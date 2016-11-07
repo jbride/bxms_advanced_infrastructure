@@ -388,7 +388,7 @@ Response:
 {
   "task-summary": [
     {
-      "task-id": 1,
+      "task-id": 1,ki
       "task-name": "Set Price",
       "task-subject": "",
       "task-description": "",
@@ -456,11 +456,6 @@ To demonstrate that the OpenShift and xPaas is not limited to DevOps (where ever
 
 === Gogs git server
 
-If you did not finish the Decision Server Lab, please refer to the instructions in this lab to:
-
-* create a Gogs user `jenkins`.
-* create a repository for the lab project on Gogs.
-
 {empty} +
 
 . Create organizations, users and teams on Gogs.
@@ -468,7 +463,7 @@ If you did not finish the Decision Server Lab, please refer to the instructions 
 .. Create a new Organization and call it `process-server-jenkins`.
 .. Add user `jenkins` to the `owner` team of the `process-server-jenkins` organization.
 . Create a repository named `policyquote-process` in the `process-server-jenkins` organization on the Gogs server.
-. On the virtual machine, make a new clone the Policyquote-process project and push to Gogs.
+. On the virtual machine, make a new clone of the policyquote-process project and push to Gogs.
 .. Open a terminal, change to the lab home folder and clone the Policyquote-process project from Github:
 +
 ----
@@ -496,9 +491,9 @@ The Jenkins build server has been set up in the previous lab. The Jenkins server
 
 image::images/jenkins-master-policyquote-process.png[]
 
-. Click on the `policyquote-process` job, and then on `Configure`. +
-Notice that the `policyquote-process` job uses a Pipeline, but has no Pipeline script defined yet. We will add the Pipeline script in the next steps of the lab. +
-The `policyquote-process` is a parameterized build. It takes the branch name to build as a parameter, allowing to maker a distinction between builds of the master and release branch (only release branch builds will trigger a deployment on OpenShift).
+. Click on the `policyquote-process` job, and then on `Configure`.
+. Notice that the `policyquote-process` job uses a Pipeline, but has no Pipeline script defined yet. We will add the Pipeline script in the next steps of the lab. +
+The `policyquote-process` is a parameterized build. It takes the branch name to build as a parameter, allowing Jenkins to make a distinction between builds of the master and release branch (only release branch builds will trigger a deployment on OpenShift).
 
 === Process Server deployment marker project
 
@@ -790,7 +785,7 @@ In the pipeline script, uncomment the last line of the `Deploy to Staging` stage
       openshiftBuild bldCfg: 'policyquote', namespace: '<openshift project>'
 ----
 +
-Replace <openshift project> with the name of your OpenShift project. +
+NOTE: Replace <openshift project> with the name of your OpenShift project. +
 Save the pipeline.
 
 === Release a new version of the Policyquote-process application.
@@ -819,7 +814,7 @@ $ sed -i 's/Driver /Version 2 : Driver /' policyquote-process/src/main/resources
 $ git add policyquote-process/src/main/resources/PolicyQuoteProcess.bpmn2
 $ git commit -m "PolicyQuoteProcess version 2"
 ----
-. Cherry-pick the commit in the release branch.
+. Cherry-pick the commit (in the master branch) to the release branch.
 .. Find the commit hash:
 +
 ----
@@ -979,7 +974,7 @@ Response:
 +
 Processes are being executed in the container they were created in. This is transparent from the client perspective.
 
-Before proceeding with the second part of the lab, tear down the `policyquote` application:
+Before proceeding with the last lab of the module, tear down the `policyquote` application:
 
 ----
 $ oc delete all -l "application=policyquote"
