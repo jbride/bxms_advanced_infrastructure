@@ -2,43 +2,59 @@
 :data-uri:
 :toc2:
 :numbered:
+:coursevdi: link:https://drive.google.com/open?id=0B8mmXW6hJKdiNXNCamItcFFnb2M[Course Virtual Machine]
 
-==  Environment Setup Lab
+= Course Introduction Lab
 
-Assets for this course include a virtual machine preinstalled with the required tools. This VM is provided in VDI format and can be run on your local workstation using VirtualBox. You run the exercises for the labs in this course entirely within the VM.
+== Course Overview
 
-.Prerequisites
+Welcome to the _BXMS Advanced Infrastructure_ course offered by Red Hat's _Global Partner and Technical Enablement_ (GPTE) team..
+
+The intent of this course is to teach you best practices regarding the provisioning and administration of secure, highly available, load-balanced BPM and Rules production environments.
+
+== Course Prerequisites
+
+=== Skills
+
+. Red Hat Certified System Administrator (RHCSA) (or equivalent)
+. Experience using Red Hat Business Process Management Suite (BPMS) v6
+. Experience using Jenkins and Maven
+. Experience using Git (at the command line)
+. Completion of Red Hat GPTE's _OpenShift Enterprise Implementation_ course.
+. Completion of Red Hat GPTE's _xPaaS Development using OpenShift Enterprise_ course.
+
+=== Local worstation resources
+
+This course includes a virtual machine preinstalled with the required tools.
+This VM is provided in VDI format and can be run on your local workstation using VirtualBox.
+
+Subsequently, your local workstation will require the following:
+
 * Installation of the 64-bit link:https://www.virtualbox.org/wiki/Downloads[VirtualBox application] on your local workstation.
 +
 NOTE:  64 bit Virtual Box is mandatory.  32 bit Virtual Box will not work for this course.
 
-* A minimum of two 64-bit CPUs and 2 GB RAM dedicated to the VM used in the course
-
-.Lab Assets
-
-There is one lab asset used in this course:
-
-* https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab[*bxms-advanced-infrastructure-lab*]: A project of resources that are cloned and imported into BPM Central
-+
-This project contains the BPM Suite KIE projects used in the labs, as well as an AngularJS web application to test integration with Red Hat SSO.
+* A minimum of two 64-bit CPUs and 4 GB RAM dedicated to the VM used in the course
 
 == Lab Virtual Machine
-In this section you install the course VirtualBox virtual machine on your local workstation.
+In this section you install the {coursevdi}  on your local workstation.
 
 === Acquire
 If you are participating in an on-site Instructore Led Training (ILT), the instructor will pass around a thumb drive with the course virtual machine.
 
 If you are taking this course remotely, then you'll have to gain access to the course virtual machine through different means.
 
+ifdef::showscript[]
 There are two methods: either download VirtualBox directly or use BitTorrent.
-
 If you are familiar with BitTorrent and have a BitTorrent client, this method is usually much faster and more reliable.
 
-Download the `gpte-bxms-advanced-infrastructure-630.vdi` VirtualBox image using one of the two methods:
+* BitTorrent: Download `bxms_advanced_infrastructure_1.0.torrent` found at https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab-etc/raw/master/etc/gpte-bpms-advanced-630.vdi.torrent.
+Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
+endif::showscript[]
 
-* Direct: Download `gpte-bxms-advanced-infrastructure-630.vdi` directly from https://drive.google.com/open?id=0B8mmXW6hJKdiaVpndWxFV3Nmbkk
+Download the `bxms_advanced_infrastructure_1.0.vdi` VirtualBox image using one of the following methods:
 
-* BitTorrent: Download `gpte-bxms-advanced-infrastructure-630.torrent` found at https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab-etc/raw/master/etc/gpte-bpms-advanced-630.vdi.torrent. Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
+* Direct: Download `bxms_advanced_infrastructure_1.0.vdi` directly from: https://drive.google.com/open?id=0B8mmXW6hJKdiNXNCamItcFFnb2M
 
 === VM Operating System Credentials
 
@@ -87,7 +103,8 @@ The `gpte-bxms-advanced-infrastructure-630.vdi` VM image has these characteristi
 == BPMS Business-Central and Kie-server
 
 The virtual machine comes with a script that will install and configure BPMS Business-Central and Kie-server. +
-The script will install a separate instance of Business-Central and Kie-server. This reflects a realistic installation setup where Business-Central is used at design time, where Kie-server is used as process/rules execution runtime.
+The script will install a separate instance of Business-Central and Kie-server.
+This reflects a realistic installation setup where Business-Central is used at design time and where Kie-server is used as the process/rules execution runtime.
 
 === Review
 
@@ -213,5 +230,6 @@ Add the following to the VM;
 1)  firewall-cmd --zone=public --add-port=8380/tcp --permanent
     firewall-cmd --zone=public --add-port=8230/tcp --permanent
     firewall-cmd --zone=public --add-port=8000/tcp --permanent
-2)  path of ~/lab/bpms  :   https://github.com/redhat-gpe/OPEN_virtual/blob/master/automation/bxms-advanced-infrastructure/bxms-advanced-infrastructure-virtual-machine/ansible/roles/bpms/vars/main.yml#L1
+
+ifdef::showscript[]
 endif::showscript[]
