@@ -35,7 +35,7 @@ NOTE: The lab virtual machine used in this course has these tools installed.
 Before starting the lab, log into the OpenShift environment using the OpenShift CLI tool. If using a hosted environment, use the credentials provided to you:
 
 ----
-$ oc login <URL to Openshift V3 environment>
+$ oc login https://master.na.openshift.opentlc.com
 ----
 
 On the environment provided to you, a project has been created. After logging in, all CLI commands will target this project.
