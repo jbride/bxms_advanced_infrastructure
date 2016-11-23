@@ -1,2 +1,16 @@
 
 include::cover.adoc[]
+
+brms_in_cloud.adoc[]
+based_on_kieserver.adoc[]
+batch_execution.adoc[]
+sample_payload.adoc[]
+dserver_in_action.adoc[]
+redirect.adoc[]
+
+
+ifdef::showscript[]
+
+https://access.redhat.com/documentation/en/red-hat-xpaas/
+
+endif::showscript[]

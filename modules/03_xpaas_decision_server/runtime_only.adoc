@@ -1,0 +1,19 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Runtime Rules Engine Only
+
+* Rules Authoring Not Included
+** BRMS _Business Central_
+** _Drools_ plugin of JBDS
+
+
+
+ifdef::showscript[]
+
+Support for Business Rules ?
+Rules Spreadsheet Transformation ?
+Decision Tables ?
+
+endif::showscript[]

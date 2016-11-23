@@ -1,0 +1,14 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Red Hat JBoss BRMS in Cloud
+
+* Red Hat JBoss BRMS is available as a containerized xPaaS image.
+* BRMS _KIEServer_ in OCP = _Decision Server_
+
+image::images/dserver_in_registry.png[]
+
+ifdef::showscript[]
+
+endif::showscript[]

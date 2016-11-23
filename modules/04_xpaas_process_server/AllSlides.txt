@@ -1,2 +1,7 @@
 
 include::cover.adoc[]
+
+bpms_in_cloud.adoc[]
+
+ifdef::showscript[]
+endif::showscript[]

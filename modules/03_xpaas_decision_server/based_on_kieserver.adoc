@@ -1,0 +1,17 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== KIE Server
+
+* Runtime BRMS rules engine that exposes :
+** REST API
+** SOAP API
+* Pure runtime engine, no UI
+* Support for JSON and XML payload
+* Modular and extensible
+* Built on JBoss EAP
+
+ifdef::showscript[]
+
+endif::showscript[]
