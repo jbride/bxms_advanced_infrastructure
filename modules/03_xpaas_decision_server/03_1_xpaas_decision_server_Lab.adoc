@@ -32,15 +32,53 @@ NOTE: The lab virtual machine used in this course has these tools installed.
 == Lab Set-Up
 
 === OpenShift
-Before starting the lab, log into the OpenShift environment using the OpenShift CLI tool. If using a hosted environment, use the credentials provided to you:
 
+==== Register
+
+In this section of the lab, you register for the ability to create a project in your remote OpenShift lab environment.
+
+. In your browser, navigate to `https://labs.opentlc.com`:
++
+image::images/cf_login.png[]
+
+. Enter your OPENTLC username and password and click *Login*.
+. Navigate to *Services -> Catalogs -> OPENTLC Cloud Infrastructure Labs -> OpenShift Foundations 3.3 - Beta - NA*:
++
+image::images/cf_course_selection_project.png[]
+
+
+. Click *Order* in the panel on the right.
+
+. In the next panel, click *Submit* in the lower right corner.
++
+image::images/cf_submit_button.png[]
++
+* Expect to receive a confirmation email that your new OSE3 environment is created.
+
+==== Create a _Project_
+
+. At the command line of your workstation (pre-installed with the _oc_ utility), log into the OpenShift environment:
++
 ----
 $ oc login https://master.na.openshift.opentlc.com
 ----
++
+You will be prompted for your Red Hat GPTE (OPENTLC) SSO credentials.
 
-On the environment provided to you, a project has been created. After logging in, all CLI commands will target this project.
+. Create a new project:
++
+-----
+$ oc new-project <your initials>-bxmsinfra
+-----
++
+Going forward, all CLI commands will target this project.
 
-Also, make sure you can access the Openshift Web Console. Open a browser, and navigate to the Openshift V3 URL. Login using the same credentials as used for the CLI.
+. Make sure you can access your project using the Openshift Web Console.
+Open a browser, and navigate to the master node of OpenShift: _https://master.na.openshift.opentlc.com_.
++
+Login using the same credentials as used for the CLI.
++
+image::images/ocp_home_page.png[]
 
 === Lab Assets
 
@@ -136,9 +174,10 @@ image::images/gogs-installation-screen.png[]
 * *Database password:* gogs
 * *Database name :* gogs
 * *SSL Mode:* disable
+* *Application Name*: Gogs: Go Git Service
 * *Application URL:* http://<gogs route>
 * Leave all other settings as is
-. Click `Install Gogs`. +
+. Click the button:  `Install Gogs`. +
 You are redirected to the Sign in screen. +
 Leave the browser window open for now.
 
@@ -175,17 +214,17 @@ As a next step, we can extract this configuration file from the Gogs pod, and mo
 . Create a local file with the contents of the `/etc/gogs/conf/app.ini` file:
 +
 ----
-$ oc exec $gogspod -- cat /etc/gogs/conf/app.ini > gogs-app.ini
+$ oc exec $gogspod -- cat /etc/gogs/conf/app.ini > /tmp/gogs-app.ini
 ----
 . We need to configure Gogs to be able to work with the default self-signed OpenShift certificates. Execute the following command:
 +
 ----
-$ sed -i 's/SKIP_TLS_VERIFY = false/SKIP_TLS_VERIFY = true/g' gogs-app.ini
+$ sed -i 's/SKIP_TLS_VERIFY = false/SKIP_TLS_VERIFY = true/g' /tmp/gogs-app.ini
 ----
 . Create a ConfigMap from the saved file:
 +
 ----
-$ oc create configmap gogs --from-file=gogs-app.ini
+$ oc create configmap gogs --from-file=/tmp/gogs-app.ini
 ----
 . Mount the configmap as a volume in the Gogs pod:
 +
@@ -193,7 +232,8 @@ $ oc create configmap gogs --from-file=gogs-app.ini
 $ oc set volume dc/gogs --add --overwrite --name=config-volume -m /etc/gogs/conf/ --source='{"configMap":{"name":"gogs","items":[{"key":"gogs-app.ini","path":"app.ini"}]}}'
 ----
 +
-Note that this will cause a redeployment of the Gogs pod.
+NOTE: This will cause a redeployment of the Gogs pod.
+
 . Wait until the _gogs_ pod has been re-created and is in a status of:  _RUNNING_.
 . Create an account and a repository on the Gogs server.
 .. Return back to the Gogs login page in your browser.
@@ -209,15 +249,23 @@ image::images/gogs_register.png[]
 image::images/gogs_new_org.png[]
 .. Fill in the name, and click the `Create Organization` button. +
 .. Check that you are a member of the new organization. You should be listed as `owner`.
-. Create a repository in the `decision-server-s2i` organization the with name `policyquote`. Make sure the repository is not private. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked.  +
+... At the dashboard of the _decision-server-s2i_, click the blue box at the far right: _View decision-server-s2i_
++
+image::images/view_dserver.png[]
+... Click the `Owners` link.
++
+Notice that your userId should be affiliated with this _owners_ group.
+
+. Create a repository in the `decision-server-s2i` organization the with name `policyquote`.
+.. Click on the `+` symbol in the upper right, and select: `New Repository`.
+.. Make sure the repository is not private. (so don't check that selection box)
+.. Make sure the checkbox `Initialize this repository with selected file and template` is unchecked.  +
 +
 image::images/create_new_repo.png[]
 +
 Click `Create repository`.
 +
 Later in the lab we will push our BRMS project to this repository.
-
-
 
 == Nexus maven repository server
 
@@ -226,6 +274,7 @@ Nexus proxy rather than the internet, which will drastically improve the build s
 
 In this section we will install and configure a Nexus server in our OpenShift project.
 
+=== Install
 . In the virtual machine, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the XPaaS labs.
 +
 ----
@@ -248,24 +297,69 @@ The template defines:
 $ oc process -f xpaas-nexus-persistent.yaml -v APPLICATION_NAME=nexus,VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
-. Once all components of our application are up, configure the Nexus server. More specifically, we need to add the Red Hat enterprise maven repository to the list of proxied repo's.
+=== Configure
+Once all components of our application are up, configure the Nexus server.
+More specifically, we need to add the Red Hat enterprise maven repository to the list of proxied repositories.
+
 . In a browser window, navigate to the URL of the Nexus route.
 . Log in with the `admin/admin123` username/password.
-. Click on the `Repositories` on the left menu, and next on the `Add...` icon in the top menu. Choose to create a `Proxy Repository`
+. Click on the `Repositories` on the left menu.
+. Click on the `Add...` icon in the top menu.  Doing so provides a drop-down of options.
+. From the selection drop dwon, choose to create a: `Proxy Repository`
 . In the `New Proxy Repository` form, fill in the following values:
 ** Repository ID: redhat-ga
 ** Repository Name: Red Hat GA
 ** Remote Storage Location : https://maven.repository.redhat.com/ga/
 ** Leave the other fields as is.
 ** Click `Save`
-. Add the Red Hat GA repository to the public repository group.
-** Click on the `Repositories` on the left menu, and then on the `Public Repositories` in the list of repositories.
-** In the bottom pane, click on the `Configuration` tab.
-** Make sure that the `Red Hat GA` repository is in the `Ordered Group Repositories` pane.
+. Add the _Red Hat GA repository_ to the public repository group.
 +
 image::images/nexus-redhat-repo.png[]
+.. Click on the `Repositories` on the left menu, and then on the `Public Repositories` in the list of repositories.
+.. In the bottom pane, click on the `Configuration` tab.
+.. Make sure that the `Red Hat GA` repository is in the `Ordered Group Repositories` pane.
+.. Click `Save`.
+
+== Policyquote sample application
+
+The application used in this lab is called:  _Policyquote_.
+
+The _Policyquote_ application is a fairly simple BRMS application to calculate the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a ruleflow process), and a domain model in a single maven project.
+
+[NOTE]
+The S2I build mechanism imposes certain limitations on the project structure. Multi-module maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a maven repository before the build kicks off. +
+When using binary deployments, you have more flexibility on how to structure your project.
+
+In this part of the lab, we will clone the Policyquote project from Github, and push it into our Gogs server on OpenShift to act as source for our S2I builds.
+
+. In the virtual machine, open a terminal and change to the lab home folder.
 +
-** Click `Save`.
+----
+$ cd /home/jboss/lab
+----
+. Clone the Policyquote project from the GPTE Github site:
++
+----
+$ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote
+----
+. Add a remote repository to the cloned project pointing to our Gogs git server:
++
+----
+$ cd bxms-xpaas-policyquote
+$ git remote add gogs-s2i http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-s2i/policyquote.git
+----
++
+Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with the appropriate values for your environment.
+. Push the code to the Gogs server:
++
+----
+$ git push gogs-s2i master
+----
+. Using your browser, return to the home page of your `decision-server-s2i` repository hosted in your _gogs_ container
++
+image::images/seeded_gogs_repo.png[]
+. Notice that your repo is now seeded with the _policyquote_ project.
+. Review the code and rules found in this application.
 
 == Decision Server S2I Templates
 
@@ -316,44 +410,6 @@ The build will be triggered through a webhook (triggered whenever we push new co
 $ oc create -f decisionserver-basic-s2i.yaml
 ----
 
-== Policyquote sample application
-
-The Policyquote sample application is a fairly simple BRMS application to calculate the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a ruleflow process), and a domain model in a single maven project.
-
-[NOTE]
-The S2I build mechanism imposes certain limitations on the project structure. Multi-module maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a maven repository before the build kicks off. +
-When using binary deployments, you have more flexibility on how to structure your project.
-
-In this part of the lab, we will clone the Policyquote project from Github, and push it into our Gogs server on OpenShift to act as source for our S2I builds.
-
-. In the virtual machine, open a terminal and change to the lab home folder.
-+
-----
-$ cd /home/jboss/lab
-----
-. Clone the Policyquote project from the GPTE Github site:
-+
-----
-$ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote
-----
-. Add a remote repository to the cloned project pointing to our Gogs git server:
-+
-----
-$ cd bxms-xpaas-policyquote
-$ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-s2i/policyquote.git
-----
-+
-Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with the appropriate values for your environment.
-. Push the code to the Gogs server:
-+
-----
-$ git push gogs master
-----
-. Using your browser, return to the home page of your `decision-server-s2i` repository hosted in your _gogs_ container
-+
-image::images/seeded_gogs_repo.png[]
-. Notice that your repo is now seeded with the _policyquote_ project.
-
 == Openshift Decision Server Application
 
 Everything is in place now to create a OpenShift application for our BRMS project.
@@ -389,7 +445,8 @@ I0908 06:48:48.139557       1 sti.go:268] Using provided push secret for pushing
 I0908 06:48:48.139575       1 sti.go:272] Pushing 172.30.1.250:5000/xpaas/policyqote-app:latest image ...
 I0908 06:51:52.519695       1 sti.go:288] Successfully pushed 172.30.1.250:5000/xpaas/policyqote-app:latest
 ----
-* The image built by the builder pod is pushed to the OpenShift internal registry. This will trigger the deployment of the image.
+* The image built by the builder pod is pushed to the OpenShift internal registry.
+This will trigger the deployment of the image.
 * To check the logs of the application pod, locate the pod (name `policyquote-app-1-xxxxx`), and check the logs in the OpenShift console or with the CLI.
 * After some time, you will see something like:
 +
@@ -399,6 +456,25 @@ I0908 06:51:52.519695       1 sti.go:288] Successfully pushed 172.30.1.250:5000/
 * By that time, the service and the route will be started, and our Decision Server application is ready to serve requests.
 +
 image::images/policyquote-application-ose.png[]
+
+== View KIE Server status
+
+. Investigate KIE Server API documentation
++
+Before we get begin to execute our deployed _policyquote_ application, lets investigate the details of the API exposed by the KIE Server.
+
+.. Determine the route to the _policyquote_ application deployed to a _decision-server_ container in OpenShift:
++
+-----
+$ oc get route | grep policyquote
+-----
+.. Using your browser, navigate to: `<policyquote app route>/kie-server/docs`.
+.. Pay particular attention to the API that accepts a HTTP POST at the following uri:  `server/containers/instances/{id}`
++
+image::images/kie-server-api-post.png[]
+.. It is this resource URI utilized to drive the stateless rules engine of the _decision-server_ application.
++
+The _id_ specified in the resource URI refers to the identifier of the container to invoke; in our case called:  _policyquote_.
 
 . We will test our application using the REST API exposed by the Decision Server, using `curl`. +
 In a terminal window, issue the following commands:
@@ -472,6 +548,8 @@ Response:
   }
 }
 ----
+
+=== Test _policyquote_ application
 . To test our application, we need to send a correctly formatted payload. The `/xpaas/decision-server` directory of the lab contains an example, formatted as JSON. Make sure you are in that directory, and execute:
 +
 ----
@@ -731,7 +809,8 @@ Actually there are a couple of reasons to use our own template and image stream:
 * The imagestream and templates are not installed by default on OCP < 3.3 (at least not the latest versions)
 * The templates in the openshift namespace miss the MAVEN_MIRROR parameter, which makes it a lot harder to leverage nexus as a maven proxy
 * The templates in the openshift namespace have a lot of parameters (especially the process server templates) that are not required and might confuse students
-* In general I think in real life most people will come up with templates customized to their needs, rather than using the provided ones. These should be more considered as examples or blueprints
+* In general I think in real life most people will come up with templates customized to their needs, rather than using the provided ones.
+These should be more considered as examples or blueprints.
 
 
 2)  study and elaborate on:

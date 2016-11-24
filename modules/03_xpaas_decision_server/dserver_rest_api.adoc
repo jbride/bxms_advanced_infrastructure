@@ -1,0 +1,11 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Decision Server REST API
+
+image::images/dserver_rest_api.png[]
+
+ifdef::showscript[]
+
+endif::showscript[]

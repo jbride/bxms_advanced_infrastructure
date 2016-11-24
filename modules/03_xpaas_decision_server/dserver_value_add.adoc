@@ -1,0 +1,13 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Value of Decision Server in OCP
+
+* BRMS doesn't provide out-of-the-box load balancing
+* BRMS doesn't provide scaling
+
+
+ifdef::showscript[]
+
+endif::showscript[]

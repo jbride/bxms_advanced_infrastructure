@@ -2,7 +2,17 @@
 :data-uri:
 :noaudio:
 
-== Statelesss KSession Only
+== KIE Server Batch Execution
+
+* Payload to KIE Server contains multiple _Batch_ Commands
+* KIE Server executes all commands in a single transaction
+* Batch commands work with a _stateless_ KIE Session
+* Batch commands found in:
+** org.drools.core.command.runtime.rules.*
+*** InsertObjectCommand
+*** FireAllRulesCommand
+** org.drools.core.command.runtime.process.*
+*** StartProcessCommand
 
 
 ifdef::showscript[]
