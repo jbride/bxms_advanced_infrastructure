@@ -2,6 +2,7 @@
 :data-uri:
 :toc2:
 :numbered:
+:ocdownload: link:https://access.redhat.com/downloads/content/290/ver=3.3/rhel---7/3.3.0.35/x86_64/product-software[OpenShift CLI client]
 
 = xPaaS Decision Server Lab
 
@@ -21,13 +22,17 @@ Goals are as follows:
 
 In order to do this lab you will need :
 
-* Access to a project on a Openshift V3 (OCP) hosted environment.
-* Required tools on your local workstation: OpenShift CLI client (`oc`), git, maven, curl.
+* Red Hat GPTE OPENTLC SSO Id
+* The following tools on your local workstation:
+** {ocdownload} (`oc`) v3.3 (or more recent)
+** git
+** maven (v3.3.0 or more recent)
+** curl.
 +
 NOTE: The lab virtual machine used in this course has these tools installed.
 * Access to Github to clone the projects used in this lab.
 * Completion of Red Hat GPTE's _Application Development using OpenShift_ course.
-* Familiarity with the _kie-server_ API of the Red Hat BPM Suite product.
+* Experience with the Red Hat BRMS product; in particular, the _kie-server_ API.
 
 == Lab Set-Up
 
@@ -360,6 +365,15 @@ $ git push gogs-s2i master
 image::images/seeded_gogs_repo.png[]
 . Notice that your repo is now seeded with the _policyquote_ project.
 . Review the code and rules found in this application.
+.. Notice that the project includes a drools _ruleflow_ artifact:  _PolicyQuote.rf_
++
+If you were to view this ruleflow file in JBoss Developer Studio (assuming JBDS is installed with the _Integration Stack_ of plugins), you'd see that the ruleflow is as follows:
++
+image::images/policy-quote-rule-flow.png[]
+.. Study each of the rule files found in this project.
+*** What are the names of the rules affiliated with the _calculation_ ruleflow-group ?
+*** What are the names of the rules affiliated with the _surcharge_ ruleflow-group ?
+
 
 == Decision Server S2I Templates
 
@@ -412,7 +426,7 @@ $ oc create -f decisionserver-basic-s2i.yaml
 
 == Openshift Decision Server Application
 
-Everything is in place now to create a OpenShift application for our BRMS project.
+Everything is in place now to create an OpenShift application from our BRMS project.
 
 . In the virtual machine, open a terminal, and issue the following commands (replace expressions between `<>` with correct values for your environment):
 +
@@ -472,11 +486,22 @@ $ oc get route | grep policyquote
 .. Pay particular attention to the API that accepts a HTTP POST at the following uri:  `server/containers/instances/{id}`
 +
 image::images/kie-server-api-post.png[]
-.. It is this resource URI utilized to drive the stateless rules engine of the _decision-server_ application.
 +
-The _id_ specified in the resource URI refers to the identifier of the container to invoke; in our case called:  _policyquote_.
+NOTE: Notice the use of the term _containers_ in the URI of the above resource.
+The word _container_ is highly overloaded in the world of software.
+The use of the word _container_ in this specific context refers to the Red Hat JBoss BRMS construct: _KIE Container_.
+It does not refer to a OpenShift / Kubernetes _container_.
 
-. We will test our application using the REST API exposed by the Decision Server, using `curl`. +
+... It is this resource URI that is utilized to drive the stateless rules engine that runs in our _decision server_ docker container.
++
+The _id_ specified in the resource URI refers to the identifier of the drools _KIE container_ to invoke;
+in our case the KIE container is called:  _policyquote_.
+... This REST resource accepts a payload (in either XML or JSON representation) of drools API _batch_ commands_.
+... For some perspective, the code equivalent of these _batch commands_ can be found here:
+.... link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/rule[rule commands]
+.... link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/processhttps://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/process[process commands]
+
+. For the remainder of this lab, we will use the command line based `curl` utility to interact with the RESTful API exposed by our Decision Server application. +
 In a terminal window, issue the following commands:
 +
 ----
@@ -550,7 +575,12 @@ Response:
 ----
 
 === Test _policyquote_ application
-. To test our application, we need to send a correctly formatted payload. The `/xpaas/decision-server` directory of the lab contains an example, formatted as JSON. Make sure you are in that directory, and execute:
+. To test our application, we need to send a correctly formatted payload.
+The `xpaas/decision-server` directory of the lab contains an example, formatted as JSON.
+.. Open the json payload file _policyquote-payload.json_ and study its contents.
++
+Notice how the various batch commands found in this json payload file correspond to similar java _Command_ objects found in the _rule_ and _process_ directories of the link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime[Drools command source code].
+.. Make sure you are in the `xpaas/decision-server` directory, and execute:
 +
 ----
 $ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote"
@@ -658,10 +688,6 @@ Click `Add Webhook`.
 
 === Test Change to Rules
 . In a terminal window, change to the root of the cloned `bxms-xpaas-policyquote` project.
-+
-----
-$ cd /home/jboss/lab/bxms-xpaas-policyquote
-----
 . Open the `src/main/resources/RiskyAdults.drl` file for editing. Change the price in the rule action to 350. +
 The rule should now look like:
 +
