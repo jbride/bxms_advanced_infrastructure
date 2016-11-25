@@ -34,6 +34,14 @@ NOTE: The lab virtual machine used in this course has these tools installed.
 * Completion of Red Hat GPTE's _Application Development using OpenShift_ course.
 * Experience with the Red Hat BRMS product; in particular, the _kie-server_ API.
 
+== Lab Component Topology
+
+This lab involves quite a few components that support the build, deployment and execution of a rules application running in the Openshift Container Platform.
+
+The component topology and workflow of this lab is as follows:
+
+image::images/dserver1_lab_topology.gif[]
+
 == Lab Set-Up
 
 === OpenShift
@@ -732,7 +740,7 @@ email = gptestudent@gptestudent.com
 name = gptestudent
 EOF
 $ git commit -m "raised the price for risky adults"
-$ git push gogs master
+$ git push gogs-s2i master
 ----
 . Check in the Openshfift web console that a new build is triggered by the code push.
 +
@@ -759,7 +767,7 @@ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json
 
 As you will have noticed during the build and deployment triggered by a code change, there is a time span during which the application is unavailable. This happens grosso modo between the moment that the S2I build is finished, and the new deployment is active. This includes the time needed by the Decision Server to start up. +
 In a development phase, this is not so dramatic, but it is probably not acceptable in a production environment.
-By scaling out our application, and defining a rolling upgrade strategy, we can ensure that our application remains available, even if that means that during a limited time span both the old as the new version will be deployed concurrently.
+By scaling out our application, and defining a *rolling upgrade strategy*, we can ensure that our application remains available, even if that means that during a limited time span both the old as the new version will be deployed concurrently.
 
 We are going to introduce the changes required directly in the DeploymentConfig of our application. Alternatively, you could create the changes in the template, load it into the OpenShift project, tear down the existing application and create a new one based on the modified template.
 
