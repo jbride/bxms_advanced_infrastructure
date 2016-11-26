@@ -1,0 +1,20 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== DecisionServer Parameters
+
+. *KIE_CONTAINER_DEPLOYMENT*
+.. Specify unique identifier of drools app(s) that execute in Decision Server
+.. Format convention is pipe-delimited :
++
+containerId=groupId:artifactId:version|c2=g2:a2:v2
+
+. *KIE_CONTAINER_REDIRECT_ENABLED*
+.. Enable redirect functionality for KIE containers. 
+.. Defaults to true. 
+.. Should be true when different versions of the same kjar are to be deployed side-by-side.
+
+ifdef::showscript[]
+
+endif::showscript[]

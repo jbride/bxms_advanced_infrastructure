@@ -1,0 +1,28 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== DecisionServer Parameters
+
+. *SOURCE_REPOSITORY_URL*
+.. URL to version controlled app source code.
+.. Utilized during S2I.
+
+. *SOURCE_REPOSITORY_REF*
+.. Git branch/tag reference. Default: _master_.
+.. Utilized during S2I.
+
+. *CONTEXT_DIR*
+.. Path within the Git project to build.
+.. Utilized during S2I.
+
+. *MAVEN_MIRROR_URL*
+.. URL of local Maven server that _mirrors_ all _external:*_ Maven repos
+.. Value is included in custom `<mirror\>` entry in app project pom.xml
+.. Utilized during S2I.
+
+ifdef::showscript[]
+
+http://maven.apache.org/guides/mini/guide-mirror-settings.html
+
+endif::showscript[]

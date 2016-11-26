@@ -1,0 +1,12 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Decision Server Parameters
+
+image::images/dserver_s2i_parameters.png[]
+
+ifdef::showscript[]
+
+
+endif::showscript[]

@@ -2,10 +2,17 @@
 :data-uri:
 :noaudio:
 
-== Value of Decision Server in OCP
+== Value of OpenShift Based Decision Server
 
-* BRMS doesn't provide out-of-the-box load balancing
-* BRMS doesn't provide scaling
+* Load balancing
+* Horizontal scalability
+* _Deployment Strategies_
+** Rolling
+** Recreate
+* CI / CD
+** ie; OCP v3 Plugin for Jenkins
+
+In traditional, non-PaaS approach, DevOps team has to develop & manage the above considerations
 
 
 ifdef::showscript[]
