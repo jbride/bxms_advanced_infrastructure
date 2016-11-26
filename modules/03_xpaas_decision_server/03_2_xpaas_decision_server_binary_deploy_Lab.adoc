@@ -34,21 +34,23 @@ NOTE: The Nexus and Gogs containers provisioned in the previous lab need to be a
 Using your existing _Gogs_ server, lets create a couple of new _organizations_, users and _repositories_ to support this new lab exercise.
 
 === Create organizations, users and teams
-.. Open a browser window, navigate to the Gogs server home page and log in with your username/password.
+.. Open a browser window, navigate to the Gogs server home page and log in with your administrator user / password (created in the previous lab).
 .. Create a new Organization and name it `decision-server-jenkins`.
 .. Register a new user with username `jenkins` and password `password`.
-... This user will need the ability to create _GitHooks_ in its repositories
+... In the top right corner, click the _User Profile and More_ drop down and select: `Admin Panel`.
+... Click `Users -> Create New Account`.
+... Fill in the form to create a new `jenkins` user and click:  `Create New Account`.
+.. This user will need the ability to create _GitHooks_ in its repositories
 ... Ensure that the check box that enables the new _jenkins_ user with _permissions to create Git hooks_ is enabled.
 +
 image::images/jenkins_user_git_hooks.png[width="80%"]
 .. Add user `jenkins` to the `owner` team of the `decision-server-jenkins` organization.
-. Log out of the _Gogs_ web app and log back in as the new _jenkins_ user.
-. Create a repository named `policyquote` in the `decision-server-jenkins` organization on the Gogs server.
-. Clone the Policyquote project and push to Gogs.
+.. Log out of the _Gogs_ web app and log back in as the new _jenkins_ user.
+.. Create a repository named `policyquote` in the `decision-server-jenkins` organization on the Gogs server.
 
 === _policyquote_ git repo
 
-.. In the virtual machine, you should already have cloned the lab assets for this course that contains the _kie-project_ for this lab: _bxms-xpaas-policyquote_.
+.. In the lab virtual machine, you should already have cloned the lab assets for this course that contains the _kie-project_ for this lab: _bxms-xpaas-policyquote_.
 +
 If not, open a terminal, change to the lab home folder and clone the Policyquote project from Github:
 +

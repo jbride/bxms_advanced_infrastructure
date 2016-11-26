@@ -33,6 +33,7 @@ NOTE: The lab virtual machine used in this course has these tools installed.
 * Access to Github to clone the projects used in this lab.
 * Completion of Red Hat GPTE's _Application Development using OpenShift_ course.
 * Experience with the Red Hat BRMS product; in particular, the _kie-server_ API.
+* Experience using Git and Maven
 
 == Lab Component Topology
 
