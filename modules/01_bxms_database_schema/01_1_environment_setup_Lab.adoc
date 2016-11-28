@@ -23,7 +23,7 @@ The intent of this course is to teach you best practices regarding the provision
 . Completion of Red Hat GPTE's _OpenShift Enterprise Implementation_ course.
 . Completion of Red Hat GPTE's _xPaaS Development using OpenShift Enterprise_ course.
 
-=== Local worstation resources
+=== Local workstation resources
 
 This course includes a virtual machine preinstalled with the required tools.
 This VM is provided in VDI format and can be run on your local workstation using VirtualBox.
