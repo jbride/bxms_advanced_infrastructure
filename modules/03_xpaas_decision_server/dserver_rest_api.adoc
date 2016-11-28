@@ -4,7 +4,12 @@
 
 == Decision Server REST API
 
-image::images/dserver_rest_api.png[]
+image::images/kie-server-api-post.png[]
+
+* *Batch* Payload examples:
+** InsertObject
+** StartProcess (for RuleFlow)
+** FireAllRules
 
 ifdef::showscript[]
 

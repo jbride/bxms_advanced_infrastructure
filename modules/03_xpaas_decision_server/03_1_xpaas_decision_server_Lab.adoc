@@ -508,7 +508,7 @@ in our case the KIE container is called:  _policyquote_.
 ... This REST resource accepts a payload (in either XML or JSON representation) of drools API _batch_ commands_.
 ... For some perspective, the code equivalent of these _batch commands_ can be found here:
 .... link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/rule[rule commands]
-.... link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/processhttps://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/process[process commands]
+.... link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/process[process commands]
 
 . For the remainder of this lab, we will use the command line based `curl` utility to interact with the RESTful API exposed by our Decision Server application. +
 In a terminal window, issue the following commands:
@@ -849,7 +849,7 @@ These should be more considered as examples or blueprints.
 
 
 2)  study and elaborate on:
-  - KIE_CONTAINER_DEPLOYMENTKIE_CONTAINER_DEPLOYMENT
+  - KIE_CONTAINER_DEPLOYMENT
   - KIE_CONTAINER_REDIRECT_ENABLED
 
 endif::showscript[]

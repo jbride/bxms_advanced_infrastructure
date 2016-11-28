@@ -4,6 +4,13 @@
 
 == Statelesss KSession Only
 
+* BRMS _KIE Server_ allows for invoking both:
+** Stateless sessions
+** Stateful sessions
++
+NOTE: KIE Session persistence and/or replication needs to be handled by application.
+
+* OCP _Decision Server_ only allows for invoking stateless sessions.
 
 ifdef::showscript[]
 

@@ -315,6 +315,8 @@ image::images/policyquote-kjar-nexus.png[]
 +
 image::images/policyquote-deployment-override.png[]
 
+
+
 == Decision Server Application
 
 Now we can deploy the Decision Server application running the policyquote kjar.
@@ -377,7 +379,7 @@ image::images/policyquote-binary-build-completed.png[]
 
 == Complete and automate the Jenkins build pipeline
 
-To complete the pipeline, we can trigger a Jenkins build when code is committed and pushed into the policyquote source repository, and have the Jenkins build start a new build of the Decision Server application at the end of the build pipeline.
+To complete the pipeline, we can automatically trigger a Jenkins build when code is committed and pushed into the policyquote source repository, and have the Jenkins build start a new build of the Decision Server application at the end of the build pipeline.
 
 In this section of the lab, we'll make use of https://git-scm.com/docs/githooks[Git Hooks].
 In particular, the _post-receive_ hook.
