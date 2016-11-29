@@ -1,0 +1,9 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Binary Serialization
+
+* Process and task variables are marshalled to byte array and stored as blob.
+* Advantage: schema is not dependent on data type of process and task variables.
+* Disadvantage: process and task variable values not readily exploitable by queries.

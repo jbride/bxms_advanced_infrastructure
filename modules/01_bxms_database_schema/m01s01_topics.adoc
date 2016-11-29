@@ -1,0 +1,13 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Module topics
+
+* Persistence in BRMS/BPMS
+* Persistence technology
+* Persistent data and binary serialization
+* Extending the persistence mechanism
+* Optimistic and pessimistic locking
+* Datasource configuration
+* Database maintenance

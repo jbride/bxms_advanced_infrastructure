@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Runtime Data Persistence in BPMS
+
+* What needs to be persisted?
+** Process and task instance state
+** Timers and signals
+** Jobs
+** Session state: depends on the runtime strategy
+*** _Per Process Instance_: session is persisted in the database
+*** _Singleton_ : session is serialized to disk at server shutdown
+*** _Per Request_ : no session persistence
+** Audit logs for processes and tasks

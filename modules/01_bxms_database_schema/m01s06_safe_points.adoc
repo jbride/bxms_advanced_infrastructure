@@ -1,0 +1,14 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Persistence and safe points
+
+* When is persistence happening in BPMS?
+** When process execution reaches a safe point
+** Safe points are:
+*** End node
+*** Wait state
+*** Node marked as async
+** Process excution happens in the context of a JTA transaction.
+** In case of error, rollback to previous persisted state.

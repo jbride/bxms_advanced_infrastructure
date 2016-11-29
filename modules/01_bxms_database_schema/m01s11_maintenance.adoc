@@ -1,0 +1,18 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Database maintenance and cleanup
+
+* Runtime data is cleaned up automatically
+** Process instance data (Table `ProcessInstanceInfo`) is removed upon process instance completion
+** Task instance data (Tables `Task`, `Content`) is removed upon completion of the owning process.
+** Work item information (Table `WorkItemInfo`) is removed upon work item completion.
+* Some data is not removed:
+** Audit data for processes and tasks
+** Executor requests
+** Persistent timers using quartz
+* To keep the database size manageable, periodic cleaning is recommended.
+** Copy to separate data store if audit data needs to be retained.
+** Periodic automatic cleaning with a scheduled job.
+*** `org.jbpm.executor.commands.LogCleanupCommand` : highly configurable example of scheduled database maintenance job.

@@ -1,0 +1,25 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Optimistic and pessimistic locking
+
+* JPA in BPMS engine uses by default optimistic locking strategy with versioning.
+* This can lead to race conditions (_OptimisticLockException_) in some cases.
+** Process definitions with wait states or asynch nodes in parallel branches.
+* Engine can recover form OptimisticLockException
+** Failing branch is re-executed within the same transaction
+* The BPMS engine can be configured to use pessimistic locking strategy
+** JPA _PESSIMISTIC_FORCE_INCREMENT_ lock mode
+** Enable pessimistic locking by setting environment entry `org.kie.api.persistence.pessimistic` to true in Kjar deployment descriptor:
++
+----
+    <environment-entries>
+        <environment-entry>
+            <name>org.kie.api.persistence.pessimistic</name>
+            <resolver>mvel</resolver>
+            <identifier>true</identifier>
+        </environment-entry>
+    </environment-entries>
+----
+
