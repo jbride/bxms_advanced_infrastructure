@@ -1,10 +1,11 @@
 :scrollbar:
 :data-uri:
 :toc2:
+:numbered:
 
 = xPaaS Process Server Lab: S2I Deployments
 
-*Goals*
+.*Goals*
 
 In this lab we will explore the Red Hat xPaaS Process Server. The Process Server runtime is a BPMS KIE Server configured for deployment on OpenShift. The Process Server supports source-to-image builds, as well as binary deployments starting from pre-built kjars.
 
@@ -35,9 +36,6 @@ Also, make sure you can access the OpenShift Web Console. Open a browser, and na
 
 Some tasks in this lab are identical to the xPaaS Decision Server Lab, for example setting up the Git and Nexus repositories. Detailed instructions for these parts will not be repeated here. Please refer to the xPaaS Decision Server Lab instructions if needed.
 
-:numbered:
-
-== xPaaS Process Server Lab 1 : S2I deployment
 
 === Gogs Git Server
 
@@ -53,7 +51,7 @@ Later in the lab we will push our BPMS project to this repository.
 
 If you did the xPaaS Decision Server Lab, the Nexus server should be up and running. If not, refer to the xPaaS Decision Server Lab for detailed instructions to install the Nexus server on OpenShift.
 
-=== Process Server Image Stream and S2I Template
+== Process Server Image Stream and S2I Template
 
 The image stream for the Process Server image will be reused by different templates in this lab.
 
@@ -113,7 +111,7 @@ The build will be triggered through a webhook (triggered whenever we push new co
 $ oc create -f processserver-mysql-persistent-s2i.yaml
 ----
 
-=== Policyquote-process sample application
+== Policyquote-process sample application
 
 The Policyquote-process sample application is a very simple BPMS application, consisting of a single process model and a data model with a Driver and a Policy object. A process is started with an instance of these objects as process variables. The process consists of a User task assigned to the group `agent`, and potentially a review task assigned to the group `reviewer` if the price set by the `agent` user is more than 500.
 
@@ -193,7 +191,7 @@ $ git commit -m "users and roles for the application"
 $ git push gogs master
 ----
 
-=== OpenShift Process Server Application
+== OpenShift Process Server Application
 
 . In the virtual machine, open a terminal, change to the directory in the cloned lab project that contains the templates for the Process Server lab:
 +
@@ -266,7 +264,7 @@ $ oc logs -f policyquote-1-xxxxx
 +
 image::images/policyquote-process-application-ocp.png[]
 
-=== Testing the sample application
+== Testing the sample application
 
 We can test the application using `curl` and the REST API of the Process Server.
 
@@ -428,7 +426,7 @@ $ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password
 10:35:41,115 INFO  [stdout] (http-172.17.0.7:8080-1) Driver 1234: Policy price after calculation and review = 300
 ----
 
-=== Application lifecycle
+== Application lifecycle
 
 Managing changes in a Process Server application is more complex than with Decision Server applications, because of the state involved with processes versus the stateless nature of business rules invocations.
 
