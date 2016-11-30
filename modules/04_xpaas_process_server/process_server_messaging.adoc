@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== OCP Process Server Messaging
+== BPMS Messaging
 
 Messaging used for:
 

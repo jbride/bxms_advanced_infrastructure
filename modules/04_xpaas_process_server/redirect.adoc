@@ -4,9 +4,19 @@
 
 == Redirect Capability
 
-The Decision Server and Process Server images, since 6.3, provide multi-version tenancy capability of kjars for KIE Containers.
+The Decision Server and Process Server images provide multi-version tenancy capability of kjars for KIE Containers.
 
-A single KIE Server may contain multiple KIE Containers. Each container has it's own classloader environment, and a unique name to identify it. Sometimes this name is called container id, and sometimes it is called deployment id. These names are synonymous. Most, but not all, client interface methods in the server take a parameter which identifies the container id that should be used. This is to identify the correct classloader for (de)serialization purposes, as well as the container that has all the correct assets in it for rule or process execution.
+* Provides ability to run new versions of KIE containers concurrently with older versions of KIE containers in the same Decision Server pod.
+* Support for older versions is especially important for stateful interactions. 
+** A BPM process that might last months.
+
+== Introduce New KIE Versions
+
+* Set the KIE_CONTAINER_REDIRECT_ENABLED to true.
+* Specify the KIE_CONTAINER_DEPLOYMENT_OVERRIDE variable inside the *./sti/environment* file
+** Will override the KIE_CONTAINER_DEPLOYMENT variable in template
+* When a new version is available, simply change the KIE_CONTAINER_DEPLOYMENT_OVERRIDE variable to include _both_ the old _and_ new container deployments using the _same_ container id, and commit to source control.
+* The link:https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers[GitHub Webhooks] mechanism can then pick up the updated *./sti/environment* file in source, triggering a new S2I build.
 
 == Container Naming
 
@@ -60,7 +70,8 @@ NOTE: The container id overriding is only done if the KIE_CONTAINER_REDIRECT_ENA
 
 == Client Targeting
 
-In most cases, clients have to target a particular container by name in order to execute server-side functions. Given that the actual container ids on the server have been renamed, how can the client code do this? There are multiple ways:
+In most cases, clients have to target a particular container by name in order to execute server-side functions.
+Given that the actual container ids on the server have been renamed, how can the client code do this? There are multiple ways:
 
 * Full deployment part: *processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final*
 * Full deployment hash: *e8d626d14a44bf3cf1f127ae9fdabc91*
@@ -70,7 +81,7 @@ In most cases, clients have to target a particular container by name in order to
 
 In the case where the deployment alias is used, the incoming request gets redireted to the specific deployed KIE Container in the server. There is a multi-step container-resolution process which is used to determine _which_ version of a container is targeted by the redirect. This process is followed in the REST interface by using a Servlet Filter, and in the JMS interface by using an EJB Interceptor. 
 
-=== Container Resolution Process
+== Container Resolution Process
 
 There are multiple clients that can be used to invoke the server, depending upon the work that needs to be done.
 
@@ -96,47 +107,11 @@ The process that is used to resolve the proper container id depends on the metho
 * Conversation Id (KIE, BRM, BPM)
 * Default Container Id (KIE, BRM, BPM)
 
-=== Conversation Id
+== Default Container Id
 
-A _conversation_ is something that represents interactions between the KIE Services java clients and the server. In these cases, the response from the server includes an encoded multi-part header that the client will send back to the server in subsequent requests. One of parts of this conversation header is the container id itself, which can provide a hint to the REST filter or JMS interceptor as to which container should be invoked.
-
-Q and A:
-
-* _What should the conversationId be after the method call?_ - The conversation id that is returned from the server will always be the specific (md5 sum hash) container id, which is a valid id that can be used in subsequent requests.
-* _Which containers/processes/instances/jobs/tasks/... should be affected/returned when  conversationId is null/not null?_ - See the Container Resolution Process above.
-* _What should happen when conflicting input is given (e.g. conversation set to a different container version than whatever container own a given process instance)?_ - Per the * Container Resolution Process above, the process instance id will take precedence over the conversation id.
-* _For methods which accept containerId, whether "virtual containerId", "real containerId" or both can/should be passed as arguments?_ - Per Container Alias Redirects above, any of those container ids can be passed as arguments.
-* _For methods which return objects that contain containerId, if that should be "virtual containerId" or "real containerId"?_ - The real container id (md5 sum hash) will be returned.
-
-=== Default Container Id
-
-If a specific container id cannot be resolved, than a default container id is selected. The default container is determined as the _latest_ version of a kjar's releaseId (GAV) for the same container name. So in the above processserver-library example, the 1.3.1.Final version is the latest and thus default, not the 1.3.0.Final version.
-
-== Multiple Versions
-
-The ability exists to deploy newer versions of containers into new OpenShift pods, while still supporting older versions of containers.  The support for older versions is especially important for stateful interactions. For example, a BPM process that might last months.
-
-To trigger adding a new version:
-
-- Set the KIE_CONTAINER_REDIRECT_ENABLED to true.
-- Specify the KIE_CONTAINER_DEPLOYMENT_OVERRIDE variable inside the *./sti/environment* file, which will override the KIE_CONTAINER_DEPLOYMENT variable in the json application template. This override is necessary because changing the app template would require a DeploymentConfig change when new versions become available, which would be tedious to administer.
-- When a new version is available, simply change the KIE_CONTAINER_DEPLOYMENT_OVERRIDE variable to include _both_ the old _and_ new container deployments using the _same_ container id, and commit to source control.
-- The link:https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers[GitHub Webhooks] mechanism can then pick up the updated *./sti/environment* file in source, triggering a new S2I build.
-
-Q and A:
-
-* _What should my git project layout be?_ - The key part here is to have an ./sti/environment file that will specify your KIE_CONTAINER_DEPLOYMENT_OVERRIDE. Other than that, you can have source for your kjar there in normal maven layout, or maven multi-module layout, or you can have pre-built kjar binaries in a deployments/ subdirectory, or any combination. Often times, however, you have your own maven repository (specified via MAVEN_MIRROR_URL or in custom settings.xml), housing your kjars. In that case, the only thing you would need in your git project would be the ./sti/environment file that targets kjars by their release ids (GAVs) that exist in your maven repository.
-* _Which templates should I use?_ - Any of the decisionserver63 or processserver63 templates.
-* _Any required customization of the template regarding the Rolling Strategy?_ - No.
-* _Any required changes in the git repository to update the container version?_ - Just the KIE_CONTAINER_DEPLOYMENT_OVERRIDE variable in ./sti/environment.
-* _Steps to use to perform the upgrade?_ - Make sure your kjar source or binaries are available as specified above, update the ./sti/environment, and push it (which will trigger your GitHub WebHook).
-* _How to configure the REST and A-MQ clients?_ - Use any of the compatible container id formats as detailed in Client Targeting above.
-
-=== Issues
-
-There is currently an outstanding issue where, if a request is routed to a server (pod) that does not yet have the newer container version deployed, that the redirect capability will not be able to service the request properly. This will be addressed with the introduction of OpenShift-specific intermediary queues.
+If a specific container id cannot be resolved, than a default container id is selected. 
+The default container is determined as the _latest_ version of a kjar's releaseId (GAV) for the same container name. So in the above processserver-library example, the 1.3.1.Final version is the latest and thus default, not the 1.3.0.Final version.
 
 ifdef::showscript[]
 
-1)  what is the ServletFilter class that provides the alias redirect functionality ?
 endif::showscript[]

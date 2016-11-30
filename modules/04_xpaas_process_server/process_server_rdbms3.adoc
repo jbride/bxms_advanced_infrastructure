@@ -2,18 +2,10 @@
 :data-uri:
 :noaudio:
 
-== MySQL
+== PostgreSQL
 
-OCP Process Server can run on MySQL
+OCP Process Server can run on PostgreSQL
 
-** Templates: 
-*** _processserver63-mysql-persistent-s2i_
-*** _processserver63-amq-mysql-persistent-s2i_
-** Supported MySQL image:
-+
-image::images/mysql_image.png[]
-
-* PostgreSQL
 ** Templates:
 *** _processserver63-postgresql-persistent-s2i_
 *** _processserver63-amq-postgresql-persistent-s2i_

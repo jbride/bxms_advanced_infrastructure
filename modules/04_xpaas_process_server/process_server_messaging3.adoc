@@ -1,0 +1,19 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== JBoss AMQ
+
+OCP Process Server can leverage JBoss AMQ
+
+** Templates:
+*** _processserver63-amq-mysql-persistent-s2i_
+*** _processserver63-amq-postgresql-persistent-s2i_
+** Support AMQ image:
++
+image::images/amq_image.png[]
+
+
+ifdef::showscript[]
+
+endif::showscript[]
