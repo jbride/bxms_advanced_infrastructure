@@ -1,0 +1,13 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Configuration of UserGroupCallback implementation
+
+* In process server, alternative implementations can be plugged in through system properties.
+* Example, to use provided LDAP implementation:
+** `org.jbpm.ht.callback=ldap`
+** `jbpm.usergroup.callback.properties=<URI of callback configuration file>`
+* To use a custom implementation:
+** `org.jbpm.ht.callback=custom`
+** `org.jbpm.ht.custom.callback=<FQN of implementation class>`

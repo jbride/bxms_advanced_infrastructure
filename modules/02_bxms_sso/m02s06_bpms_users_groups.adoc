@@ -1,0 +1,12 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== BPM Suite Users and Groups
+
+* User task service in BPM Suite needs access to users and groups.
+** User task operation are restricted to certain users and groups.
+** Example: User task can only be claimed by users member of the group(s) the task was assigned to as _potential owner_.
+* User and group information is not stored in the BPM Suite database.
+* The process engine relies on an implementation of `org.kie.api.task.UserGroupCallback` to provide user and group information at runtime.
+

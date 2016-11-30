@@ -1,0 +1,12 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Decision Server and Process Server Remote APIs
+
+* REST API secured with basic authentication
+* Required role: `kie-server`
+** no fine grained authorization model
+** xPaaS images use servlet filter to disallow certain operations, like creating or destroying KIE-containers.
+* JMS API secured on EAP JMS subsystem level.
+** Users need `admin` role to be able to post messages

@@ -1,0 +1,19 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== UserGroupCallback implementations
+
+* `org.kie.api.task.UserGroupCallback`
++
+----
+boolean existsUser(String userId);
+boolean existsGroup(String groupId);
+List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds);
+----
+* By default, Business Central and Process Server are configured to use a Callback implementation that delegates to the security subsystem of the application server.
+** `org.jbpm.services.task.identity.JAASUserGroupCallbackImpl`
+** The implementation uses the JACC API to retrieve the user and group (roles) information for the logged in user.
+* Default implementation can be used even if the application server uses different security domain than the default.
+* Custom UserGroupCallback implementation can be plugged in if default implementation does not provided required information
+** Example: complex group membership schema which is not reflected in Principal of the logged in user.
