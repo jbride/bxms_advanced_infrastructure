@@ -19,7 +19,7 @@ $ curl
         "version" : "1.0" } 
     }' \
    "http://gpte.rht.com/kie-server/services/rest/server/containers/gpteContainer1"
-----
+-----
 
 
 ifdef::showscript[]
