@@ -2,12 +2,22 @@
 :data-uri:
 :noaudio:
 
-== BPMS Extensions in KIE Server
+== BPMS Capabilities in KIE Server
+
+-----
+<kie-server-info>
+  
+  ...
+
+  <capabilities>BPM</capabilities>
+  <capabilities>BPM-UI</capabilities>
+
+  ...
+</kie-server-info>
+-----
 
 * BPM extension : Process, Task, & Asynch Jobs execution.
-* BPM-UI: REST API for form definitions and process image.
-+
-image::images/kie-server-lab-process-instance-svg.png[]
+* BPM-UI extension: Form Definitions & process image.
 
 ifdef::showscript[]
 

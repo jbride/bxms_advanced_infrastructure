@@ -1,0 +1,11 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== KIE Server Batch Payload
+
+image::images/sample_payload.png[]
+
+ifdef::showscript[]
+
+endif::showscript[]

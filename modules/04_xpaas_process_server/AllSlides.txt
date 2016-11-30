@@ -1,11 +1,18 @@
 
 include::cover.adoc[]
 include::intro_to_bpms_kie_server.adoc[]
+include::rest_pdefinition.adoc[]
+include::rest_pinstances.adoc[]
+include::rest_pimages.adoc[]
 include::bpms_in_cloud.adoc[]
 include::process_server_rdbms.adoc[]
 include::process_server_rdbms2.adoc[]
 include::process_server_messaging.adoc[]
 include::process_server_messaging2.adoc[]
+include::redirect.adoc[]
 
 ifdef::showscript[]
+
+include::sample_payload.adoc[]
+
 endif::showscript[]

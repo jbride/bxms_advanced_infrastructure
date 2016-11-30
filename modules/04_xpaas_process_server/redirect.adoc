@@ -1,14 +1,10 @@
+:scrollbar:
+:data-uri:
 :noaudio:
 
----
-layout: main
----
-
-= Redirect Capability
+== Redirect Capability
 
 The Decision Server and Process Server images, since 6.3, provide multi-version tenancy capability of kjars for KIE Containers.
-
-== Background
 
 A single KIE Server may contain multiple KIE Containers. Each container has it's own classloader environment, and a unique name to identify it. Sometimes this name is called container id, and sometimes it is called deployment id. These names are synonymous. Most, but not all, client interface methods in the server take a parameter which identifies the container id that should be used. This is to identify the correct classloader for (de)serialization purposes, as well as the container that has all the correct assets in it for rule or process execution.
 
