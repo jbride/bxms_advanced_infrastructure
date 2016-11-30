@@ -1,0 +1,16 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== OCP Process Server Messaging
+
+Messaging used for:
+
+* KIE Server JMS API
+* Async BAM events
+* Async Job Executor
+
+
+ifdef::showscript[]
+
+endif::showscript[]

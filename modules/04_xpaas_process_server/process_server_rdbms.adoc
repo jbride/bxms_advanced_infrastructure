@@ -1,0 +1,18 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== OCP Process Server RDBMSs
+
+Persistence needed for:
+
+* Process Instance state
+* Human Task state
+* BAM audit trail
+* Executor Jobs
+* Quartz based timers
+
+
+ifdef::showscript[]
+
+endif::showscript[]
