@@ -1,6 +1,7 @@
 :scrollbar:
 :data-uri:
 :toc2:
+:numbered:
 
 = xPaaS Process Server: Integration with RH SSO Lab
 
