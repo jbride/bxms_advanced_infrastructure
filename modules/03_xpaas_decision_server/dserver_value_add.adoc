@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== Value of OpenShift Based Decision Server
+== Value of OCP Decision Server
 
 Leverages all of the DevOps value add from a PaaS:
 
