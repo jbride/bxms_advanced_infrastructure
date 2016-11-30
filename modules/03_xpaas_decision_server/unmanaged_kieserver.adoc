@@ -1,0 +1,46 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Unmanaged KIE Server Only
+
+* BPMS allows for _unmanaged_ and _managed_ administration of KIE Servers
+* xPaaS Decision Server leverages _unmanaged_ approach
+* Example XML found in $JBOSS_HOME of Decision Server pod:
++
+-----
+<kie-server-state>
+  <controllers/>
+  <configuration>
+    <configItems>
+      <config-item>
+        <name>org.kie.server.repo</name>
+        <value>.</value>
+        <type>java.lang.String</type>
+      </config-item>
+      <config-item>
+        <name>org.kie.server.id</name>
+        <value>kieserver</value>
+        <type>java.lang.String</type>
+      </config-item>
+    </configItems>
+  </configuration>
+  <containers class="linked-hash-set">
+    <container>
+      <containerId>policyquote</containerId>
+      <releaseId>
+        <groupId>com.redhat.gpte.xpaas</groupId>
+        <artifactId>policyquote</artifactId>
+        <version>1.0-SNAPSHOT</version>
+      </releaseId>
+      <status>STARTED</status>
+      <configItems/>
+      <messages/>
+    </container>
+  </containers>
+</kie-server-state>
+-----
+
+ifdef::showscript[]
+
+endif::showscript[]
