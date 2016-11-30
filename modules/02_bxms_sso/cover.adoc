@@ -6,10 +6,10 @@ ifdef::revealjs_slideshow[]
 == &nbsp;
 
 [#cover-h1]
-BxMS Advanced Infrastructure
+BRMS/BPMS Advanced Infrastructure
 
 [#cover-h2]
-BxMS Single Sign-On
+BRMS/BPMS Security
 
 [#cover-logo]
 image::{revealjs_cover_image}[]

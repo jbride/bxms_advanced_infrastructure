@@ -1,0 +1,11 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Security in BRMS/BPMS
+
+* Where does security kick in?
+** Business Central GUI application
+** Business Central remote APIs
+** Decision Server, Process Server remote APIs
+** BPMS: resolution of users and groups for User Tasks

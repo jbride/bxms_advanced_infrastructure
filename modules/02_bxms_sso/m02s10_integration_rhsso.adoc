@@ -1,0 +1,13 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Integration with Red Hat Single Sign-on
+
+* Business Central, Process Server and Decision Server can be integrated with Red Hat Single Sign-On.
+* Supports SAML and OpenId Connect
+* Allows to pass authentication token from client application to Process Server or Decision Server
+** User logs in into the client application and obtains a token from the SSO server.
+** Token is passed through `Authorization` header of the REST call to Process Server.
+** On Process Server, token is verified and the user Princial created
+* Works well with default UserGroupCallback implementation if token contains the required group information.
