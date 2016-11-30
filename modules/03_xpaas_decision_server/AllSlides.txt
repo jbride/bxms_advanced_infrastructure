@@ -1,21 +1,22 @@
-
 include::cover.adoc[]
-
-include::brms_in_cloud.adoc[]
-include::dserver_value_add.adoc[]
-include::based_on_kieserver.adoc[]
-include::stateless_only.adoc[]
+include::intro-to-kieserver.adoc[]
+include::non-paas-kie-server-topology.adoc[]
+include::non-paas-kie-server-container-deploy.adoc[]
 include::dserver_rest_api.adoc[]
 include::batch_execution.adoc[]
 include::sample_payload.adoc[]
+include::brms_in_cloud.adoc[]
+include::dserver_value_add.adoc[]
+include::stateless_only.adoc[]
+include::paas-kie-container-deploy.adoc[]
+include::paas-kie-server-topology.adoc[]
 include::dserver_parameters0.adoc[]
-include::dserver_parameters05.adoc[]
 include::dserver_parameters1.adoc[]
 include::dserver_parameters2.adoc[]
 
 ifdef::showscript[]
 
-include::dserver_in_action.adoc[]
+include::dserver_parameters05.adoc[]
 https://access.redhat.com/documentation/en/red-hat-xpaas/
 
 endif::showscript[]

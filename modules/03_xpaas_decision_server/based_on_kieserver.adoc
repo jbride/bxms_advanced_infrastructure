@@ -2,15 +2,10 @@
 :data-uri:
 :noaudio:
 
-== KIE Server
+== xPaaS Decision Server
 
-* Runtime BRMS rules engine that exposes :
-** REST API
-** SOAP API
-* Pure runtime engine, no UI
-* Support for JSON and XML payload
-* Modular and extensible
-* Built on JBoss EAP
+* Supported Red Hat docker container image
+* Layers a _KIE Container_ onto _KIE Server_ web app running in _XPaaS Image for Red Hat JBoss EAP_
 
 ifdef::showscript[]
 

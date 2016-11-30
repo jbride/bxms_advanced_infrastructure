@@ -4,13 +4,15 @@
 
 == Value of OpenShift Based Decision Server
 
+Leverages all of the DevOps value add from a PaaS:
+
+* Standard image format for Dev, Ops and QA teams
 * Load balancing
 * Horizontal scalability
 * _Deployment Strategies_
 ** Rolling
 ** Recreate
-* CI / CD
-** ie; OCP Jenkins image
+* Can leverage PaaS CI/CD (aka: OCP Jenkins Image)
 
 In traditional, non-PaaS approach, DevOps team has to develop & manage the above considerations
 

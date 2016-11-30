@@ -2,9 +2,11 @@
 :data-uri:
 :noaudio:
 
-== Decision Server REST API
+== KIE Server REST API
 
-image::images/kie-server-api-post.png[]
+* *BATCH* URI
++
+image::images/kie-server-api-post.png[width="110%"]
 
 * *Batch* Payload examples:
 ** InsertObject

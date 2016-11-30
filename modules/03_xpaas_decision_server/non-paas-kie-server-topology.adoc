@@ -1,0 +1,12 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== KIE Server Deployment (Non-PaaS)
+
+image::images/non_paas_kserver_topology.gif[]
+
+ifdef::showscript[]
+
+
+endif::showscript[]

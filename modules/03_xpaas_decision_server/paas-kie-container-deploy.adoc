@@ -1,0 +1,45 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== XPaaS Decision Server Deployment
+
+In PaaS environment, _KIE Container_ is layered onto _Decision Server_ image during _Docker container_  _build_ phase.
+
+Supports the following:
+
+* *S2I deployment*
+** No proper version management of the built artifact
+** KJar is rebuilt from source at every deployment.
++
+Violates _build once, deploy everywhere_ principle
+** Tests are not executed as part of the S2I build
+
+* *pre-build _KJar_ Binary deployment*
+** Typically involves use of OCP Jenkins image and groovy based _Workflow_ plugin
+
+
+ifdef::showscript[]
+
+Research what differentiates between a S2I and a binary type build:
+
+- For both labs of this module, a BuildConfig object of type GIT is used
+    - this is different than typical OCP build options
+        - Git Repo Source :  BuildConfig.spec.source.type = Gt 
+        - Binary Source   :  BuildConfig.spec.source.type = Binary
+- For both labs of this module, SOURCE_REPOSITORY_URL parameter is used:
+  - 1st lab:  references URL of rules based policyquote kproject 
+    - appears that kproject build as part of jboss eap s2i and kjar artifacts end up in $JBOSS_HOME/server/deployments
+    - kieserver-install.sh inspects $JBOSS_HOME/server/deployments and moves kjars to ~/.m2/repository
+    - kieserver-pull.sh pulls all additional maven dependencies to ~/.m2/repository
+  - 2nd lab:  references URL of policyquote-ocp (containing only .s2/environment file)
+    - no kjars in $JBOSS_HOME/server/deployments; kie-server-install.sh doesn't move anything
+    - kieserver-pull.sh pulls all kjars and additional dependencies to ~/.m2/repository
+
+Research how the KIE Containers get created in the OCP KIE Server ?
+    - ultimately, kjars and dependencies appear to end up in local ~/.m2/repository
+    - what creates KIE containers from the KJars ?
+        - something in: https://github.com/jboss-openshift/openshift-kieserver ?
+
+
+endif::showscript[]

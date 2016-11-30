@@ -1,0 +1,12 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== XPaaS Decision Server _Binary_ Deployment
+
+image::images/paas_kserver_topology.gif[]
+
+ifdef::showscript[]
+
+
+endif::showscript[]

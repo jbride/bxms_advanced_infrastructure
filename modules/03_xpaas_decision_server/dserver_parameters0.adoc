@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== DecisionServer Parameters
+== XPaaS DecisionServer Params
 
 . *SOURCE_REPOSITORY_URL*
 .. URL to version controlled app source code.
@@ -14,11 +14,6 @@
 
 . *CONTEXT_DIR*
 .. Path within the Git project to build.
-.. Utilized during S2I.
-
-. *MAVEN_MIRROR_URL*
-.. URL of local Maven server that _mirrors_ all _external:*_ Maven repos
-.. Value is included in custom `<mirror\>` entry in app project pom.xml
 .. Utilized during S2I.
 
 ifdef::showscript[]

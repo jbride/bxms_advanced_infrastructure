@@ -1,0 +1,20 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Intro to BxMS KIE Server
+
+* Runtime BRMS rules engine that exposes :
+** REST API
+** SOAP API
+* Web application built on top of JBoss EAP +
+Also supported on WebLogic and WebSphere.
+* Pure runtime engine, no UI.
+* Remote APIs (REST, JMS)
+* Includes feature complete BPMS execution engine
+* Modular and extensible
+* Support for JSON and XML payload
+
+ifdef::showscript[]
+
+endif::showscript[]

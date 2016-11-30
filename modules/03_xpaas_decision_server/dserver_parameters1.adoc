@@ -2,7 +2,13 @@
 :data-uri:
 :noaudio:
 
-== DecisionServer Parameters
+== xPaaS DecisionServer Params
+
+. *MAVEN_MIRROR_URL*
+.. URL of local Maven server that _mirrors_ all _external:*_ Maven repos
+.. Value is included in custom `<mirror\>` entry in app project pom.xml
+.. Used to pull maven dependencies during S2I
+.. Used to pull built _KJar_ application if using binary deployment approach
 
 . *KIE_CONTAINER_DEPLOYMENT*
 .. Specify unique identifier of drools app(s) that execute in Decision Server

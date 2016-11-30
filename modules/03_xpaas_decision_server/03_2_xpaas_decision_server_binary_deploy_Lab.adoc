@@ -12,7 +12,7 @@ This approach is suited for development phase, but falls short once we want to p
 In particular:
 
 * There is no proper version management of the built artifact, so it is difficult to track what exactly is running in Openshift.
-* Using S2I, the kjar is rebuilt from source code at every depoyment. This goes against the _build once, deploy everywhere_ principle.
+* Using S2I, the kjar is rebuilt from source code at every deployment. This goes against the _build once, deploy everywhere_ principle.
 * Unit tests and other tests suites are not executed as part of the S2I build.
 * The S2I build is not really suited for multi-module maven projects.
 
