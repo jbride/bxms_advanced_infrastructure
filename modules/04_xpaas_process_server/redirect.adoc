@@ -4,11 +4,10 @@
 
 == Redirect Capability
 
-The Decision Server and Process Server images provide multi-version tenancy capability of kjars for KIE Containers.
-
-* Provides ability to run new versions of KIE containers concurrently with older versions of KIE containers in the same Decision Server pod.
+* The Decision Server and Process Server images allow for multiple versions of KIE Containers.
+* New versions of KIE containers can run concurrently with older versions of KIE containers in the same Process Server pod.
 * Support for older versions is especially important for stateful interactions. 
-** A BPM process that might last months.
+** ie; A BPM process that might last months.
 
 == Introduce New KIE Versions
 
@@ -22,7 +21,7 @@ The Decision Server and Process Server images provide multi-version tenancy capa
 
 The OpenShift KIE Server images allow multiple versions of the same kjars by overriding the original container id with a hash version including the version of the kjar.
 
-Let's look at an example. Say you have the following environment set:
+Example:
 
 [[app-listing]]
 [source,bash]
@@ -30,6 +29,8 @@ Let's look at an example. Say you have the following environment set:
 KIE_CONTAINER_DEPLOYMENT=processserver-library=org.openshift.quickstarts:processserver-library:1.3.0.Final|processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final
 KIE_CONTAINER_REDIRECT_ENABLED=true
 ----
+
+== Container Naming
 
 The following containers will get deployed:
 
@@ -64,9 +65,12 @@ The following containers will get deployed:
 </kie-server-state>
 ----
 
+ifdef::showscript[]
 Where did those containerId hashes come from? Each unique KIE Container deployment part. For example, *e8d626d14a44bf3cf1f127ae9fdabc91* is the MD5 sum (hex binary) of *processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final*.
 
 NOTE: The container id overriding is only done if the KIE_CONTAINER_REDIRECT_ENABLED parameter is set to true. Otherwise, if multiple versions of the same kjar are deployed with the same container id in KIE_CONTAINER_DEPLOYMENT, only the _latest_ version of that kjar/container will be deployed.
+endif::showscript[]
+
 
 == Client Targeting
 
@@ -79,7 +83,11 @@ Given that the actual container ids on the server have been renamed, how can the
 
 == Client Alias Redirects
 
-In the case where the deployment alias is used, the incoming request gets redireted to the specific deployed KIE Container in the server. There is a multi-step container-resolution process which is used to determine _which_ version of a container is targeted by the redirect. This process is followed in the REST interface by using a Servlet Filter, and in the JMS interface by using an EJB Interceptor. 
+In the case where the deployment alias is used, the incoming request gets redireted to the specific deployed KIE Container in the server. 
+
+There is a multi-step container-resolution process which is used to determine _which_ version of a container is targeted by the redirect. 
+
+This process is followed in the REST interface by using a Servlet Filter, and in the JMS interface by using an EJB Interceptor. 
 
 == Container Resolution Process
 
@@ -110,7 +118,10 @@ The process that is used to resolve the proper container id depends on the metho
 == Default Container Id
 
 If a specific container id cannot be resolved, than a default container id is selected. 
-The default container is determined as the _latest_ version of a kjar's releaseId (GAV) for the same container name. So in the above processserver-library example, the 1.3.1.Final version is the latest and thus default, not the 1.3.0.Final version.
+
+The default container is determined as the _latest_ version of a kjar's releaseId (GAV) for the same container name. 
+
+So in the above processserver-library example, the 1.3.1.Final version is the latest and thus default, not the 1.3.0.Final version.
 
 ifdef::showscript[]
 

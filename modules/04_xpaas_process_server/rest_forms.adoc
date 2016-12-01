@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== REST API: Forms
+
+image::images/rest_forms.png[width="100%"]
+
+{nbsp}
+
+image::images/descriptor-process-start-form.png[width="50%"]
+
+ifdef::showscript[]
+
+endif::showscript[]

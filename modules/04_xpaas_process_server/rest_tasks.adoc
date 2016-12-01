@@ -1,0 +1,11 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== REST API: Tasks
+
+image::images/rest_tasks.png[width="100%"]
+
+ifdef::showscript[]
+
+endif::showscript[]

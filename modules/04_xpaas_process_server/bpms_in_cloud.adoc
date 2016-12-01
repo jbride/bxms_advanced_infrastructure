@@ -5,7 +5,7 @@
 == Red Hat JBoss BPMS in Cloud
 
 * Red Hat JBoss BPMS is available as a containerized xPaaS image.
-* BPMS in OCP = _Intelligent Process Server_
+* BPMS in OCP &equiv; _Intelligent Process Server_
 
 image::images/pserver_in_registry.png[]
 
