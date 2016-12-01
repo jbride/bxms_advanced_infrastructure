@@ -17,6 +17,4 @@ include::redirect.adoc[]
 
 ifdef::showscript[]
 
-include::sample_payload.adoc[]
-
 endif::showscript[]

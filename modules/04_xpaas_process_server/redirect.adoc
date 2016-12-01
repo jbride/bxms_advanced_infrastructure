@@ -79,7 +79,7 @@ Given that the actual container ids on the server have been renamed, how can the
 
 * Full deployment part: *processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final*
 * Full deployment hash: *e8d626d14a44bf3cf1f127ae9fdabc91*
-* Deployment alias: *processserver-library* (See Client Redirects below.)
+* Deployment alias (Client Redirects): *processserver-library*
 
 == Client Alias Redirects
 
@@ -91,21 +91,8 @@ This process is followed in the REST interface by using a Servlet Filter, and in
 
 == Container Resolution Process
 
-There are multiple clients that can be used to invoke the server, depending upon the work that needs to be done.
-
-*KIE interaction*
-* org.kie.server.client.KieServicesClient
-
-*BRM interaction*
-* org.kie.server.client.RuleServicesClient
-
-*BPM interaction*
-* org.kie.server.client.ProcessServicesClient
-* org.kie.server.client.JobServicesClient
-* org.kie.server.client.QueryServicesClient
-* org.kie.server.client.UserTaskServicesClient
-
-The process that is used to resolve the proper container id depends on the method that is invoked by each of these clients. The following list describes, in order, what is used to deduce the proper container:
+The process that is used to resolve the proper container id depends on the method invoked by a client. 
+The following list describes, in order, what is used to deduce the proper container:
 
 * Process Instance Id (BPM)
 * Correlation Key (BPM)
