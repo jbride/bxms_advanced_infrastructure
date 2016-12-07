@@ -86,7 +86,7 @@ Going forward, all CLI commands will target this project.
 
 . Make sure you can access your project using the OpenShift web console:
 .. Open a browser.
-.. Navigate to the master node of OpenShift: https://master.na.openshift.opentlc.com.
+.. Navigate to the master node of OpenShift: https://master.workshop.openshift.opentlc.com.
 
 .. Log in using the same credentials you used for the CLI.
 +
