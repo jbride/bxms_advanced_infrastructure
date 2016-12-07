@@ -290,7 +290,6 @@ image::images/view_dserver.png[]
 .. Click the `+` symbol in the upper right, and select *New Repository*.
 .. Make sure the repository is not private. (Do not check that box.)
 .. Make sure the *Initialize this repository with selected file and template* box is unchecked. 
-
 +
 image::images/create_new_repo.png[]
 +
