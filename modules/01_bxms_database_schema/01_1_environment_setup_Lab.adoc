@@ -1,78 +1,73 @@
 :scrollbar:
 :data-uri:
 :toc2:
-:numbered:
-:coursevdi: link:https://drive.google.com/open?id=0B8mmXW6hJKdiNXNCamItcFFnb2M[Course Virtual Machine]
 
-= Course Introduction Lab
+== Environment Setup Lab
 
-== Course Overview
+This advanced implementation course explores best practices for provisioning and administrating secure, highly available, load-balanced business process management and rules production environments.
 
-Welcome to the _BXMS Advanced Infrastructure_ course offered by Red Hat's _Global Partner and Technical Enablement_ (GPTE) team..
+.Goals
+* Install VirtualBox and lab virtual machine (VM)
+* Review lab VM
+* Install Red Hat JBoss BPM Suite 6
 
-The intent of this course is to teach you best practices regarding the provisioning and administration of secure, highly available, load-balanced BPM and Rules production environments.
+.Prerequisites
+* Red Hat Certified System Administrator (or equivalent)
+* Experience using JBoss BPM Suite 6
+* Experience using Jenkins and Maven
+* Experience using Git (at the command line)
+* Completion of the following courses offered by Red Hat OPEN:
+** _Red Hat OpenShift Implementation_
+** _Application Development with Red Hat OpenShift_
 
-== Course Prerequisites
+.Requirements
+This course includes a VM preinstalled with the required tools. The VM is provided in VDI format and can be run on your local workstation using VirtualBox.
 
-=== Skills
-
-. Red Hat Certified System Administrator (RHCSA) (or equivalent)
-. Experience using Red Hat Business Process Management Suite (BPMS) v6
-. Experience using Jenkins and Maven
-. Experience using Git (at the command line)
-. Completion of Red Hat GPTE's _OpenShift Enterprise Implementation_ course.
-. Completion of Red Hat GPTE's _xPaaS Development using OpenShift Enterprise_ course.
-
-=== Local workstation resources
-
-This course includes a virtual machine preinstalled with the required tools.
-This VM is provided in VDI format and can be run on your local workstation using VirtualBox.
-
-Subsequently, your local workstation will require the following:
-
-* Installation of the 64-bit link:https://www.virtualbox.org/wiki/Downloads[VirtualBox application] on your local workstation.
+* A minimum of two 64-bit CPUs and 4 GB RAM dedicated to the course VM
+* Installation of VirtualBox from https://www.virtualbox.org/wiki/Downloads
 +
-NOTE:  64 bit Virtual Box is mandatory.  32 bit Virtual Box will not work for this course.
+[IMPORTANT]
+A 64-bit VirtualBox is mandatory. The 32-bit VirtualBox does not work for this course.
 
-* A minimum of two 64-bit CPUs and 4 GB RAM dedicated to the VM used in the course
+.VM Components
+The `gpte-bxms-advanced-infrastructure-630.vdi` VM image includes:
 
-== Lab Virtual Machine
-In this section you install the {coursevdi}  on your local workstation.
+* VirtualBox VDI format, built with VirtualBox 5.0.14
+* CentOS 7
+* MATE
+* OpenJDK 8
+* Maven 3.2.5
+* MariaDB 5.5.x
 
-=== Acquire
-If you are participating in an on-site Instructore Led Training (ILT), the instructor will pass around a thumb drive with the course virtual machine.
+:numbered:
 
-If you are taking this course remotely, then you'll have to gain access to the course virtual machine through different means.
+== Set Up Lab Environment
+
+In this section, you download the lab VM, install VirtualBox, and start the VM.
 
 ifdef::showscript[]
 There are two methods: either download VirtualBox directly or use BitTorrent.
 If you are familiar with BitTorrent and have a BitTorrent client, this method is usually much faster and more reliable.
 
 * BitTorrent: Download `bxms_advanced_infrastructure_1.0.torrent` found at https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab-etc/raw/master/etc/gpte-bpms-advanced-630.vdi.torrent.
-Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
+* Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
 endif::showscript[]
 
-Download the `bxms_advanced_infrastructure_1.0.vdi` VirtualBox image using one of the following methods:
+. Download the `bxms_advanced_infrastructure_1.0.vdi` VirtualBox image from https://drive.google.com/open?id=0B8mmXW6hJKdiNXNCamItcFFnb2M.
++
+[NOTE]
+If you are participating in on-site instructor-led training (ILT), expect to receive the VM from your instructor.
 
-* Direct: Download `bxms_advanced_infrastructure_1.0.vdi` directly from: https://drive.google.com/open?id=0B8mmXW6hJKdiNXNCamItcFFnb2M
-
-=== VM Operating System Credentials
-
-* The default username/password for the VM is `jboss/jboss`.
-* The `jboss` operating system user has `sudo` access.
-
-=== Install
-
-. Install VirtualBox on your local workstation by following instructions here: https://www.virtualbox.org/wiki/Downloads.
+. Install VirtualBox by following the instructions at https://www.virtualbox.org/wiki/Downloads.
 +
 [NOTE]
 The `gpte-bxms-advanced-infrastructure-630.vdi` is a 64-bit VM, so make sure that the `amd64` version of VirtualBox is installed and that virtualization is enabled in your host machine's BIOS. Refer to VirtualBox's online documentation for assistance in configuring it for your workstation.
 
-. Start VirtualBox and navigate to: *Machine -> New*.
-. In the *Create Virtual Machine* panel, populate its fields:
-* *Name:* `gpte-bxms-advanced-infrastructure`
-* *Type:* `Linux`
-* *Version:* `Red Hat (64-bit)`
+. Start VirtualBox and navigate to *Machine -> New*.
+. In the *Create Virtual Machine* panel, populate its fields with these entries:
+* *Name*: `gpte-bxms-advanced-infrastructure`
+* *Type*: `Linux`
+* *Version*: `Red Hat (64-bit)`
 . Click *Next*.
 . In the *Memory* panel, specify `4096 MB` of RAM and click *Next*.
 . In the *Hard Disk* panel:
@@ -80,50 +75,41 @@ The `gpte-bxms-advanced-infrastructure-630.vdi` is a 64-bit VM, so make sure tha
 .. Browse your hard drive and select the previously downloaded `gpte-bxms-advanced-infrastructure-630.vdi` image.
 .. Click *Create*.
 . Click *Start*.
-The virtual machine should start and display the `MATE` window manager login.
+
+* Expect the VM to start and display the MATE window manager login.
 +
-Enter a userId of `jboss` and a password of `jboss`.
+. Enter a username of `jboss` and a password of `jboss`:
 +
 image:images/wm_login.png[]
 
-. Recommended:  Enable <<vbga>> so as to leverage the full display resolution of your host machine.
+* The `jboss` operating system user has `sudo` access.
++
+[TIP]
+Enable VirtualBox Guest Additions to allow the VM to use the full display resolution of your host machine. Additional information is provided in the last section of this lab: <<vbga>>.
 
-=== VM Components
+== Explore Business Central and Process Server
 
-The `gpte-bxms-advanced-infrastructure-630.vdi` VM image has these characteristics:
+The VM comes with a script to install and configure JBoss BPM Suite's Business Central and Process Server. The Process Server is also known as the Intelligent Process Server in JBoss BPMS for OpenShift. The script installs separate instances of Business Central and Process Server. This reflects a realistic installation setup where Business Central is used at design time and where the Process Server is used as the process/rules execution runtime.
 
-* VirtualBox VDI format, built with VirtualBox version 5.0.14
-* Operating system: CentOS 7
-* Graphical environment: MATE
-* Java JDK: OpenJDK 8
-* Maven version 3.2.5
-* MariaDB version 5.5.x
+=== Review JBoss BPM Suite Install Script
 
+. In the VM, open a terminal window.
+. Ensure you are logged in as `jboss` and change to the `/home/jboss/lab` directory.
+. Review the `install-bpms.sh` shell script.
+* Note that the script creates two instances of JBoss BPM Suite:
+** `home/jboss/lab/bpms/bc`: Business Central and Red Hat JBoss Dashboard Builder, but no Process Server
+** `home/jboss/lab/bpms/kieserver`: Process Server execution runtime, but no Business Central or Dashboard Builder
+* Note that the script itself delegates to the `install-bpms-instance.sh` script in the `/opt/install/scripts/bpms` directory.
 
-== BPMS Business-Central and Kie-server
+. Review the system properties (and recommended values for a JBoss BPM Suite installation) in `standalone.conf` file in `home/jboss/lab/bpms/bc/bin` and `home/jboss/lab/bpms/kieserver/bin`.
+* The Process Server instance is configured with a `port-offset` of 150--the HTTP port is 8230, rather than 8080. This allows you to run both the Business Central and the Process Server instances concurrently.
+* The installed instances are configured to use the built-in H2 database. As part of the labs, you complete the configuration to reference MariaDB instead.
 
-The virtual machine comes with a script that will install and configure BPMS Business-Central and Kie-server. +
-The script will install a separate instance of Business-Central and Kie-server.
-This reflects a realistic installation setup where Business-Central is used at design time and where Kie-server is used as the process/rules execution runtime.
-
-=== Review
-
-. In the virtual machine, open a terminal window.
-. Ensure you are using the _jboss_ operating system user and change to the `/home/jboss/lab` directory.
-. Review the `install-bpms.sh` shell script.  Notice that the script will create two instances of BPMS:
-.. `home/jboss/lab/bpms/bc` : Business-Central workbench and DashBuilder. No Kie-server.
-.. `home/jboss/lab/bpms/kieserver` : Kie-server execution runtime, no Business-Central nor DashBuilder.
-. Also notice that the script itself delegates to the `install-bpms-instance.sh` script in the `/opt/install/scripts/bpms` directory.
-. As part of the installation, a number of system properties have been set in the `standalone.conf` file in `home/jboss/lab/bpms/bc/bin` and `home/jboss/lab/bpms/kieserver/bin`. +
-Review these system property values as they give a good idea of the system properties that should be set for a BPMS installation.
-. The Kie-server instance is configured with a port-offset of 150 - the HTTP port will be 8230 rather than 8080. This allows to run both the Business-Central as the Kie-server instance concurrently.
-. The installed instances are configured to use the built-in H2 database. As part of the labs you will complete the configuration to point to MariaDB instead.
-
-. Based on your review of the provided scripts and configuration files, try to answer the following questions:
-.. What two users will be configured for both the `kieserver` and `business-central` environments and what will be their passwords ?
-.. Where will you be able to find all of the Java system properties that define the runtime behavior of the `kieserver` and `business-central` environments ?
-.. Once started, what network interfaces of the virtual machine would you expect your `kieserver` and `business-central` runtimes to bind to ?
-.. Is a MySQL JDBC driver jar file already included in the virtual machine ?
+. Based on your review of the provided scripts and configuration files, evaluate these questions:
+* Which two users are configured for both the Process Server and Business Central environments and what are their passwords?
+* Where can you find all of the Java system properties that define the runtime behavior of the Process Server and Business Central environments?
+* Once started, which network interfaces of the VM do you expect your Process Server and Business Central runtimes to bind to?
+* Is a MySQL JDBC driver jar file already included in the VM?
 
 ifdef::showscript[]
 
@@ -132,104 +118,104 @@ ifdef::showscript[]
 3) All of them:   0.0.0.0           :   found in install-bpms.sh
 4) yes : /usr/share/java/mysql-connector-java.jar   :    found in install-bpms-instance.sh
 
-
 endif::showscript[]
 
-=== Install
-To install the BPMS instances on the virtual machines:
+=== Install JBoss BPM Suite
 
-. If not already there, change to the `/home/jboss/lab` directory, and execute the `install-bpms.sh` script.
+In this section, you install the JBoss BPM Suite instances on the VM:
+
+. If not already there, change to the `/home/jboss/lab` directory, and execute the `install-bpms.sh` script:
 +
+[source,text]
 -----
 ./install-bpms.sh
 -----
+* Expect the script to complete without errors.
+* The Process Server instance is configured as an unmanaged instance.
 
-. The script should complete without errors.
-. The Kie-server instance is configured as an unmanaged instance. If you would like to use the Business-Central instance as a controller for Kie-server, uncomment the following lines:
-.. `/home/jboss/lab/bpms/bc/bin/standalone.conf`
+.  Uncomment the following lines to use the Business Central instance as a controller for Process Server:
 +
+[source,text]
+----
+/home/jboss/lab/bpms/bc/bin/standalone.conf
+----
++
+[source,text]
 ----
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.user=jboss"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.pwd=bpms"
 ----
-.. `/home/jboss/lab/bpms/bc/bin/standalone.conf`
 +
+[source,text]
+----
+/home/jboss/lab/bpms/bc/bin/standalone.conf
+----
++
+[source,text]
 ----
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller=http://127.0.0.1:8080/business-central/rest/controller"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=kieserver"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=kieserver1!"
 ----
 
-
-== Appendix
-
 [[vbga]]
-=== Virtual Box Guest Additions
-The default display resolution of the virtual machine is rather low (1042 x 768) .
-The small display can lead to a frustrating experience as you're trying to work through the labs of this course.
+== Install and Enable VirtualBox Guest Additions (Appendix)
 
-Virtual Box allows virtual machines to use the full resolution of a hosts display via its `Guest Additions`.
+The default display resolution of the VM is rather low at 1042 x 768. VirtualBox allows VMs to use the full resolution of a host's display using VirtualBox Guest Additions.
 
-Assuming you are using a host laptop with high resolution, enabling your Virtual Box environment to make use of `Guest Additions` is highly recommended.
+If you are using a host laptop with high resolution, Red Hat recommends enabling the VirtualBox environment to use Guest Additions. This section explains how to install and enable VirtualBox Guest Additions.
 
-Do so as follows:
+=== Install Guest Additions
 
-==== Install `Guest Additions` for your host
+The VirtualBox install available from https://www.virtualbox.org/wiki/Linux_Downloads comes preinstalled with Guest Additions.
 
-===== Linux
-The Virtual Box install available from https://www.virtualbox.org/wiki/Linux_Downloads comes pre-installed with `Guest Additions`.
+No further tasks are needed if VirtualBox is installed from the download site.
 
-No futher tasks needed if you've installed Virtual Box from the above download site.
+=== Enable Guest Additions in VM
 
-===== OSX
-
-===== Windows
-
-==== Enable `Guest Additions` in the virtual machine
-
-. Ensure the virtual machine is started.
-. In the top panel of the virtual box window, click `Devices -> Insert Guest Additions CD Image`.
+. Ensure the VM is started.
+. In the top panel of the VirtualBox window, click *Devices -> Insert Guest Additions CD Image*:
 +
 image::images/select_ga.png[]
 
-. You will be prompted with an option to run the contents of the `Guest Additions` CD.
-+
-Ensure that `Open Autorun Prompt`option from the drop-down is selected and click `OK`.
+. When prompted with an option to run the contents of the Guest Additions CD image, make sure that *Open Autorun Prompt* is selected and click *OK*.
 +
 image::images/ga_prompt.png[]
-. The next prompt will ask whether you choose to run the `Guest Additions` software.  Click `Run`.
+
+. When prompted to run the Guest Additions software, click *Run*:
 +
 image::images/ga_run.png[]
-. You will be prompted for the password of the `root` operating system user.
-+
-Enter `jboss` and click `Authenticate`.
-. A terminal window in the VM should automatically pop-up and begin to build the `Guest Additions kernel modules` in the VM.
-+
-Give it a minute or two.  Eventually you will be prompted to `Press Return to close the window`.
+
+. Enter `jboss` for the password when prompted for the password of the `root` operating system user.
+. Click *Authenticate*.
+* Expect to see a terminal window open in the VM and the `Guest Additions kernel modules` build to start.
+* After a minute or two, expect to see a "Press Return to close this window" prompt:
 +
 image::images/ga_building.png[]
 
-. Bounce your virtual machine
+. Shut down and restart the VM.
+* This causes the new instance of the VM to use Guest Additions.
 
-==== Increase screen resolution of VM
+=== Increase VM Screen Resolution
 
-. Once the VM is restarted, navigate to the following in the virtual machine: `System -> Preferences -> Hardware -> Displays`
+. After the VM restarts, navigate to *System -> Preferences -> Hardware -> Displays*:
 +
 image::images/nav_display.png[]
-. Click the `Resolution` selection drop down.
-+
-Notice that you now have many more resolution options.  Select the highest display resolution provided by your host operating system.
+
+. Click the *Resolution* selection list.
+* Note that you now have more resolution options:
 +
 image::images/display_options.png[]
-. At the bottom of the `Monitor Preferences` pop-up, click:  `Apply`.
+
+. Select the highest display resolution provided by your host operating system.
+. At the bottom of the *Monitor Preferences* dialog, click *Apply*.
 
 ifdef::showscript[]
 
-Add the following to the VM;
+Add the following to the VM:
 
 1)  firewall-cmd --zone=public --add-port=8380/tcp --permanent
     firewall-cmd --zone=public --add-port=8230/tcp --permanent
     firewall-cmd --zone=public --add-port=8000/tcp --permanent
 
-ifdef::showscript[]
 endif::showscript[]

@@ -1,119 +1,147 @@
 :scrollbar:
 :data-uri:
 :toc2:
+
+== Process Server and Red Hat Single Sign-On Integration Lab
+
+In the previous labs, you added users and roles in properties files to the project you built. This allowed your project to log in to the Process Server and interact with business processes. While this is adequate for a proof-of-concept application, a centrally managed repository of users and roles is more practical for a production environment.
+
+Process Server Docker images are built on JBoss EAP xPaaS images, which have built-in support for integration with Red Hat Single Sign-On. This allows applications deployed on the JBoss EAP application server to use Red Hat Single Sign-On for user authentication and authorization. You can use the same mechanism to integrate the Process Server with Red Hat Single Sign-On.
+
+In this lab, you use SSL for all communication with and between the Process Server and the Red Hat Single Sign-On server.
+
 :numbered:
 
-= xPaaS Process Server: Integration with RH SSO Lab
+== Prepare Certificates, Keystores, and Truststores
 
-In the previous labs, we had to add users and roles in properties files inside our project to be able to log in into the Process Server and interact with business process. This might be fine for a Proof-of-Concept, but is not an appropriate solution for a real life project.
-
-The xPaaS Process Server Docker images are built on the xPaaS EAP images, which have built-in support for integration with Red Hat SSO. This allows applications deployed on the xPaaS EAP application server to use Red Hat SSO for user authentication and autorization. We can use the same mechanism to integrate the xPaaS Process Server with Red Hat SSO.
-
-In this lab we will also use SSL for all communication with and between the Process Server and the SSO server.
-
-=== Preparation of certificates, keystores and trustsores.
-
-. On the lab virtual machine, create a directory `ssl` in the lab home folder. Change to the `ssl` directory:
+. In the lab VM, change to the `ssl` directory:
 +
+[source,text]
 ----
-$ mkdir ~/home/jboss/lab/ssl
 $ cd ~/home/jboss/lab/ssl
 ----
-. Generate a CA certificate.
+
+. Generate a certificate authority (CA) certificate. If you completed the LDAP integration lab, you should already have a private key and a certificate created, and you can skip this task.
 +
+[source,text]
 ----
-$ openssl req -new -newkey rsa:4096 -x509 -keyout xpaas.key -out xpaas-ca.crt -days 365 -subj "/CN=xpaas-sso.ca"
+$ openssl genrsa -out private/acme-ca.key -des3 2048
+$ openssl req -new -x509 -key private/acme-ca.key -days 365 -out acme-ca.crt -subj "/CN=ACME Certification Authority"
 ----
+* When prompted for a passphrase, enter one, and remember it. You use it again later in the lab.
+
+. Generate a certificate for the SSL keystore to be used on the Red Hat Single Sign-On server:
 +
-Remember the key passphrase.
-. Generate a certificate for the SSL keystore to be used on the SSO server:
-+
+[source,text]
 ----
 $ keytool -genkeypair -keyalg RSA -keysize 2048 -dname "CN=rhsso-<name of your OpenShift project>.<name of your OpenShift domain>" -alias xpaas-https-key -keystore xpaas-sso-https.jks
 ----
-+
-Replace <name of your OpenShift project> and <name of your OpenShift domain> with the correct values for your environment.
-+
-Remember the keystore password. Choose the same password for the key.
+
+* Replace "<name of your OpenShift project>" and "<name of your OpenShift domain>" with the correct values for your environment.
+
+* When prompted for a keystore password, use the same password that you used for the key.
+
 . Generate a certificate for the SSL keystore to be used on the Process Server:
 +
+[source,text]
 ----
 $ keytool -genkeypair -keyalg RSA -keysize 2048 -dname "CN=policyquote-<name of your OpenShift project>.<name of your OpenShift domain>" -alias xpaas-https-key -keystore xpaas-ps-https.jks
 ----
+
+* Replace "<name of your OpenShift project>" and "<name of your OpenShift domain>" with the correct values for your environment.
+
+* When prompted for a keystore password, use the same password that you used for the key.
+
+. Create certificate signing requests (CSRs) for the keys in the keystores:
 +
-Remember the keystore password. Choose the same password for the key.
-. Create Certificate Sign Requests for the keys in our keystores:
-+
+[source,text]
 ----
 $ keytool -certreq -keyalg rsa -alias xpaas-https-key -keystore xpaas-sso-https.jks -file xpaas-sso.csr
 $ keytool -certreq -keyalg rsa -alias xpaas-https-key -keystore xpaas-ps-https.jks -file xpaas-ps.csr
 ----
-. Sign the Certificate Sign Requests with the CA certificate:
+
+. Sign the CSRs with the CA certificate:
 +
+[source,text]
 ----
-$ openssl x509 -req -CA xpaas-ca.crt -CAkey xpaas.key -in xpaas-sso.csr -out xpaas-sso.crt -days 365 -CAcreateserial
-$ openssl x509 -req -CA xpaas-ca.crt -CAkey xpaas.key -in xpaas-ps.csr -out xpaas-ps.crt -days 365 -CAcreateserial
+$ openssl ca -config ca.cnf -out xpaas-sso.crt -infiles xpaas-sso.csr
+$ openssl ca -config ca.cnf -out xpaas-ps.crt -infiles xpaas-ps.crt
 ----
+
 . Import the CA into the SSL keystores:
 +
+[source,text]
 ----
-$ keytool -import -file xpaas-ca.crt -alias xpaas.ca -keystore xpaas-sso-https.jks
-$ keytool -import -file xpaas-ca.crt -alias xpaas.ca -keystore xpaas-ps-https.jks
+$ keytool -import -file acme-ca.crt -alias acme.ca -keystore xpaas-sso-https.jks
+$ keytool -import -file acme-ca.crt -alias acme.ca -keystore xpaas-ps-https.jks
 ----
-. Import the signed Certificate Sign Request into the SSL keystores:
+
+. Import the signed CSRs into the SSL keystores:
 +
+[source,text]
 ----
 $ keytool -import -file xpaas-sso.crt -alias xpaas-https-key -keystore xpaas-sso-https.jks
 $ keytool -import -file xpaas-ps.crt -alias xpaas-https-key -keystore xpaas-ps-https.jks
 ----
+
 . Import the CA in a truststore:
 +
+[source,text]
 ----
-$ keytool -import -file xpaas-ca.crt -alias xpaas.ca -keystore truststore.jks
+$ keytool -import -file acme-ca.crt -alias xpaas.ca -keystore truststore.jks
 ----
 
-=== Red Hat SSO Server
+== Configure Red Hat Single Sign-On Server
 
-The xPaaS collection of images for OpensShift includes an image for Red Hat SSO 7.0. An ImageStream for this image is installed by default in OpenShift.
+The xPaaS collection of images for OpenShift includes an image for Red Hat Single Sign-On 7.0. An image stream for this image is installed by default in OpenShift.
 
-The SSO image uses a secret to hold the keystore and truststore created in the previous chapter. Within these images the secret is mounted as a volume on the image file system, so that they can be used by the SSO server.
+The SSO image uses a secret to hold the keystore and truststore created in the previous section. Within these images the secret is mounted as a volume on the image file system, so that it can be used by the Red Hat Single Sign-On server.
 
-. Create a service account to hold the secret.
+. Create a service account to hold the secret:
 +
+[source,text]
 ----
 $ oc create serviceaccount sso-service-account
 ----
-. Create the secret with the keystore and truststore.
+
+. Create the secret with the keystore and truststore:
 +
+[source,text]
 ----
 $ oc create secret generic sso-app-secret --from-file=xpaas-sso-https.jks --from-file=truststore.jks
 ----
+
 . Add the secret to the service account:
 +
+[source,text]
 ----
 $ oc secret add sa/sso-service-account secret/sso-app-secret
 ----
-. Change to the directory in the cloned lab project that contains the common templates for the xPaaS lab.
+. Change to the directory in the cloned lab project that contains the common lab templates.
 +
+[source,text]
 ----
 $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 ----
-. Review the `xpaas-sso-mysql-persistent.yaml` template. This is a template for the installation of Red Hat SSO server, using MySQL as a database. +
-The template defines:
-* A Service for the Red Hat SSO server, bound to port 8443.
-* A Route for the Red Hat SSO Server. The route is configured with TLS, and will be exposed using the HTTPS protocol.
-* A DeploymentConfig for the Red Hat SSO server pod. The DeploymentConfig uses the `redhat-sso70-openshift` ImageStream. It is also configured to use the service-account created in the previous paragraph. Also note that the keystore and truststore are being mounted in `/etc/eap-secret-volume` and `/etc/sso-secret-volume`.
-* A DeploymentConfig for the MySQL pod.
-* A PersistentVolumeClaim for the MySQL data volume.
+
+. Review the `xpaas-sso-mysql-persistent.yaml` template's definitions, which illustrate how to configure a Red Hat Single Sign-On server with a MySQL database:
+* A Service for the Red Hat Single Sign-On server, bound to port `8443`
+* A Route for the Red Hat Single Sign-On server. The route is configured with TLS, and is exposed using the HTTPS protocol.
+* A DeploymentConfig for the Red Hat Single Sign-On server pod. The DeploymentConfig uses the `redhat-sso70-openshift` ImageStream. It is also configured to use the service account you created previously. Also note that the keystore and truststore are mounted in `/etc/eap-secret-volume` and `/etc/sso-secret-volume`.
+* A DeploymentConfig for the MySQL pod
+* A PersistentVolumeClaim for the MySQL data volume
+
 * Parameters:
-** HTTPS_KEYSTORE: The name of the keystore file within the secret.
-** HTTPS_PASSWORD: The password for the keystore.
-** SSO_TRUSTSTORE: The name of the truststore file within the secret.
-** SSO_TRUSTSTORE_PASSWORD: The password for the truststore.
+** `HTTPS_KEYSTORE`: Name of the keystore file within secret
+** `HTTPS_PASSWORD`: Password for keystore
+** `SSO_TRUSTSTORE`: Name of the truststore file within secret
+** `SSO_TRUSTSTORE_PASSWORD`: Password for truststore
+
+* For other parameters, you can use the default or generated values.
+
+. Create an application based on the `xpaas-sso-mysql-persistent.yaml` template:
 +
-For the other parameters we can use the default or generated values.
-. Create an application based on the template:
-+
+[source,text]
 ----
 $ https_keystore=xpaas-sso-https.jks
 $ https_password=<keystore password>
@@ -121,26 +149,39 @@ $ sso_truststore=truststore.jks
 $ sso_truststore_password=<truststore password>
 $ oc process -f xpaas-sso-mysql-persistent.yaml -v HTTPS_KEYSTORE=$https_keystore,HTTPS_PASSWORD=$https_password,SSO_TRUSTSTORE=$sso_truststore,SSO_TRUSTSTORE_PASSWORD=$sso_truststore_password | oc create -f -
 ----
-. Once all components are up, you should see the Red Hat SSO application in the OpenShift console.
+* Once all of the components are up, expect to see the Red Hat Single Sign-On application in the OpenShift web console:
 +
 image::images/ocp-sso-application.png[]
-+
-Note that the `rhsso` route is exposed over HTTPS.
-. Open a web browser, and navigate to <URL of the rhsso route>/auth/admin. Login with `admin/admin`. +
-Your browser will warn you that the connection is unsafe. This is expected as our SSL certificate has not been signed by a trusted CA.
-. Create a new Realm. On the home page, hover over the `Master` realm, and click on the `Add realm` button to create a new realm.
+
+* Note that the `rhsso` route is exposed over HTTPS.
+
+. Open a web browser, navigate to "<URL of the rhsso route>/auth/admin", and log in with a username of `admin` and password of `admin`.
+
+* Because the SSL certificate is not signed by a trusted CA, expect to see a warning that the connection is unsafe.
+
+== Create Realm
+
+. On the home page, hover over the `Master` realm and click *Add realm* to create a new realm:
 +
 image::images/rh-sso-new-realm.png[]
-. In the `Add Realm` pane, click on `Select file`, and select the `processserver-realm.json` file in the `xpaas/common/export` directory of the lab project. Click `Create`. +
-This creates the realm, a client for curl, as well as a number of roles that can be used for the Policyquote-process application.
-. In the `Processserver` realm pane, click on `Import`. Select the `processserver-users-0.json` file in the `xpaas/common/export` directory of the lab project and click `Import` to import user definitions. +
-All users have the password `user`.
-. Create a `openid-connect` client for the Process Server. +
-In the `Processserver` realm pane, select `Clients`, and click the `Create` button.
-. Name the client `process-server`, and make sure the protocol is set to `openid-connect`. Leave the other fields blank. Click `Save`.
-. On the `Settings` page of the `process-server` client, select `bearer-only` for the Access type. Click `Save`.
-. Test that the realm is working correctly with curl:
+
+. In the *Add Realm* pane, click *Select file*, and select the `processserver-realm.json` file in the `xpaas/common/export` directory of the lab project.
+
+. Click *Create*.
+
+* This creates the realm, a client for curl, and a number of roles that can be used for the `policyquote-process` application.
+
+. In the `Processserver` realm pane, click *Import*.
+. Select the `processserver-users-0.json` file in the `xpaas/common/export` directory of the lab project and click *Import* to import user definitions.
+* All users have the `user` password.
+
+. In the `Processserver` realm pane, select *Clients*, and click *Create*  to create an `openid-connect` client for the Process Server.
+
+. Name the client `process-server`, make sure the protocol is set to `openid-connect`, leave the other fields blank, and click *Save*.
+. On the *Settings* page of the `process-server` client, for the access type select `bearer-only`, and click *Save*.
+. Test that the realm is working correctly:
 +
+[source,text]
 ----
 $ rhsso_url=<URL of the RH SSO server>
 $ cacert=<path to the xpaas-ca.crt certificate file>
@@ -154,61 +195,85 @@ $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-conne
 | sed 's/.*access_token":"//g' | sed 's/".*//g')
 $ echo $TKN
 ----
+
+* Expect to obtain an encoded token:
 +
-You should obtain an encoded token:
-+
+[source,text]
 ----
 $ echo $TKN
 eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIyNWIwYjc1MS0yNGQxLTQ2MmUtYjBlMy0yYmYyZjc0YmM3ZWIiLCJleHAiOjE0NzgzNzA4MzAsIm5iZiI6MCwiaWF0IjoxNDc4MzcwNTMwLCJpc3MiOiJodHRwczovL3Joc3NvLXhwYWFzLm9wZW5zaGlmdC5jZGsudm0vYXV0aC9yZWFsbXMvcHJvY2Vzc3NlcnZlciIsImF1ZCI6ImN1cmwiLCJzdWIiOiI4NDUxZjk0MC0yYjgzLTQ3YjMtYWM3ZC04ZjQwMGUwMDE1OTciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjdXJsIiwic2Vzc2lvbl9zdGF0ZSI6IjliYzUzZjViLTQ0NDUtNDE0OS04MGEyLTgxY2ZiYTJjNDljNyIsImNsaWVudF9zZXNzaW9uIjoiY2JjNmEyZDgtMDk2MC00ZjQ1LWE2ZTctNzU2M2E1ODI1ODBlIiwiYWxsb3dlZC1vcmlnaW5zIjpbXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImFnZW50Iiwia2llLXNlcnZlciIsImdyb3VwMSJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJ2aWV3LXByb2ZpbGUiXX19LCJuYW1lIjoiIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlcjEifQ.Lpo3ztry9C6Zz4XLMRmZzMzYOWa0Mvh2FOFSgze1RWnb_GaK02qpHD2stcoehFOysERbPi2kC0RVGT1sAhQNa8FeLXd4gOjxeasrlyP8WlvcVkCJaBE2bdXOi_juQMqVEAymFgsDEI9JciJvuOsB8lWM8pdPan5JnrxWSi4b0-TTsUt4gibDjFZGO0eUbHeEbRFvSnYZeGp2CpzjB60r3k3xjAi5umTiUih8KSjZWfWOHbp7BFrcFT6gFpqI2aznEpPhWAh8Jiedj1ZbRamqW8BE6mja-cOywx-5taY9vD7vbWuW42HCgmQbilbZ8SHMlG2yhpJO7joSX4CRSsxWrw
 ----
 
-=== Process Server deployment project
+== Create Process Server Deployment Project
 
-. Open a browser window and navigate to the Gogs server on OpenShift. Login with your username and password.
-. Create an organization `process-server-sso`. Create a repository `policyquote-process-sso-ocp` in the `process-server-sso` organization.
-. On the lab virtual machine, open a terminal and change to the lab home folder.
+. Open a browser window, navigate to the Gogs server on OpenShift, and log in with your username and password.
+. Create a `process-server-sso` organization.
+. Create a `policyquote-process-sso-ocp` repository in the `process-server-sso` organization.
+
+. In the lab VM, open a terminal and change to the lab home folder:
 +
+[source,text]
 ----
 $ cd /home/jboss/lab
 ----
-. Create a directory `policyquote-process-sso-ocp`. Change to this directory.
+
+. Create the `policyquote-process-sso-ocp` directory and change to this directory:
 +
+[source,text]
 ----
 $ mkdir policyquote-process-sso-ocp
 $ cd policyquote-process-sso-ocp
 ----
-. Create a directory `.s2i`, and create a file `environment` within that directory.
+
+. Create the `.s2i` directory and create an `environment` file within that directory:
 +
+[source,text]
 ----
 $ mkdir .s2i
 $ touch .s2i/environment
 ----
-. Open the `environment` file for editing, and set the content to:
+
+. Open the `environment` file for editing, and set the contents to the following:
 +
+[source,text]
 ----
 KIE_CONTAINER_DEPLOYMENT_OVERRIDE=policyquote-process=com.redhat.gpte.xpaas.process-server:policyquote-process:1.0.0
 ----
+
+* This tells the Process Server to deploy the `1.0.0` version of the `policyquote-process` project into a KIE container with the `policyquote-process` alias.
+* The kjar is already published in the Nexus repository as part of the earlier lab.
+
+. Save the file.
+
+== Copy Red Hat Single Sign-On Client Adapter Configuration
+
+To configure the Process Server to use Red Hat Single Sign-On for authentication, you must copy the Red Hat Single Sign-On client adapter configuration to a file called `secure-deployments`. During the S2I build, the contents of this file are merged into the Process Server configuration file.
+
+. In the `policyquote-process-sso-ocp` project, create a directory named `configuration`, and in that directory, create a file called `secure-deployments`:
 +
-This tells the Process Server to deploy the `1.0.0` version of the policyquote-process project into a KIE-container with alias `policyquote-process`. The kjar should already be published in the Nexus repository as part of the previous lab.
-+
-Save the file.
-. To configure the Process Server to use Red Hat SSO for authentication, we need to copy the Red Hat SSO client adapter configuration to a file called `secure-deployments`. +
-During the S2I build, the contents of this file will be merged into the Process Server configuration file.
-.. In the `policyquote-process-sso-ocp` project, create a directory `configuration`, and in that directory create a file called `secure-deployments`.
-+
+[source,text]
 ----
 $ mkdir configuration
 $ touch configuration/secure-deployments
 ----
-.. Open the `secure-deployments` file for editing.
-.. In a browser window, go to the Red Hat SSO server, and navigate to the `process-server` client page of the `Processserver` realm. +
-Click on `Installation`, and select the `Keycloak OIDC JBOss Subsystem XML` format.
+
+. Open the `secure-deployments` file for editing.
+
+. In a browser window, go to the Red Hat Single Sign-On server, and navigate to the `process-server` client page of the `Processserver` realm.
+
+. Click *Installation*, and select the `Keycloak OIDC JBoss Subsystem XML` format:
 +
 image::images/rh-sso-client-installation.png[]
-.. Copy the XML fragment and copy into the `secure-deployments` file.
-.. Change the `WAR MODULE NAME.war` value of the `secure-deployments` tag to `kie-server.war`.
-.. Add configuration for CORS, the principal attribute and the truststore. The `secure-deployments` file should look like:
+
+. Copy the XML fragment and paste it into the `secure-deployments` file.
+
+. Change the `WAR MODULE NAME.war` value of the `secure-deployments` tag to `kie-server.war`.
+
+. Add configuration for CORS, the principal attribute, and the truststore.
+
+* Expect the `secure-deployments` file to look similar to this:
 +
+[source,xml]
 ----
 <secure-deployment name="kie-server.war">
     <realm>processserver</realm>
@@ -226,19 +291,24 @@ image::images/rh-sso-client-installation.png[]
     <truststore-password>password</truststore-password>
 </secure-deployment>
 ----
+
+* Note that your value for `auth-server-url` and `truststore-password` are different.
+
+. Save the `secure-deployments` file.
+
+== Change Authentication Method
+
+. In the `policyquote-process-sso-ocp` project, create the directory `.s2i/bin`, and in that directory create a `run` file:
 +
-Note that your value for `auth-server-url` and `truststore-password` will be different.
-.. Save the `secure-deployments` file.
-. Finally, we need a way to change the authentication method as defined in the `web.xml` descriptor of the `kie-server.war` deployment of the Process Server. This value needs to change from `BASIC` to `KEYCLOAK` for the Process Server to use SSO authenticaton. +
-In the current version of the Process Server image, we cannot achieve this by configuration, so we need to override the S2I script that launches the Process Server.
-.. In the `policyquote-process-sso-ocp` project, create the directory `.s2i/bin`, and in that directory create a file `run`.
-+
+[source,text]
 ----
 $ mkdir .s2i/bin
 $ touch .s2i/bin/run
 ----
-.. Open the `.s2i/bin/run` for editing, and set the contents to:
+
+. Open the `.s2i/bin/run` for editing, and set the contents to:
 +
+[source,text]
 ----
 #!/bin/sh
 
@@ -246,14 +316,18 @@ sed -i "s'<auth-method>.*</auth-method>'<auth-method>KEYCLOAK</auth-method>'g" $
 
 exec $JBOSS_HOME/bin/kieserver-launch.sh
 ----
-+
-This script uses `sed` to change the value of the authentication method in the `web.xml` of the `kie-server.war` deployment. It then launches the Process Server start script.
-.. Save the file
-. At this point, the structure of the `policyquote-process-sso-ocp` project should look like:
+
+* This script uses `sed` to change the value of the authentication method in the `web.xml` of the `kie-server.war` deployment. It then launches the Process Server start script.
+
+. Save the file.
+
+* Expect the structure of the `policyquote-process-sso-ocp` project to look like this:
 +
 image::images/policyquote-process-sso-ocp.png[]
+
 . Push the `policyquote-process-sso-ocp` to the Gogs server:
 +
+[source,text]
 ----
 $ git init
 $ git remote add gogs http://<gogs username>:<gogs password>@<url of the gogs route>/process-server-sso/policyquote-process-sso-ocp.git
@@ -262,35 +336,47 @@ $ git commit -m "initial commit"
 $ git push gogs master
 ----
 
-=== Process Server application
+== Deploy Process Server Application
 
-Now we are ready to deploy the Process Server application.
+You are ready to deploy the Process Server application.
 
-. Create a service account the hold the secret with the keystore and truststore for SSL:
+. Create a service account to hold the secret with the keystore and truststore for SSL:
 +
+[source,text]
 ----
 $ oc create serviceaccount processserver-service-account
 ----
+
+. Navigate to the directory where you created the keystore and truststore files.
+
+. Create the secret with the keystore and truststore:
 +
-. Create the secret with the keystore and truststore. Navigate to the directory where you created the keystore and truststore files.
-+
+[source,text]
 ----
 $ oc create secret generic processserver-app-secret --from-file=xpaas-ps-https.jks --from-file=truststore.jks
 ----
+
 . Add the secret to the service account:
 +
+[source,text]
 ----
 $ oc secret add sa/processserver-service-account secret/processserver-app-secret
 ----
+
 . Change to the directory in the cloned lab project that contains the templates for the Process Server lab:
 +
+[source,text]
 ----
 $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/process-server
 ----
-. Review the `processserver-sso-mysql-persistent-s2i.yaml` template. +
-This template is similar to the Process Server application template we used previously, except that it is configured to use HTTPS as transport protocol.
-. Issue the following commands (replace expressions between <> with correct values for your environment) to create the application:
+
+. Review the `processserver-sso-mysql-persistent-s2i.yaml` template.
+
+* This template is similar to the Process Server application template you used previously, except that it is configured to use HTTPS as the transport protocol.
+
+. Create the application, replacing expressions between "< >" with the correct values for your environment:
 +
+[source,text]
 ----
 $ application_name=policyquote
 $ source_repo=http://gogs:3000/process-server-sso/policyquote-process-sso-ocp.git
@@ -301,14 +387,20 @@ $ https_name=xpaas-https-key
 $ https_password=<keystore password>
 $ oc process -f processserver-sso-mysql-persistent-s2i.yaml -v APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/,HTTPS_KEYSTORE=$https_keystore,HTTPS_NAME=$https_name,HTTPS_PASSWORD=$https_password | oc create -f -
 ----
-. Once all components are up, you should see the Policyquote application in the OpenShift console.
+
+* Once all of the components are up, expect to see the `policyquote-mysql` application in the OpenShift web console:
 +
 image::images/ocp-policyquote-application.png[]
+
+* Note that the `policyquote` route is exposed over HTTPS.
+
+== Test Application
+
+Before issuing a `curl` command against the Process Server, you must obtain a token from the Red Hat Single Sign-On server, and pass it to the Process Server.
+
+. Obtain a token as `user1`:
 +
-Note that the `policyquote` route is exposed over HTTPS.
-. We can use curl to test the application. Before issuing a curl command against the Process Server, a token must be obtained from the Red Hat SSO Server, and that token must be passed to the Process Server. +
-To obtain a token, as `user1`:
-+
+[source,text]
 ----
 $ rhsso_url=<URL of the RH SSO server>
 $ cacert=<path to the xpaas-ca.crt certificate file>
@@ -321,23 +413,25 @@ $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-conne
   --cacert $cacert \
 | sed 's/.*access_token":"//g' | sed 's/".*//g')
 ----
-. To check which KIE-Containers are deployed on the server:
+
+. Check which KIE containers are deployed on the server:
 +
+[source,text]
 ----
 $ policyquote_url=<URL of the Process Server>
 $ curl -X GET -H "Accept: application/json" -H "Authorization: Bearer $TKN" --cacert $cacert "$policyquote_url/kie-server/services/rest/server/containers"
 ----
+
+* Basic authentication (using `--user user1:user` instead of `-H "Authorization: Bearer $TKN"` in the curl request) no longer works, and returns an HTTP `401` code.
+
+. Using the `curl` commands from the _Test Sample Application_ section of the _Process Server S2I Deployments Lab_, test the `policyquote-process` route.
+
+* For example, to start a new process:
 +
-Note that basic authentication (using `--user user1:user` instead of `-H "Authorization: Bearer $TKN"` in the curl request) does not longer work, and returns a HTTP 401 code.
-. Using the curl commands from the first chapter of the lab, you can test the policyquote-process. +
-For example to start a new process:
-+
+[source,text]
 ----
 curl -X POST -H "Accept: application/json" -H "Content-Type: application/json" -H "Authorization: Bearer $TKN" --cacert $cacert -d @policyquote-start-process-payload.json "$policyquote_url/kie-server/services/rest/server/containers/policyquote-process/processes/policyquote.PolicyQuoteProcess/instances"
 ----
 +
-Remember to get a new token when you want to switch users. Change the username in the curl token request accordingly. Tokens have a limited lifespan. You will have to request a new token if the current one is expired.
-
-
-ifdef::showscript[]
-endif::showscript[]
+[IMPORTANT]
+Tokens have a limited lifespan. If the current one is expired, request a new one. Be sure to get a new token when you want to switch users and change the username in the curl token request accordingly.
