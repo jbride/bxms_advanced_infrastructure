@@ -56,7 +56,7 @@ In this section of the lab, you register for the ability to create a project in 
 image::images/cf_login.png[]
 
 . Enter your OPENTLC username and password and click *Login*.
-. Navigate to *Services -> Catalogs -> OPENTLC Cloud Infrastructure Labs -> OpenShift Foundations 3.3 - Beta - NA*:
+. Navigate to *Services -> Catalogs -> OPENTLC Middleware Solutions Labs -> BXMS_Infra*:
 +
 image::images/cf_course_selection_project.png[]
 
@@ -74,7 +74,7 @@ image::images/cf_submit_button.png[]
 . At the command line of your workstation (pre-installed with the _oc_ utility), log into the OpenShift environment:
 +
 ----
-$ oc login https://master.na.openshift.opentlc.com
+$ https://master.workshop.openshift.opentlc.com:443
 ----
 +
 You will be prompted for your Red Hat GPTE (OPENTLC) SSO credentials.
