@@ -71,15 +71,16 @@ image::images/cf_submit_button.png[]
 +
 [source,text]
 ----
-$ https://master.workshop.openshift.opentlc.com:443
+$ oc login https://master.workshop.openshift.opentlc.com:443
 ----
 
 * You will be prompted for your OPENTLC SSO credentials.
 
-. Create a new project:
+. Notice that an OCP project will have already been created for you :
 +
 -----
-$ oc new-project <your initials>-bxmsinfra
+$ oc project
+Using project "jbride-test-bxms-infra" on server "https://master.workshop.openshift.opentlc.com:443".
 -----
 +
 Going forward, all CLI commands will target this project.
