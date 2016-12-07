@@ -3,7 +3,7 @@
 :toc2:
 
 
-== Binary Deployment Lab
+== Decision Server Binary Deployment Lab
 
 
 In the previous lab of this module, the rules kjar was built during the S2I process on the Decision Server image.

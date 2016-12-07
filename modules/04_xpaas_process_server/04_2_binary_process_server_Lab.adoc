@@ -2,7 +2,7 @@
 :data-uri:
 :toc2:
 
-== Process Server Binary Deployment with Alias Redirection Lab
+== Process Server Binary Deployment Lab
 
 Because of the state involved with processes versus the stateless nature of business rules invocations, managing changes in a Process Server application is more complex than with Decision Server applications.
 

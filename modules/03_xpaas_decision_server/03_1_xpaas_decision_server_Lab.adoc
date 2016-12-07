@@ -4,7 +4,7 @@
 :ocdownload: link:https://access.redhat.com/downloads/content/290/ver=3.3/rhel---7/3.3.0.35/x86_64/product-software[OpenShift CLI client]
 
 
-== OpenShift Realtime Decision Server Lab
+== Decision Server S2I Deployment Lab
 
 
 This module covers the Realtime Decision Server feature of JBoss BRMS for OpenShift. The Decision Server runtime is configured for deployment on OpenShift Container Platform. The Decision Server supports source-to-image (S2I) builds, as well as binary deployments starting from prebuilt kjars.
