@@ -4,7 +4,7 @@
 
 == KIE Server REST API
 
-* *BATCH* URI
+* Decision Server *BATCH* URI
 +
 image::images/kie-server-api-post.png[width="110%"]
 

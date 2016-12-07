@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== Non-PaaS KIE Container Deployment
+== KIE Container Deployment
 
 In non-PaaS environment, KIE Container can be deployed by invoking the KIE Server
 
