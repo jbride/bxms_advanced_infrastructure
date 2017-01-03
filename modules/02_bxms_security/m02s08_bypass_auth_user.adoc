@@ -2,15 +2,13 @@
 :data-uri:
 :noaudio:
 
-== `UserGroupCallback`
+== Bypass Authenticated User
 
-.Configuration
-* In Process Server, alternative implementations can be plugged in through system properties
-* Example: Using provided LDAP implementation:
-** `org.jbpm.ht.callback=ldap`
-** `jbpm.usergroup.callback.properties=<URI of callback configuration file>`
-* Example: Using custom implementation:
-** `org.jbpm.ht.callback=custom`
-** `org.jbpm.ht.custom.callback=<FQN of implementation class>`
+* Log in to Process Server with a _system_ user.
+* Task operations performed on behalf of a real user.
+* Real username passed in as query parameter to the Remote API.
+* Front-end applications do not require knowledge of user passwords.
+* Enable with system property `org.kie.server.bypass.auth.user=true`
+* When enabled, requires configuration of a `UserGroupCallBack` implementation.
+** Default callback returns the group information of the system user.
 
- 
