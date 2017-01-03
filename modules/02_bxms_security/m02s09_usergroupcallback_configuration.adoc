@@ -2,12 +2,16 @@
 :data-uri:
 :noaudio:
 
-== Configuration of UserGroupCallback implementation
+== `UserGroupCallback` 
 
-* In process server, alternative implementations can be plugged in through system properties.
-* Example, to use provided LDAP implementation:
+.Configuration
+
+* In Process Server, alternative implementations can be plugged in through system properties
+* To use provided LDAP implementation:
 ** `org.jbpm.ht.callback=ldap`
 ** `jbpm.usergroup.callback.properties=<URI of callback configuration file>`
-* To use a custom implementation:
+* To use custom implementation:
 ** `org.jbpm.ht.callback=custom`
 ** `org.jbpm.ht.custom.callback=<FQN of implementation class>`
+
+ 

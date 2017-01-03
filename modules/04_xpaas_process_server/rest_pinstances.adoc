@@ -2,9 +2,11 @@
 :data-uri:
 :noaudio:
 
-== REST API: Process Instances
+== REST API
 
-image::images/rest_pinstances.png[width="100%"]
+.Process Instances
+
+image:images/rest_pinstances.png[]
 
 ifdef::showscript[]
 

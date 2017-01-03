@@ -2,10 +2,12 @@
 :data-uri:
 :noaudio:
 
-== Security in BRMS/BPMS
+== Security in JBoss BPMS/BRMS
 
-* Where does security kick in?
-** Business Central GUI application
-** Business Central remote APIs
-** Decision Server, Process Server remote APIs
-** BPMS: resolution of users and groups for User Tasks
+* Business Central UI application
+* Business Central remote APIs
+* Decision Server & Process Server remote APIs
+* Intelligent Process Server of JBoss BPM Suite for OpenShift remote APIs
+* JBoss BPM Suite: User Tasks resolution of users and groups
+
+ 

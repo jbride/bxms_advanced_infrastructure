@@ -2,14 +2,14 @@
 :data-uri:
 :noaudio:
 
-== BPMS Database
+== JBoss BPM Suite Database
 
 Persistence needed for:
 
-* Process Instance state
+* Process instance state
 * Human Task state
 * BAM audit trail
-* Executor Jobs
+* Executor jobs
 * Quartz based timers
 
 

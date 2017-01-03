@@ -1,0 +1,17 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Container Resolution Process
+
+* Resolution of proper container ID depends on method invoked sequentially by client:
+
+** (1) Process Instance ID (BPM)
+** (2) Correlation Key (BPM)
+** (3) Task Instance ID (BPM)
+** (4) Work Item ID (BPM)
+** (5) Job Request ID (BPM)
+** (6) Conversation ID (KIE, BRM, BPM)
+** (7) Default Container ID (KIE, BRM, BPM)
+
+ 

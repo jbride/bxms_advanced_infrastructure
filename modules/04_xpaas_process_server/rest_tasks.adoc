@@ -2,9 +2,11 @@
 :data-uri:
 :noaudio:
 
-== REST API: Tasks
+== REST API
 
-image::images/rest_tasks.png[width="100%"]
+.Tasks
+
+image:images/rest_tasks.png[]
 
 ifdef::showscript[]
 

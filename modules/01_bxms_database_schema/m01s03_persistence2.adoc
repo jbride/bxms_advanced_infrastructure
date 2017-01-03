@@ -2,16 +2,13 @@
 :data-uri:
 :noaudio:
 
-== Persistence in BRMS/BPMS (2)
+== Persistence in JBoss BPMS/BRMS
 
-* Configuration and deployments
-** Business-Central
-*** System git repository
-*** Database (deployments)
-** KIE-Server
-*** File system for _unmanaged_ instances
-*** Business-Central Controller for _managed_ instances
+.Configuration and Deployments
+* Business Central
+** System Git repository
+** Database (deployments)
+* Decision Server, Process Server
+** File system for _unmanaged_ instances
+** Business Central Controller for _managed_ instances
 
-* Runtime Data Persistence
-** BRMS: not required
-** BPMS: SQL database

@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Client Targeting
+
+* In most cases, clients must target particular container by name to execute server-side functions
+
+* Actual container IDs on the server renamed--client code can do this by:
+
+** Full deployment part: `processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final`
+** Full deployment hash: `e8d626d14a44bf3cf1f127ae9fdabc91`
+** Deployment alias (Client Redirects): `processserver-library`
+
+ 

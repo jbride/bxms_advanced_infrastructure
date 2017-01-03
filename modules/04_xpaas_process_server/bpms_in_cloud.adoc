@@ -2,11 +2,11 @@
 :data-uri:
 :noaudio:
 
-== Red Hat JBoss BPMS in Cloud
+== JBoss BPM Suite in Cloud
 
-* Red Hat JBoss BPMS is available as a containerized xPaaS image.
-* BPMS in OCP &equiv; _Intelligent Process Server_
-
+* JBoss BPM Suite available as containerized xPaaS image
+* JBoss BPM Suite in OpenShift &equiv; _Intelligent Process Server_
++
 image::images/pserver_in_registry.png[]
 
 ifdef::showscript[]

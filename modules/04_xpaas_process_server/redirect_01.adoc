@@ -1,0 +1,12 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Redirect Capability
+
+* Decision Server and Process Server images allow for multiple versions of KIE containers
+* Updated versions of KIE containers can run concurrently with earlier versions of KIE containers in same Process Server pod
+* Support for earlier versions especially important for stateful interactions
+** Example: BPM process lasting months
+
+ 

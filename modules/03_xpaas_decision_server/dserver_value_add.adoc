@@ -4,15 +4,13 @@
 
 == Value of OCP Decision Server
 
-Leverages all of the DevOps value add from a PaaS:
+* Leverages all DevOps advantages from PaaS:
 
-* Standard image format for Dev, Ops and QA teams
-* Load balancing
-* Horizontal scalability
-* _Deployment Strategies_
-** Rolling
-** Recreate
-* Can leverage PaaS CI/CD (aka: OCP Jenkins Image)
+** Standard image format for Development, Operations, QA teams
+** Load balancing
+** Horizontal scalability
+** Deployment strategies: Rolling and recreate
+* Can leverage PaaS CI/CD--for example, OpenShift Jenkins image
 
 In traditional, non-PaaS approach, DevOps team has to develop & manage the above considerations
 

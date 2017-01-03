@@ -2,16 +2,16 @@
 :data-uri:
 :noaudio:
 
-== KIE Server REST API
+== Decision Server REST API
 
-* Decision Server *BATCH* URI
+* Decision Server Batch URI:
 +
-image::images/kie-server-api-post.png[width="110%"]
+image::images/kie-server-api-post.png[]
 
-* *Batch* Payload examples:
-** InsertObject
-** StartProcess (for RuleFlow)
-** FireAllRules
+* Batch payload examples:
+** `InsertObject`
+** `StartProcess` (for `RuleFlow`)
+** `FireAllRules`
 
 ifdef::showscript[]
 

@@ -2,14 +2,14 @@
 :data-uri:
 :noaudio:
 
-== Runtime Data Persistence in BPMS
+== Runtime Data Persistence
 
-* What needs to be persisted?
-** Process and task instance state
-** Timers and signals
-** Jobs
-** Session state: depends on the runtime strategy
-*** _Per Process Instance_: session is persisted in the database
-*** _Singleton_ : session is serialized to disk at server shutdown
-*** _Per Request_ : no session persistence
-** Audit logs for processes and tasks
+* Process and task instance state
+* Timers and signals
+* Jobs
+* Session state: Depends on runtime strategy
+** Per Process Instance: Session persisted in database
+** Singleton: Session serialized to disk at server shutdown
+** Per Request: No session persistence
+* Audit logs for processes and tasks
+ 

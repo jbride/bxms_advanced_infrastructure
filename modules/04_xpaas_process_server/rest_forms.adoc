@@ -2,13 +2,15 @@
 :data-uri:
 :noaudio:
 
-== REST API: Forms
+== REST API
 
-image::images/rest_forms.png[width="100%"]
+.Forms
+
+image:images/rest_forms.png[]
 
 {nbsp}
 
-image::images/descriptor-process-start-form.png[width="50%"]
+image:images/descriptor-process-start-form.png[]
 
 ifdef::showscript[]
 

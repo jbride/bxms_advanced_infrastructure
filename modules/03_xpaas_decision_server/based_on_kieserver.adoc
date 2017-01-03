@@ -4,8 +4,8 @@
 
 == xPaaS Decision Server
 
-* Supported Red Hat docker container image
-* Layers a _KIE Container_ onto _KIE Server_ web app running in _XPaaS Image for Red Hat JBoss EAP_
+* Supported Red Hat Docker container image
+* Layers KIE Container onto KIE Server web application running in XPaaS Image for Red Hat JBoss EAP
 
 ifdef::showscript[]
 

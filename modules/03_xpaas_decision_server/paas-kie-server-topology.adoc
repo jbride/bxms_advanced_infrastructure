@@ -2,9 +2,11 @@
 :data-uri:
 :noaudio:
 
-== XPaaS Decision Server _Binary_ Deployment
+== xPaaS Decision Server
 
-image::images/paas_kserver_topology.gif[]
+.Binary Deployment
+
+image:images/paas_kserver_topology.gif[]
 
 ifdef::showscript[]
 

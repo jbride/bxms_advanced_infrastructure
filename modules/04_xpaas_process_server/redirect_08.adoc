@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Default Container ID
+
+* Selected if specific container ID not resolved
+
+* Default container determined as _latest_ version of kjar's `releaseId` (GAV) for same container name
+
+* In previous `processserver-library` example:
+** `1.3.1.Final` version is latest, thus default
+** Not `1.3.0.Final` version
+
+ 

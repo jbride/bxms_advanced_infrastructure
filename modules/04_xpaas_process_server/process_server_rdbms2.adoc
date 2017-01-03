@@ -2,13 +2,15 @@
 :data-uri:
 :noaudio:
 
-== MySQL
+== JBoss BPM Suite Database
 
-OCP Process Server can run on MySQL
+.MySQL
 
-** Templates: 
-*** _processserver63-mysql-persistent-s2i_
-*** _processserver63-amq-mysql-persistent-s2i_
+* Intelligent Process Server can run on MySQL
+
+** Templates:
+*** `processserver63-mysql-persistent-s2i`
+*** `processserver63-amq-mysql-persistent-s2i`
 ** Supported MySQL image:
 +
 image::images/mysql_image.png[]

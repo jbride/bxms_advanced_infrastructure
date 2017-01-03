@@ -1,0 +1,14 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== New KIE Versions
+
+* Set `KIE_CONTAINER_REDIRECT_ENABLED` to `true`
+* Specify `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` variable in `./sti/environment` file
+** Overrides `KIE_CONTAINER_DEPLOYMENT` variable in template
+* When new version available:
+** Change `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` variable to include _both_ old _and_ new container deployments using _same_ container ID, and commit to source control
+** https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers[GitHub Webhooks] mechanism can then pick up updated `./sti/environment` file in source, triggering new S2I build
+
+ 

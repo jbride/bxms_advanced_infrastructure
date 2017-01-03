@@ -2,14 +2,16 @@
 :data-uri:
 :noaudio:
 
-== Embedded HornetQ
+== JBoss BPM Suite Messaging
 
-OCP Process Server can leverage embedded HornetQ
+.Embedded HornetQ
 
-** Templates: 
-*** _processserver63-mysql-persistent-s2i_
-*** _processserver63-postgresql-persistent-s2i_
-** Hornetq Broker embedded in process server :
+* Intelligent Process Server can leverage embedded HornetQ
+
+** Templates:
+*** `processserver63-mysql-persistent-s2i`
+*** `processserver63-postgresql-persistent-s2i`
+** HornetQ broker embedded in process server:
 +
 image::images/pserver_in_registry.png[]
 

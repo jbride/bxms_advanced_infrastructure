@@ -2,13 +2,10 @@
 :data-uri:
 :noaudio:
 
-== Persistence and safe points
+== Persistence and Safe Points
 
-* When is persistence happening in BPMS?
-** When process execution reaches a safe point
-** Safe points are:
-*** End node
-*** Wait state
-*** Node marked as async
-** Process excution happens in the context of a JTA transaction.
-** In case of error, rollback to previous persisted state.
+* In JBoss BPM Suite, state is persisted when process execution reaches safe point
+** Safe points: end node, wait state, node marked as `async`
+** Process executes in context of JTA transaction
+** Rollback to previous persisted state in case of error
+ 

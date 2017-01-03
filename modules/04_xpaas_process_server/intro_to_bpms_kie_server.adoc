@@ -2,8 +2,11 @@
 :data-uri:
 :noaudio:
 
-== BPMS Capabilities in KIE Server
+== Intelligent Process Server
 
+.Capabilities
+
+[source,xml]
 -----
 <kie-server-info>
   
@@ -16,8 +19,8 @@
 </kie-server-info>
 -----
 
-* BPM extension : Process, Task, & Asynch Jobs execution.
-* BPM-UI extension: Form Definitions & process image.
+* BPM extension: process, task, and asynchronous job execution
+* BPM-UI extension: Form definitions and process image
 
 ifdef::showscript[]
 

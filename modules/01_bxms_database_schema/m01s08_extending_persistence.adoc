@@ -2,21 +2,19 @@
 :data-uri:
 :noaudio:
 
-=== Extending the persistence mechanism
+== Extending Persistence
 
-* BPMS supports custom marshalling strategies
-* Use cases:
-** Extend the persistence schema of BPMS for process and/or task variables.
-*** Variables are to be modeled as persistable entities, using JPA annotations.
-*** Kjar contains `persistence.xml` JPA descriptor which defines additional persistent classes.
-*** Register `JPAPlaceholderResolverStrategy` in Kjar deployment descriptor.
-** Integration with Document management system or document store.
-*** `org.jbpm.document.Document` interface models a process or task variable as a general-purpose Document.
-*** `org.jbpm.document.marshalling.DocumentMarshallingStrategy` provides a marshalling strategy for Document types.
-*** Need to provide an implementation of `org.jbpm.document.service.DocumentStorageService` to interact with the document store.
-** Custom persistence solution, e.g. NoSQL database, ElasticSearch, ...
-* Attention points:
-** Non-transactional data stores won't rollback in case of error. Manual synchronization might be necessary.
-** Process and task variables are not duplicated to the external store.
-*** The BPMS database contains contains only a pointer to the external data.
-*** Consider alternative solutions, e.g. through process or task listeners.
+* Support for custom marshalling strategies
+* Extend persistence schema of JBoss BPM Suite for process and/or task variables
+** Variables modeled as persistable entities, using JPA annotations
+** Kjar contains `persistence.xml` JPA descriptor, which defines additional persistent classes
+** Register `JPAPlaceholderResolverStrategy` in kjar deployment descriptor
+
+* Integration with document management system or document store
+** `org.jbpm.document.Document`: Interface models process or task variable as general-purpose document
+** `org.jbpm.document.marshalling.DocumentMarshallingStrategy`: Provides marshalling strategy for document types
+** Need to provide implementation of `org.jbpm.document.service.DocumentStorageService` to interact with document store
+
+* Custom persistence solutions--for example, NoSQL database and ElasticSearch
+
+ 

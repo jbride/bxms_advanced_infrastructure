@@ -1,0 +1,13 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Extending Persistence
+
+* Non-transactional data stores do not roll back in case of error
+** Manual synchronization may be necessary
+* Process and task variables not duplicated to external store
+** JBoss BPM Suite database contains only pointer to external data
+** Consider alternative solutions, such as through process or task listeners
+
+ 

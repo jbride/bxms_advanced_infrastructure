@@ -2,12 +2,15 @@
 :data-uri:
 :noaudio:
 
-== Module topics
+== Module Topics
 
-* Persistence in BRMS/BPMS
-* Persistence technology
-* Persistent data and binary serialization
-* Extending the persistence mechanism
-* Optimistic and pessimistic locking
-* Datasource configuration
-* Database maintenance
+* Persistence in JBoss BPMS/BRMS
+* Runtime Data Persistence
+* Persistence Technology
+* Persistence and Safe Points
+* Binary Serialization
+* Extending Persistence
+* Optimistic and Pessimistic Locking
+* Datasource Configuration
+* Database Maintenance
+ 

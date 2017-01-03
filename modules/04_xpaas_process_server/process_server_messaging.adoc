@@ -2,13 +2,12 @@
 :data-uri:
 :noaudio:
 
-== BPMS Messaging
+== JBoss BPM Suite Messaging
 
-Messaging used for:
-
-* KIE Server JMS API
-* Async BAM events
-* Async Job Executor
+* Used for:
+** Process Server JMS API
+** Asynchronous BAM events
+** Asynchronous job executor
 
 
 ifdef::showscript[]

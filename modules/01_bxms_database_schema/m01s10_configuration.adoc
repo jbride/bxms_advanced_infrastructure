@@ -2,16 +2,17 @@
 :data-uri:
 :noaudio:
 
-== Datasource configuration
+== Datasource Configuration
 
-* Slightly different for Business Central and KIE-Server
-* Use datasource defined and managed on application server.
-* Business-Central: adapt `persistence.xml` in `business-central.war` to match the datasource.
-* KIE-Server:: use system properties to configure persistence.
-** _org.kie.server.persistence.ds_ : JNDI name of the datasource
-** _org.kie.server.persistence.dialect_ : Hibernate dialect to use
-* Quartz requires its own non-JTA datasource, pointing to the BPMS database.
-* Datasource and database tuning:
-** On the application server: pool size and settings
-** On the database: query optimization with correct indexes
+* Slightly different for Business Central and Process Server
+* Use datasource defined and managed on application server
+* Business Central: Adapt `persistence.xml` in `business-central.war` to match datasource
+* Process Server: Use system properties to configure persistence:
+** `org.kie.server.persistence.ds`: JNDI name of datasource
+** `org.kie.server.persistence.dialect`: Hibernate dialect to use
+* Quartz requires own non-JTA datasource pointing to JBoss BPM Suite database
+* Datasource and database tuning
+** On application server: Pool size and settings
+** On database: Query optimization with correct indexes
 
+ 

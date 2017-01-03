@@ -2,17 +2,18 @@
 :data-uri:
 :noaudio:
 
-== Optimistic and pessimistic locking
+== Optimistic and Pessimistic Locking
 
-* JPA in BPMS engine uses by default optimistic locking strategy with versioning.
-* This can lead to race conditions (_OptimisticLockException_) in some cases.
-** Process definitions with wait states or asynch nodes in parallel branches.
-* Engine can recover form OptimisticLockException
-** Failing branch is re-executed within the same transaction
-* The BPMS engine can be configured to use pessimistic locking strategy
-** JPA _PESSIMISTIC_FORCE_INCREMENT_ lock mode
-** Enable pessimistic locking by setting environment entry `org.kie.api.persistence.pessimistic` to true in Kjar deployment descriptor:
+* JPA in JBoss BPM Suite engine uses by default optimistic locking strategy with versioning
+* May lead to race conditions -- `OptimisticLockException`
+** Process definitions with wait states or asynchronous nodes in parallel branches
+* Engine can recover from `OptimisticLockException`
+** Failing branch is re-executed within same transaction
+* JBoss BPM Suite engine can be configured to use pessimistic locking strategy
+** JPA `PESSIMISTIC_FORCE_INCREMENT` lock mode
+** Enable pessimistic locking by setting environment entry `org.kie.api.persistence.pessimistic` to `true` in kjar deployment descriptor:
 +
+[source,xml]
 ----
     <environment-entries>
         <environment-entry>
@@ -23,3 +24,4 @@
     </environment-entries>
 ----
 
+ 

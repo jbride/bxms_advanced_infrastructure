@@ -2,12 +2,13 @@
 :data-uri:
 :noaudio:
 
-== Unmanaged KIE Server Only
+== Unmanaged Decision Server Only
 
-* BPMS allows for _unmanaged_ and _managed_ administration of KIE Servers
+* JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of Decision Servers
 * xPaaS Decision Server leverages _unmanaged_ approach
-* Example XML found in $JBOSS_HOME of Decision Server pod:
+* Example XML found in `$JBOSS_HOME` of Decision Server pod:
 +
+[source,xml]
 -----
 <kie-server-state>
   <controllers/>

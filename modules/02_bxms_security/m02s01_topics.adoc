@@ -2,12 +2,14 @@
 :data-uri:
 :noaudio:
 
-== Topics
+== Module Topics
 
-* Security in BRMS/BPMS
-* Security in Business Central
-* Securiy in Process Server and Decision Server
-* Authentication and Authorization mechanisms
-* BPMS user and groups
-* UserGroupCallback implementations
-* Integration with Red Hat Single Sign-on
+* Security in JBoss BPMS/BRMS
+* Business Central User Interface
+* Remote APIs
+* Authentication and Authorization
+* Users and Groups
+* `UserGroupCallback`
+* Red Hat Single Sign-On Integration
+
+ 

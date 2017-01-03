@@ -1,4 +1,5 @@
 include::cover.adoc[]
+include::topics.adoc[]
 include::intro-to-kieserver.adoc[]
 include::non-paas-kie-server-topology.adoc[]
 include::non-paas-kie-server-container-deploy.adoc[]
@@ -14,6 +15,7 @@ include::paas-kie-server-topology.adoc[]
 include::dserver_parameters0.adoc[]
 include::dserver_parameters1.adoc[]
 include::dserver_parameters2.adoc[]
+include::summary.adoc[]
 
 ifdef::showscript[]
 

@@ -2,13 +2,16 @@
 :data-uri:
 :noaudio:
 
-== PostgreSQL
+== JBoss BPM Suite Database
 
-OCP Process Server can run on PostgreSQL
+.PostgreSQL
+
+* Intelligent Process Server can run on PostgreSQL
 
 ** Templates:
-*** _processserver63-postgresql-persistent-s2i_
-*** _processserver63-amq-postgresql-persistent-s2i_
+*** `processserver63-postgresql-persistent-s2i`
+*** `processserver63-amq-postgresql-persistent-s2i`
+
 ** Support PostgreSQL image:
 +
 image::images/postgresql_image.png[]

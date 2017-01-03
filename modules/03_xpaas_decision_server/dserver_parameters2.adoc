@@ -2,12 +2,13 @@
 :data-uri:
 :noaudio:
 
-== xPaaS DecisionServer Params
+== xPaaS Decision Server
 
-Decision Server parameters can be set in a variety of ways:
+.Parameters
 
-. `oc new-app --template=decisionserver63-basic-s2i -p param1:value1,param2:value2`
-. .s2i/environment
+* Can be set in:
+** `oc new-app --template=decisionserver63-basic-s2i -p param1:value1,param2:value2`
+** `.s2i/environment`
 
 ifdef::showscript[]
 

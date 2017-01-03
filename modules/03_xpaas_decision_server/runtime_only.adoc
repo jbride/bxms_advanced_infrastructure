@@ -4,11 +4,9 @@
 
 == Runtime Rules Engine Only
 
-* Rules Authoring Not Included
-** BRMS _Business Central_
-** _Drools_ plugin of JBDS
-
-
+* Rules authoring not included
+** BRMS Business Central
+** Drools plug-in of JBDS
 
 ifdef::showscript[]
 
@@ -17,3 +15,4 @@ Rules Spreadsheet Transformation ?
 Decision Tables ?
 
 endif::showscript[]
+

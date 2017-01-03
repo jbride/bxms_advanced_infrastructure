@@ -2,17 +2,19 @@
 :data-uri:
 :noaudio:
 
-== Database maintenance and cleanup
+== Database Maintenance
 
-* Runtime data is cleaned up automatically
-** Process instance data (Table `ProcessInstanceInfo`) is removed upon process instance completion
-** Task instance data (Tables `Task`, `Content`) is removed upon completion of the owning process.
-** Work item information (Table `WorkItemInfo`) is removed upon work item completion.
-* Some data is not removed:
+* Runtime data cleaned up automatically
+** Process instance data (`ProcessInstanceInfo` table) removed upon process instance completion
+** Task instance data (`Task` and `Content` tables) removed upon completion of owning process
+** Work item information (`WorkItemInfo` table) removed upon work item completion
+* Some data not removed:
 ** Audit data for processes and tasks
 ** Executor requests
-** Persistent timers using quartz
-* To keep the database size manageable, periodic cleaning is recommended.
-** Copy to separate data store if audit data needs to be retained.
-** Periodic automatic cleaning with a scheduled job.
-*** `org.jbpm.executor.commands.LogCleanupCommand` : highly configurable example of scheduled database maintenance job.
+** Persistent timers using Quartz
+* Periodic cleaning recommended to keep database size manageable
+** Copy to separate data store if audit data must be retained
+** Automatic cleaning with scheduled maintenance job
+*** `org.jbpm.executor.commands.LogCleanupCommand`: highly configurable example of scheduled database maintenance job.
+
+ 

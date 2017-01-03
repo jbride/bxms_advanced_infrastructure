@@ -2,9 +2,11 @@
 :data-uri:
 :noaudio:
 
-== REST API: Process Definitions
+== REST API
 
-image::images/rest_pdefinition.png[width="100%"]
+.Process Definitions
+
+image:images/rest_pdefinition.png[]
 
 ifdef::showscript[]
 

@@ -2,18 +2,20 @@
 :data-uri:
 :noaudio:
 
-== Business Central GUI
+== Business Central User Interface
 
-* Secured with basic authentication.
-* Authorization based on user roles.
-** Defined in `business-central.war/WEB-INF/web.xml` and `business-central.war/WEB-INF/classes/workbench-policy.properties`
-** Predefined role names:
-*** admin: full access rights
-*** developer: full access rights excluding Adminstration, Extensions perspectives
-*** analyst: more restricted than developer, no access to Deployments, Artifact repositories perspectives
-*** user: only access to Process management and Tasks perspectives
-*** manager: only access to Dashboard application
-*** kiemgmt: role required to manage KIE server instances
-*** plannermgmt: role required to access Planner perspective.
-** Role names can be customized to avoid using generic role names like `admin`.
+* Secured with basic authentication
+* Authorization based on user roles defined in:
+** `business-central.war/WEB-INF/web.xml`
+** `business-central.war/WEB-INF/classes/workbench-policy.properties`
+* Predefined role names:
+** `admin`: Full access rights
+** `developer`: Full access rights excluding Administration, Extensions perspectives
+** `analyst`: More restricted than developer, no access to Deployments and Artifact Repositories perspectives
+** `user`: Access to only Process Management and Tasks perspectives
+** `manager`: Access to only dashboard application
+** `kiemgmt`: Role required to manage Decision Server & Process Server instances
+** `plannermgmt`: Role required to access Planner perspective
+* Role names customizable to avoid using generic role names, such as `admin`
 
+ 

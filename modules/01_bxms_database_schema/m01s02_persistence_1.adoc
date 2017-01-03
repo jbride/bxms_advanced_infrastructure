@@ -1,0 +1,11 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Persistence in JBoss BPMS/BRMS
+
+.Design-Time Persistence
+* Business Central
+** System Git repository (organization units, project user preferences data)
+** Git repository per project
+ 

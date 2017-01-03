@@ -2,19 +2,22 @@
 :data-uri:
 :noaudio:
 
-== XPaaS DecisionServer Params
+== xPaaS Decision Server
 
-. *SOURCE_REPOSITORY_URL*
-.. URL to version controlled app source code.
-.. Utilized during S2I.
+.Parameters
 
-. *SOURCE_REPOSITORY_REF*
-.. Git branch/tag reference. Default: _master_.
-.. Utilized during S2I.
+* `SOURCE_REPOSITORY_URL`
+** URL to version-controlled application source code
+** Used during S2I
 
-. *CONTEXT_DIR*
-.. Path within the Git project to build.
-.. Utilized during S2I.
+* `SOURCE_REPOSITORY_REF`
+** Git branch/tag reference
+** Default: Master
+** Used during S2I
+
+* `CONTEXT_DIR`
+** Path within Git project to build
+** Used during S2I
 
 ifdef::showscript[]
 

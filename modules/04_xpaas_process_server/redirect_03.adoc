@@ -1,0 +1,19 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Container Naming
+
+* Intelligent Process Server images allow multiple versions of same kjars
+* New version overrides original container ID with hash version including kjar version
+
+.Example
+
+[[app-listing]]
+[source,bash]
+----
+KIE_CONTAINER_DEPLOYMENT=processserver-library=org.openshift.quickstarts:processserver-library:1.3.0.Final|processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final
+KIE_CONTAINER_REDIRECT_ENABLED=true
+----
+
+ 

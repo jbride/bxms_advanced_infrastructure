@@ -1,0 +1,17 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Summary
+
+* Persistence in JBoss BPMS/BRMS
+* Runtime Data Persistence
+* Persistence Technology
+* Persistence and Safe Points
+* Binary Serialization
+* Extending Persistence
+* Optimistic and Pessimistic Locking
+* Datasource Configuration
+* Database Maintenance
+
+ 

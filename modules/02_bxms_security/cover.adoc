@@ -6,10 +6,10 @@ ifdef::revealjs_slideshow[]
 == &nbsp;
 
 [#cover-h1]
-BRMS/BPMS Advanced Infrastructure
+Red Hat JBoss BPM Suite 6 Implementation
 
 [#cover-h2]
-BRMS/BPMS Security
+Security
 
 [#cover-logo]
 image::{revealjs_cover_image}[]

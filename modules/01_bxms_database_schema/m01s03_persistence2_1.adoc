@@ -1,0 +1,10 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Persistence in JBoss BPMS/BRMS
+
+.Runtime Data Persistence
+* JBoss BPM Suite: SQL database
+* JBoss BRMS: not required
+

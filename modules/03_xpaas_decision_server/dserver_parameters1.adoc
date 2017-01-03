@@ -2,25 +2,23 @@
 :data-uri:
 :noaudio:
 
-== xPaaS DecisionServer Params
+== xPaaS Decision Server
 
-. *MAVEN_MIRROR_URL*
-.. URL of local Maven server that _mirrors_ all _external:*_ Maven repos
-.. Value is included in custom `<mirror\>` entry in app project pom.xml
-.. Used to pull maven dependencies during S2I
-.. Used to pull built _KJar_ application if using binary deployment approach
+.Parameters
 
-. *KIE_CONTAINER_DEPLOYMENT*
-.. Specify unique identifier of drools app(s) that execute in Decision Server
-.. Format convention is pipe-delimited :
-+
-containerId=groupId:artifactId:version|c2=g2:a2:v2
+* `MAVEN_MIRROR_URL`
+** URL of local Maven server that _mirrors_ all _external:*_ Maven repositories
+** Value included in custom `<mirror/>` entry in application project's `pom.xml`
+** Used to pull Maven dependencies during S2I
+** Used to pull built kjar application if using binary deployment approach
 
-. *KIE_CONTAINER_REDIRECT_ENABLED*
-.. Enable redirect functionality for KIE containers. 
-.. Defaults to true. 
-.. Should be true when different versions of the same kjar are to be deployed side-by-side.
+* `KIE_CONTAINER_DEPLOYMENT`
+** Specify unique identifier of Drools applications that execute in Decision Server
+** Format convention pipe-delimited: `containerId=groupId:artifactId:version|c2=g2:a2:v2`
 
-ifdef::showscript[]
+* `KIE_CONTAINER_REDIRECT_ENABLED`
+** Enable redirect functionality for KIE containers
+** Defaults to `true`
+** Expect `true` when versions of same kjar deployed side by side
 
-endif::showscript[]
+ 

@@ -2,13 +2,15 @@
 :data-uri:
 :noaudio:
 
-== REST API: Process Images
+== REST API
 
-image::images/rest_pimages.png[width="100%"]
+.Process Images
+
+image:images/rest_pimages.png[]
 
 {nbsp}
 
-image::images/kie-server-lab-process-instance-svg.png[width="100%"]
+image:images/kie-server-lab-process-instance-svg.png[]
 
 ifdef::showscript[]
 

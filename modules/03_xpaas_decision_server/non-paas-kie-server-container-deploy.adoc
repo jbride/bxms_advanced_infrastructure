@@ -4,19 +4,20 @@
 
 == KIE Container Deployment
 
-In non-PaaS environment, KIE Container can be deployed by invoking the KIE Server
-
+* In non-PaaS environment, KIE Container can be deployed by invoking Decision Server REST API:
++
+[source,text]
 -----
-$ curl 
-   -X PUT 
+$ curl
+   -X PUT
    -H "Accept:application/json" \
-   -H "Content-Type:application/json" \ 
+   -H "Content-Type:application/json" \
    --user jboss:bpms \
-   -d '{ 
-      "release-id" : { 
-        "group-id" : "com.redhat.gpte.bpms-advanced-infrastructure", 
-        "artifact-id" : "process-kjar", 
-        "version" : "1.0" } 
+   -d '{
+      "release-id" : {
+        "group-id" : "com.redhat.gpte.bpms-advanced-infrastructure",
+        "artifact-id" : "process-kjar",
+        "version" : "1.0" }
     }' \
    "http://gpte.rht.com/kie-server/services/rest/server/containers/gpteContainer1"
 -----

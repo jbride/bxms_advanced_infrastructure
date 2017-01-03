@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== XPaaS Decision Server Params
+== xPaaS Decision Server Parameters
 
 image::images/dserver_s2i_parameters.png[]
 

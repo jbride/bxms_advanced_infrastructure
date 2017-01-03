@@ -1,0 +1,17 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Summary
+
+* Realtime Decision Server
+* Non-PaaS Decision Server Deployment
+* Non-PaaS KIE Container Deployment
+* REST API
+* Batch Execution
+* Red Hat JBoss BRMS in Cloud
+* Decision Server Advantages
+* Unmanaged Decision Server Only
+* Stateless Ksession Only
+* xPaaS Decision Server
+

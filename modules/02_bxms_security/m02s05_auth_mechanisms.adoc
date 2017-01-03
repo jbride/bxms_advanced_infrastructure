@@ -2,15 +2,17 @@
 :data-uri:
 :noaudio:
 
-== Authentication and authorization mechanisms
+== Authentication and Authorization
 
-* Delegated to underlying application server
-* By default, EAP uses property files to manage users, passwords, roles.
-* Can be replaced by other mechanisms (LDAP, Database, ...)
-** Requires configuration of a security domain in the security subsystem of EAP
-** Change the `<security-domain>` element in `jboss-web.xml` of Business-Central and Kie-server war file tp point to the new security domain.
-* Business Central has GUI to manage users and roles
-+
-image::images/bc-user-management.png[]
+[.noredheader,cols="3,2"]
+|===
+a|* Delegated to underlying application server
+* By default, JBoss EAP uses property files to manage users, passwords, roles
+* Can be replaced by other mechanisms, such as LDAP and Database
+** Requires configuration of security domain in JBoss EAP security subsystem
+** Change `<security-domain>` element in `jboss-web.xml` of Business Central and `kie-server.war` to point to new security domain
+* Business Central UI for user and role management:
 ** Disabled by default
-** Works only when using property files to manage users and roles.
+** Works only when using property files to manage users and roles
+|image:images/bc-user-management.png[] 
+|===

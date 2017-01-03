@@ -2,9 +2,11 @@
 :data-uri:
 :noaudio:
 
-== KIE Server Batch Payload
+== Batch Execution
 
-image::images/sample_payload.png[]
+.Server Batch Payload Example
+
+image:images/sample_payload.png[]
 
 ifdef::showscript[]
 

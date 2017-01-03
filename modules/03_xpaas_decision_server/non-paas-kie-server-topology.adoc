@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== KIE Server Deployment (Non-PaaS)
+== Non-PaaS Decision Server Deployment
 
 image::images/non_paas_kserver_topology.gif[]
 

@@ -2,16 +2,18 @@
 :data-uri:
 :noaudio:
 
-== Persistence technology
+== Persistence Technology
 
-* Persistence technology
-** JPA, targets SQL database.
-** Individual deployments can be configured to not use persistence at all.
-** NoSQL databases are not supported. Community effort, not part of the product.
-* Supported databases
-** Open source: PostgrSQL, MySQL/MariaDB
+* JPA--targets SQL database
+* Individual deployments configured to not use persistence
+* NoSQL databases not supported--community effort, not part of product
+
+* Supported databases:
+** Open source: PostgreSQL, MySQL/MariaDB
 ** Proprietary: Oracle, SQLServer, DB2, Sybase
 
-* Default persistence settings in BPMS
-** Uses embedded H2 in memory database.
-** Not supported in production.
+* Default persistence settings in JBoss BPM Suite
+** Uses embedded H2 in memory database
+** Not supported in production
+
+ 

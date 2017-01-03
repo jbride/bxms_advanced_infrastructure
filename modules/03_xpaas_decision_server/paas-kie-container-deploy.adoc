@@ -2,23 +2,21 @@
 :data-uri:
 :noaudio:
 
-== XPaaS Decision Server Deployment
+== xPaaS Decision Server
 
+.Deployment
 
-Supports the following:
+* S2I deployment:
+** No proper version management of built artifact
+** Kjar rebuilt from source at every deployment
+** Violates _build once, deploy everywhere_ principle
+** Tests not executed as part of S2I build
+* Prebuild kjar binary deployment:
+** Typically involves use of OpenShift Jenkins image and Groovy-based workflow plug-in
 
-* *S2I deployment*
-** No proper version management of the built artifact
-** KJar is rebuilt from source at every deployment.
-+
-Violates _build once, deploy everywhere_ principle
-** Tests are not executed as part of the S2I build
-
-* *pre-build _KJar_ Binary deployment*
-** Typically involves use of OCP Jenkins image and groovy based _Workflow_ plugin
-
-Ultimately with both approaches, _KJar_ and dependencies make it to ~/.m2/repository of Decision Server pod.
-KIE Server then reads its _unmanaged_ _kie-server-state_ XML configs to create _KIE Container_.
+* In both approaches:
+** Kjar and dependencies make it to `~/.m2/` repository of Decision Server pod
+** Decision Server then reads `unmanaged` `kie-server-state` XML configs to create KIE Container
 
 
 ifdef::showscript[]

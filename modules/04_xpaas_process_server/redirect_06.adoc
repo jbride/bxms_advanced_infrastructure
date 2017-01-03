@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Client Alias Redirects
+
+* Deployment alias: Incoming request redirected to specific deployed KIE container in server
+
+* Multi-step container resolution process used to determine _which_ version of container targeted by redirect
+
+* This process is followed:
+** In REST interface by using servlet filter
+** In JMS interface by using EJB interceptor
+
+ 

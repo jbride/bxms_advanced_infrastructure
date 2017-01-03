@@ -2,13 +2,15 @@
 :data-uri:
 :noaudio:
 
-== JBoss AMQ
+== JBoss BPM Suite Messaging
 
-OCP Process Server can leverage JBoss AMQ
+.JBoss AMQ
+
+* Intelligent Process Server can leverage JBoss AMQ
 
 ** Templates:
-*** _processserver63-amq-mysql-persistent-s2i_
-*** _processserver63-amq-postgresql-persistent-s2i_
+*** `processserver63-amq-mysql-persistent-s2i`
+*** `processserver63-amq-postgresql-persistent-s2i`
 ** Support AMQ image:
 +
 image::images/amq_image.png[]

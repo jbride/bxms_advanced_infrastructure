@@ -2,14 +2,10 @@
 :data-uri:
 :noaudio:
 
-== Persistence in BRMS/BPMS
+== Persistence in JBoss BPMS/BRMS
 
-* Types of persistence in BRMS and BPMS
+* Persistence types:
 ** Design-time persistence
 ** Configuration and deployments
-** Runtime Data Persistence
+** Runtime data persistence
 
-* Design Time Persistence - Business-Central
-** 'System' git repository
-*** Data about Organizational Units, projects, user preferences
-** Git repository per project

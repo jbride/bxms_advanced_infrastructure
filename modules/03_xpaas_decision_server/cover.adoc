@@ -6,10 +6,10 @@ ifdef::revealjs_slideshow[]
 == &nbsp;
 
 [#cover-h1]
-BxMS Advanced Infrastructure
+Red Hat JBoss BPM Suite 6 Implementation
 
 [#cover-h2]
-xPaaS Decision Server
+xPaaS Realtime Decision Server
 
 [#cover-logo]
 image::{revealjs_cover_image}[]
