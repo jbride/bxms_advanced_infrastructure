@@ -124,7 +124,7 @@ $ sudo chown root:ldap /etc/openldap/certs/password
 $ sudo chmod 640 /etc/openldap/certs/password
 $ sudo modutil -force -create -dbdir /etc/openldap/certs
 $ sudo chmod 644 /etc/openldap/certs/cert8.db /etc/openldap/certs/key3.db /etc/openldap/certs/secmod.db
-$ sudo certutil -d /etc/openldap/certs -A -n "CA Certificate" -t TCu,Cu,Tuw -a -i /home/jboss/lab/ssl/ldap.crt
+$ sudo certutil -d /etc/openldap/certs -A -n "CA Certificate" -t TCu,Cu,Tuw -a -i /home/jboss/lab/ssl/acme-ca.crt
 $ sudo modutil -dbdir /etc/openldap/certs -force -changepw 'NSS Certificate DB' -newpwfile /etc/openldap/certs/password
 $ sudo pk12util -i /home/jboss/lab/ssl/ldap.p12 -d /etc/openldap/certs -k /etc/openldap/certs/password -w /etc/openldap/certs/password
 ----
@@ -147,7 +147,7 @@ $ sudo ldapmodify -H ldapi:// -Y EXTERNAL -f /home/jboss/lab/ldif/tls.ldif
 +
 [source,text]
 ----
-$ sudo systemctl restart sldapd
+$ sudo systemctl restart slapd
 ----
 
 . Verify the LDAP configuration with JXplorer:
