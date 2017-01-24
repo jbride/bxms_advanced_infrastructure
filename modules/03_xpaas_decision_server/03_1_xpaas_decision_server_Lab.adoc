@@ -63,7 +63,20 @@ image::images/cf_course_selection_project.png[]
 +
 image::images/cf_submit_button.png[]
 +
-* Expect to receive an email confirming that your new OpenShift environment was created.
+. Expect to receive an email with contents similar to the following:
++
+-----
+You have been enrolled in the OPENTLC BXMS_INFRA OpenShift environment.
+You can access your environment by going to https://master.na.openshift.opentlc.com:443 and logging in as jbride-test.
+
+NOTICE: Your environment will expire and be deleted in 14 day(s) at 2017-02-07 00:00:00 -0500. In order to conserve resources we cannot archive or restore any data in this environment. All data will be lost upon expiration. 
+-----
++
+This email confirms that your OpenShift project was created.  
+Please save this email.
++
+Pay particular attention to the URL of the OCP master node referenced in this email.
+You will be navigating to this OCP master node for the duration of this course.
 
 === Create a Project
 
@@ -71,7 +84,7 @@ image::images/cf_submit_button.png[]
 +
 [source,text]
 ----
-$ oc login https://master.workshop.openshift.opentlc.com:443
+$ oc login <URL of OCP Master node listed in the confirmation email>
 ----
 
 * You will be prompted for your OPENTLC SSO credentials.
@@ -80,14 +93,14 @@ $ oc login https://master.workshop.openshift.opentlc.com:443
 +
 -----
 $ oc project
-Using project "jbride-test-bxms-infra" on server "https://master.workshop.openshift.opentlc.com:443".
+Using project "jbride-test-bxms-infra" on server "https://xxx.xxx.openshift.opentlc.com:443".
 -----
 +
 Going forward, all CLI commands will target this project.
 
 . Make sure you can access your project using the OpenShift web console:
 .. Open a browser.
-.. Navigate to the master node of OpenShift: https://master.workshop.openshift.opentlc.com.
+.. Navigate to the master node of OpenShift (URL was provided to you in the confirmation email when registering for the _BXMS_INFRA_ OCP lab environment
 
 .. Log in using the same credentials you used for the CLI.
 +
