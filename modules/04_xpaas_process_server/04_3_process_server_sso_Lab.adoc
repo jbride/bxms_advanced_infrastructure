@@ -10,6 +10,12 @@ Process Server Docker images are built on JBoss EAP xPaaS images, which have bui
 
 In this lab, you use SSL for all communication with and between the Process Server and the Red Hat Single Sign-On server.
 
+.Requirements
+* Completion of the previous _Decision_ and _Process_ server labs.
+* Workstation with the following additional tools installed:
+** `openssl`
+** `keytool`
+
 :numbered:
 
 == Prepare Certificates, Keystores, and Truststores

@@ -14,15 +14,14 @@ You review an example of binary deployment using the Process Server. This scenar
 * Review example of integration of Process Server with Red Hat Single Sign-On
 
 .Requirements
-* Access to GitHub to clone the lab projects
-* Access to a project on a Red Hat OpenShift Container Platform 3 hosted environment
-* A local workstation with:
+* Completion of the _Decision Server_ labs from this course.
+* A local workstation with the following installed:
 ** OpenShift CLI client (`oc`)
 ** Git
 ** Maven
 ** Curl
 
-** The lab VM used in this course has the local workstation tools installed.
+NOTE: The lab VM used in this course has the local workstation tools installed.
 
 :numbered:
 
