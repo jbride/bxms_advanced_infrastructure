@@ -20,15 +20,22 @@ In this lab, you explore the S2I functionality of the Decision Server.
 
 .Requirements
 
-* Access to a project on an OpenShift-hosted environment
-* Required tools on your local workstation: {ocdownload} (`oc`), Git, Maven, curl
-+
-NOTE: These tools are installed in the lab VM used in this course.
-
-* Access to GitHub to clone the projects used in this lab
-* Completion of the _Application Development with Red Hat OpenShift_ course offered by Red Hat OPEN
+* Completion of the _Application Development with Red Hat OpenShift_ course offered by Red Hat OPEN and SkillsExchange
 * Familiarity with the `kie-server` API of the JBoss BPM Suite product
 * Experience using Git and Maven
+* Access to GitHub to clone the projects used in this lab
+
+.Lab Environment
+Most of the software utilized in this lab (along with the next lab focused on the OCP _process server_) executes in a remote OCP environment.
+There is some client-side tooling needed for these labs.  In particular:
+
+* {ocdownload} (`oc`)
+* Git
+* Maven 3.3.* (or more recent)
+* curl
+ 
+NOTE: For those using the virtual machine for this course, the above listed tooling is already installed.
+For those not using the virtual machine for this course, please install the above listed tooling at this time. 
 
 == Lab Component Topology
 
