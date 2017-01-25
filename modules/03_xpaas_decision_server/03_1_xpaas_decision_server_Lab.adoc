@@ -496,12 +496,12 @@ Everything is now in place to create a OpenShift application for your BRMS proje
 +
 [source,text]
 ----
-$ application_name=policyquote-app
-$ source_repo=http://gogs:3000/decision-server-s2i/policyquote.git
-$ nexus_url=http://nexus:8081
-$ kieserver_password=kieserver1!
-$ is_namespace=<name of your OpenShift project>
-$ kie_container_deployment="policyquote=com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT"
+$ export application_name=policyquote-app
+$ export source_repo=http://gogs:3000/decision-server-s2i/policyquote.git
+$ export nexus_url=http://nexus:8081
+$ export kieserver_password=kieserver1!
+$ export is_namespace=<name of your OpenShift project>
+$ export kie_container_deployment="policyquote=com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT"
 $ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment,KIE_CONTAINER_REDIRECT_ENABLED=false,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
 +
@@ -572,8 +572,8 @@ It does not refer to a OpenShift / Kubernetes _container_.
 +
 [source,text]
 ----
-$ policyquote_app=<URL of the policyquote app route>
-$ kieserver_password=kieserver1!
+$ export policyquote_app=<URL of the policyquote app route>
+$ export kieserver_password=kieserver1!
 ----
 .. To check the health of the server:
 +

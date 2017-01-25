@@ -143,10 +143,10 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 +
 [source,text]
 ----
-$ https_keystore=xpaas-sso-https.jks
-$ https_password=<keystore password>
-$ sso_truststore=truststore.jks
-$ sso_truststore_password=<truststore password>
+$ export https_keystore=xpaas-sso-https.jks
+$ export https_password=<keystore password>
+$ export sso_truststore=truststore.jks
+$ export sso_truststore_password=<truststore password>
 $ oc process -f xpaas-sso-mysql-persistent.yaml -v HTTPS_KEYSTORE=$https_keystore,HTTPS_PASSWORD=$https_password,SSO_TRUSTSTORE=$sso_truststore,SSO_TRUSTSTORE_PASSWORD=$sso_truststore_password | oc create -f -
 ----
 * Once all of the components are up, expect to see the Red Hat Single Sign-On application in the OpenShift web console:
@@ -183,8 +183,8 @@ image::images/rh-sso-new-realm.png[]
 +
 [source,text]
 ----
-$ rhsso_url=<URL of the RH SSO server>
-$ cacert=<path to the xpaas-ca.crt certificate file>
+$ export rhsso_url=<URL of the RH SSO server>
+$ export cacert=<path to the xpaas-ca.crt certificate file>
 $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-connect/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=user1" \
@@ -378,13 +378,13 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/process-server
 +
 [source,text]
 ----
-$ application_name=policyquote
-$ source_repo=http://gogs:3000/process-server-sso/policyquote-process-sso-ocp.git
-$ is_namespace=<name of your OpenShift project>
-$ nexus_url=http://nexus:8081
-$ https_keystore=xpaas-ps-https.jks
-$ https_name=xpaas-https-key
-$ https_password=<keystore password>
+$ export application_name=policyquote
+$ export source_repo=http://gogs:3000/process-server-sso/policyquote-process-sso-ocp.git
+$ export is_namespace=<name of your OpenShift project>
+$ export nexus_url=http://nexus:8081
+$ export https_keystore=xpaas-ps-https.jks
+$ export https_name=xpaas-https-key
+$ export https_password=<keystore password>
 $ oc process -f processserver-sso-mysql-persistent-s2i.yaml -v APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/,HTTPS_KEYSTORE=$https_keystore,HTTPS_NAME=$https_name,HTTPS_PASSWORD=$https_password | oc create -f -
 ----
 
@@ -402,8 +402,8 @@ Before issuing a `curl` command against the Process Server, you must obtain a to
 +
 [source,text]
 ----
-$ rhsso_url=<URL of the RH SSO server>
-$ cacert=<path to the xpaas-ca.crt certificate file>
+$ export rhsso_url=<URL of the RH SSO server>
+$ export cacert=<path to the xpaas-ca.crt certificate file>
 $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-connect/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=user1" \
@@ -418,7 +418,7 @@ $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-conne
 +
 [source,text]
 ----
-$ policyquote_url=<URL of the Process Server>
+$ export policyquote_url=<URL of the Process Server>
 $ curl -X GET -H "Accept: application/json" -H "Authorization: Bearer $TKN" --cacert $cacert "$policyquote_url/kie-server/services/rest/server/containers"
 ----
 
