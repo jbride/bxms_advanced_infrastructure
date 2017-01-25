@@ -195,7 +195,7 @@ In this section, you install the Red Hat Single Sign-On client adapter on the Pr
 
 . If the Process Server instance is running, shut it down by pressing *Ctrl+C* in the terminal window where you started JBoss BPM Suite.
 
-. Unzip the `/opt/install/scripts/rhsso/adapter/keycloak-eap6-adapter-dist-1.9.7.Final-redhat-1.zip` archive to the `/home/jboss/lab/bpms/kieserver` directory:
+. Unzip the RHT SSO adapter for JBoss EAP 6 (provided in your lab environment) to the `/home/jboss/lab/bpms/kieserver` directory:
 +
 [source,text]
 ----
