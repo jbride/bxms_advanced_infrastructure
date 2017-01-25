@@ -15,11 +15,11 @@ include::paas-kie-server-topology.adoc[]
 include::dserver_parameters0.adoc[]
 include::dserver_parameters1.adoc[]
 include::dserver_parameters2.adoc[]
+include::dserver_parameters05.adoc[]
 include::summary.adoc[]
 
 ifdef::showscript[]
 
-include::dserver_parameters05.adoc[]
 https://access.redhat.com/documentation/en/red-hat-xpaas/
 
 endif::showscript[]
