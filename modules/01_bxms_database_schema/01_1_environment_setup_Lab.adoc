@@ -53,7 +53,7 @@ If you are familiar with BitTorrent and have a BitTorrent client, this method is
 * Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
 endif::showscript[]
 
-. Download the `bxms_advanced_infrastructure_1.0.vdi` VirtualBox image from https://drive.google.com/open?id=0B8mmXW6hJKdiNXNCamItcFFnb2M.
+. Download the `bxms_advanced_infrastructure_1.0.vdi` VirtualBox image from https://drive.google.com/open?id=0B8mmXW6hJKdiM3FKYjRIdjBKeDA .
 +
 [NOTE]
 If you are participating in on-site instructor-led training (ILT), expect to receive the VM from your instructor.
