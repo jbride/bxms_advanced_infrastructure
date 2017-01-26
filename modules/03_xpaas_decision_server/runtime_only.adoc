@@ -10,9 +10,5 @@
 
 ifdef::showscript[]
 
-Support for Business Rules ?
-Rules Spreadsheet Transformation ?
-Decision Tables ?
-
 endif::showscript[]
 
