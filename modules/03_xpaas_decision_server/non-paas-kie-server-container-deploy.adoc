@@ -4,7 +4,7 @@
 
 == KIE Container Deployment
 
-* In non-PaaS environment, KIE Container can be deployed by invoking Decision Server REST API:
+* KIE Container can be deployed to KIE Server by invoking KIE Server REST API:
 +
 [source,text]
 -----

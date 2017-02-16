@@ -2,9 +2,9 @@
 :data-uri:
 :noaudio:
 
-== Decision Server REST API
+== KIE Server REST API
 
-* Decision Server Batch URI:
+* KIE Server Batch URI:
 +
 image::images/kie-server-api-post.png[]
 

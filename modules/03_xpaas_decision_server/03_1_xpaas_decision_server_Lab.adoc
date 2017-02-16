@@ -85,7 +85,7 @@ Please save this email.
 Pay particular attention to the URL of the OCP master node referenced in this email.
 You will be navigating to this OCP master node for the duration of this course.
 
-=== Create a Project
+=== Use your OCP Project
 
 . At the command line of your workstation (pre-installed with the _oc_ utility), log in to the OpenShift environment:
 +

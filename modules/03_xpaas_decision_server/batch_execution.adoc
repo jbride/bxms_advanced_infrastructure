@@ -5,7 +5,7 @@
 == Batch Execution
 
 * Payload to Decision Server contains multiple batch commands
-* Decision Server executes all commands in single transaction
+* KIE Server executes all commands in single transaction
 * Batch commands work with _stateless_ ksession
 * Batch commands found in:
 ** `org.drools.core.command.runtime.rules.*`

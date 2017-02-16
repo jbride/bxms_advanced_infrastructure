@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== Realtime Decision Server
+== BRMS KIE Server
 
 * Runtime JBoss BRMS rules engine exposes REST and SOAP APIs
 * Web application built on top of JBoss EAP
@@ -11,6 +11,7 @@
 * Includes feature-complete JBoss BRMS execution engine
 * Modular and extensible
 * Support for JSON and XML payload
+* Can manage one or more `KIE Containers`
 
 ifdef::showscript[]
 

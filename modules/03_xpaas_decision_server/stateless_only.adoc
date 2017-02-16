@@ -4,7 +4,7 @@
 
 == Statelesss KSession Only
 
-* JBoss BRMS Decision Server allows for invoking:
+* JBoss BRMS KIE Server allows for:
 ** Stateless sessions
 ** Stateful sessions
 +

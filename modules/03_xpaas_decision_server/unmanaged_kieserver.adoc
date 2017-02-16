@@ -2,11 +2,12 @@
 :data-uri:
 :noaudio:
 
-== Unmanaged Decision Server Only
+== `Unmanaged` Decision Server Only
 
-* JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of Decision Servers
-* xPaaS Decision Server leverages _unmanaged_ approach
-* Example XML found in `$JBOSS_HOME` of Decision Server pod:
+* JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of KIE Servers
+* OCP Decision Server leverages _unmanaged_ approach
+** OCP by default handles application pod mgmt (ie; HA and scalability)
+* Example _unmanaged_ XML found in `$JBOSS_HOME` of Decision Server pod:
 +
 [source,xml]
 -----
