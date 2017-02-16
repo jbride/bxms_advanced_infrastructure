@@ -8,8 +8,8 @@
 +
 image::images/dserver_in_registry.png[]
 
-* Official name: xPaaS Image for Red Hat JBoss BRMS ([blue]#Decision Server#)
-* JBoss BRMS _stateless_ KIE Server in Red Hat OCP &equiv; Decision Server
+* Official name: xPaaS Image for Red Hat JBoss BRMS (`Decision Server`)
+* JBoss BRMS _stateless_ KIE Server in Red Hat OCP &equiv; `Decision Server`
 
 ifdef::showscript[]
 

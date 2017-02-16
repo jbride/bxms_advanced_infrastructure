@@ -2,15 +2,14 @@
 :data-uri:
 :noaudio:
 
-== xPaaS Decision Server
-
-.Deployment
+== OCP Decision Server Deployment
 
 * S2I deployment:
 ** No proper version management of built artifact
 ** Kjar rebuilt from source at every deployment
 ** Violates _build once, deploy everywhere_ principle
 ** Tests not executed as part of S2I build
+
 * Prebuild kjar binary deployment:
 ** Typically involves use of OpenShift Jenkins image and Groovy-based workflow plug-in
 

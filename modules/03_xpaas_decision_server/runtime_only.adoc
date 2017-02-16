@@ -4,9 +4,11 @@
 
 == Runtime Rules Engine Only
 
-* Rules authoring not included
+* BRMS rules authoring tools not included:
 ** BRMS Business Central
 ** Drools plug-in of JBDS
+. Assumes workflow to transform to DRL and BPMN2 is already in place.
+. Application source code should contain all rules and process definition artifacts.
 
 ifdef::showscript[]
 
