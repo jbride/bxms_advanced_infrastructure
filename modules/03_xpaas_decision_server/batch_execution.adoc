@@ -2,9 +2,9 @@
 :data-uri:
 :noaudio:
 
-== Batch Execution
+== KIE Server Batch API
 
-* Payload to Decision Server contains multiple batch commands
+* Payload to KIE Server can contain multiple batch commands
 * KIE Server executes all commands in single transaction
 * Batch commands work with _stateless_ ksession
 * Batch commands found in:

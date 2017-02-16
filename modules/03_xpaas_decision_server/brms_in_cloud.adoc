@@ -2,13 +2,14 @@
 :data-uri:
 :noaudio:
 
-== Red Hat JBoss BRMS in Cloud
+== OCP Decision Server
 
-* Red Hat JBoss BRMS available as containerized xPaaS image:
+* Red Hat JBoss BRMS available as containerized OCP image:
 +
 image::images/dserver_in_registry.png[]
 
-* Official name: xPaaS Image for Red Hat JBoss BRMS (`Decision Server`)
+* Official name: xPaaS Image for Red Hat JBoss BRMS 
+.. aka: `Realtime Decision Server`
 * JBoss BRMS _stateless_ KIE Server in Red Hat OCP &equiv; `Decision Server`
 
 ifdef::showscript[]
