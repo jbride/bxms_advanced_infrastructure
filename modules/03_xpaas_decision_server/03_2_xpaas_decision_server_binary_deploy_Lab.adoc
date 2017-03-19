@@ -239,8 +239,8 @@ $ touch .s2i/environment
 +
 [source,text]
 ----
-export KIE_CONTAINER_REDIRECT_ENABLED=false
-export KIE_CONTAINER_DEPLOYMENT_OVERRIDE=policyquote=com.redhat.gpte.xpaas:policyquote:1.0.0
+KIE_CONTAINER_REDIRECT_ENABLED=false
+KIE_CONTAINER_DEPLOYMENT_OVERRIDE=policyquote=com.redhat.gpte.xpaas:policyquote:1.0.0
 ----
 +
 * This tells the S2I build mechanism of the Decision Server to deploy the `1.0.0` version of the `policyquote` kjar in a KIE container named `policyquote`.
