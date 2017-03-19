@@ -146,8 +146,8 @@ In this section, you install the JBoss BPM Suite instances on the VM:
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.pwd=bpms"
 
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller=http://127.0.0.1:8080/business-central/rest/controller"
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=kieserver"
-#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=kieserver1!"
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=jboss"
+#JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=bpms"
 ----
 
 [[vbga]]

@@ -213,19 +213,19 @@ $ ./standalone.sh --admin-only
 ----
 $ cd ~/lab/bpms/bc/bin
 $ ./jboss-cli.sh --connect
-[standalone@localhost:9999 /]
+[standalone@localhost:9990 /]
 ----
 
 . At the JBoss EAP CLI prompt, enter the following commands:
 +
 [source,text]
 ----
-[standalone@localhost:9999 /]/subsystem=security/security-domain=bpms:add(cache-type=default)
+[standalone@localhost:9990 /]/subsystem=security/security-domain=bpms:add(cache-type=default)
 ----
 +
 [source,text]
 ----
-[standalone@localhost:9999 /]/subsystem=security/security-domain=bpms/authentication=classic:add(login-modules=[{"code"=>"org.jboss.security.auth.spi.LdapExtLoginModule","flag"=>"required","module-options"=>[("java.naming.provider.url"=>"ldaps://localhost:636"),("java.naming.factory.initial"=>"com.sun.jndi.ldap.LdapCtxFactory"),("java.naming.security.authentication"=>"simple"),("bindDN"=>"cn=admin,dc=acme,dc=org"),("bindCredential"=>"admin"),("baseCtxDN"=>"dc=acme,dc=org"),("baseFilter"=>"(uid={0})"),("rolesCtxDN"=>"dc=acme,dc=org"),("roleFilter"=>"(member={1})"),("roleNameAttributeID"=>"cn"),("roleRecursion"=>"0"),("roleAttributeIsDN"=>"true"),("searchScope"=>"SUBTREE_SCOPE")]}])
+[standalone@localhost:9990 /]/subsystem=security/security-domain=bpms/authentication=classic:add(login-modules=[{"code"=>"org.jboss.security.auth.spi.LdapExtLoginModule","flag"=>"required","module-options"=>[("java.naming.provider.url"=>"ldaps://localhost:636"),("java.naming.factory.initial"=>"com.sun.jndi.ldap.LdapCtxFactory"),("java.naming.security.authentication"=>"simple"),("bindDN"=>"cn=admin,dc=acme,dc=org"),("bindCredential"=>"admin"),("baseCtxDN"=>"dc=acme,dc=org"),("baseFilter"=>"(uid={0})"),("rolesCtxDN"=>"dc=acme,dc=org"),("roleFilter"=>"(member={1})"),("roleNameAttributeID"=>"cn"),("roleRecursion"=>"0"),("roleAttributeIsDN"=>"true"),("searchScope"=>"SUBTREE_SCOPE")]}])
 ----
 
 * These commands create a new security domain named `bpms`, which uses the `org.jboss.security.auth.spi.LdapExtLoginModule` JAAS login module implementation. This class is part of the login modules shipped with JBoss EAP. It uses searches to locate both the user to bind (during authentication) and the associated roles. Note that roles correspond to groups in LDAP.
@@ -313,7 +313,7 @@ The steps to configure Process Server to use LDAP instead of the default propert
 +
 [source,text]
 ----
-$ ./jboss-cli.sh --connect --controller=127.0.0.1:10149
+$ ./jboss-cli.sh --connect --controller=127.0.0.1:10140
 ----
 * The Process Server instance on the VM uses a port offset of `150`.
 

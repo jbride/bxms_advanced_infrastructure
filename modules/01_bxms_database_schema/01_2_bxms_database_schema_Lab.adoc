@@ -41,14 +41,14 @@ $ ./standalone.sh --admin-only
 ----
 $ cd ~/lab/bpms/bc/bin
 $ ./jboss-cli.sh --connect
-[standalone@localhost:9999 /]
+[standalone@localhost:9990 /]
 ----
 
 . From the JBoss EAP CLI prompt, configure a JBoss EAP module for the JDBC driver installed in the VM with RPM:
 +
 [source,text]
 ----
-[standalone@localhost:9999 /] module add --name=com.mysql --resources=/usr/share/java/mysql-connector-java.jar --dependencies=javax.api,javax.transaction.api
+[standalone@localhost:9990 /] module add --name=com.mysql --resources=/usr/share/java/mysql-connector-java.jar --dependencies=javax.api,javax.transaction.api
 ----
 * The JDBC driver is copied to the `com.mysql` module.
 
@@ -56,14 +56,14 @@ $ ./jboss-cli.sh --connect
 +
 [source,text]
 ----
-[standalone@localhost:9999 /] /subsystem=datasources/jdbc-driver=mysql:add(driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource,driver-name=mysql,driver-module-name=com.mysql)
+[standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=mysql:add(driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource,driver-name=mysql,driver-module-name=com.mysql)
 ----
 
 . Create the datasource that the JBoss BPM Suite engine uses:
 +
 [source,text]
 ----
-[standalone@localhost:9999 /] data-source add --name=jbpmDS --jndi-name="java:jboss/datasources/jbpmDS" --driver-name=mysql --user-name=jboss --password=jboss --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --connection-url="jdbc:mysql://${mysql.host.ip}:${mysql.host.port}/${mysql.bpms.schema}?transformedBitIsBoolean=true&sessionVariables=storage_engine=InnoDB"
+[standalone@localhost:9990 /] data-source add --name=jbpmDS --jndi-name="java:jboss/datasources/jbpmDS" --driver-name=mysql --user-name=jboss --password=jboss --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --connection-url="jdbc:mysql://${mysql.host.ip}:${mysql.host.port}/${mysql.bpms.schema}?transformedBitIsBoolean=true&sessionVariables=storage_engine=InnoDB"
 ----
 
 * The datasource uses the driver you configured in the previous step.
@@ -75,14 +75,14 @@ The connection URL to the database instance uses system property placeholders, r
 +
 [source,text]
 ----
-[standalone@localhost:9999 /] /subsystem=datasources/data-source=jbpmDS:enable
+[standalone@localhost:9990 /] /subsystem=datasources/data-source=jbpmDS:enable
 ----
 
 . Provide Quartz with its own datasource definition:
 +
 [source,text]
 ----
-[standalone@localhost:9999 /] data-source add --name=quartzDS --jta=false --jndi-name="java:jboss/datasources/quartzDS" --driver-name=mysql --user-name=jboss --password=jboss --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --connection-url="jdbc:mysql://${mysql.host.ip}:${mysql.host.port}/${mysql.bpms.schema}?transformedBitIsBoolean=true&sessionVariables=storage_engine=InnoDB"
+[standalone@localhost:9990 /] data-source add --name=quartzDS --jta=false --jndi-name="java:jboss/datasources/quartzDS" --driver-name=mysql --user-name=jboss --password=jboss --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --connection-url="jdbc:mysql://${mysql.host.ip}:${mysql.host.port}/${mysql.bpms.schema}?transformedBitIsBoolean=true&sessionVariables=storage_engine=InnoDB"
 [standalone@localhost:9999 /] /subsystem=datasources/data-source=quartzDS:enable
 ----
 
@@ -295,7 +295,7 @@ The steps required to configure the Process Server to use MariaDB, rather than t
 +
 [source,text]
 ----
-$ ./jboss-cli.sh --connect --controller=127.0.0.1:10149
+$ ./jboss-cli.sh --connect --controller=127.0.0.1:10140
 ----
 
 . Open the `/home/jboss/lab/bpms/kieserver/bin/standalone.conf` file and add these lines at the end of the file:

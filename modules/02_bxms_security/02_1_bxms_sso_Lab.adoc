@@ -189,17 +189,17 @@ $ ./standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provid
 
 == Configure Process Server
 
-=== Install Red Hat Single Sign-On Client Adapter for JBoss EAP 6
+=== Install Red Hat Single Sign-On Client Adapter for JBoss EAP 7
 
 In this section, you install the Red Hat Single Sign-On client adapter on the Process Server instance. The installation adds a new security domain that Process Server uses instead of the out-of-the-box security domain that employs properties files for user and role configuration.
 
 . If the Process Server instance is running, shut it down by pressing *Ctrl+C* in the terminal window where you started JBoss BPM Suite.
 
-. Unzip the RHT SSO adapter for JBoss EAP 6 (provided in your lab environment) to the `/home/jboss/lab/bpms/kieserver` directory:
+. Unzip the RHT SSO adapter for JBoss EAP 7 (provided in your lab environment) to the `/home/jboss/lab/bpms/kieserver` directory:
 +
 [source,text]
 ----
-$ unzip /opt/install/scripts/rhsso/resources/rh-sso-7.0.0-eap6-adapter.zip -d /home/jboss/lab/bpms/kieserver/
+$ unzip /opt/install/scripts/rhsso/resources/rh-sso-7.0.0-eap7-adapter.zip -d /home/jboss/lab/bpms/kieserver/
 ----
 
 . Start the `kie-server` instance in admin-only mode:
@@ -217,12 +217,12 @@ $ ./standalone.sh --admin-only
 +
 [source,text]
 ----
-$ ./jboss-cli.sh -c --controller=localhost:10149 --file=adapter-install.cli
+$ ./jboss-cli.sh -c --controller=localhost:10140 --file=adapter-install.cli
 {"outcome" => "success"}
 {"outcome" => "success"}
 {"outcome" => "success"}
 {"outcome" => "success"}
-$ ./jboss-cli.sh -c --controller=localhost:10149 ":shutdown"
+$ ./jboss-cli.sh -c --controller=localhost:10140 ":shutdown"
 {"outcome" => "success"}
 ----
 
@@ -343,14 +343,14 @@ $ curl -X GET 'http://127.0.0.1:8230/kie-server/services/rest/server' \
   "msg" : "Kie Server info",
   "result" : {
     "kie-server-info" : {
-      "version" : "6.4.0.Final-redhat-3",
+      "version" : "6.5.0.Final-redhat-2",
       "name" : "kie-server-127.0.0.1",
       "location" : "http://127.0.0.1:8230/kie-server/services/rest/server",
       "capabilities" : [ "BRM", "BPM-UI", "BPM", "KieServer" ],
       "messages" : [ {
         "severity" : "INFO",
         "timestamp" : 1471471094671,
-        "content" : [ "Server KieServerInfo{serverId='kie-server-127.0.0.1', version='6.4.0.Final-redhat-3', location='http://127.0.0.1:8230/kie-server/services/rest/server'}started successfully at Wed Aug 17 23:58:14 CEST 2016" ]
+        "content" : [ "Server KieServerInfo{serverId='kie-server-127.0.0.1', version='6.5.0.Final-redhat-2', location='http://127.0.0.1:8230/kie-server/services/rest/server'}started successfully at Wed Aug 17 23:58:14 CEST 2016" ]
       } ],
       "id" : "kie-server-127.0.0.1"
     }
@@ -453,7 +453,7 @@ $ cd `~/lab/bxms-advanced-infrastructure-lab/angularjs-ticket-app/`
 $ python -m SimpleHTTPServer
 Serving HTTP on 0.0.0.0 port 8000 ...
 ----
-. Open a browser window and navigate to `http://localhost:8080` to access the application.
+. Open a browser window and navigate to `http://localhost:8000` to access the application.
 
 * As part of the application bootstrap, a login sequence is initiated with the Red Hat Single Sign-On server using the Red Hat Single Sign-On Javascript adapter, which is installed as a dependency in the AngularJS app. You are redirected to the Red Hat Single Sign-On login screen:
 +
@@ -508,7 +508,7 @@ The steps for integrating Business Central are similar to the steps for configur
 . On the Red Hat Single Sign-On server, create a `jboss` user with the following:
 ** *Password*: `bpms`
 ** *Assigned role*: `admin`
-. On the Business Central server, install the Red Hat Single Sign-On adapter for JBoss EAP 6.
+. On the Business Central server, install the Red Hat Single Sign-On adapter for JBoss EAP 7.
 . As an alternative to configuring the web application with a `keycloak.json` JSON file in the web application's `WEB-INF` directory, add the configuration settings to the `keycloak` subsystem in the `standalone.xml` configuration file as follows:
 .. Download the settings from the *Installation* tab of the client definition on the Red Hat Single Sign-On server and choose the *Keycloak OIDC JBoss Subsystem XML* format.
 .. Add the XML snippet to the `keycloak` subsystem definition in the `standalone.xml` configuration file of the JBoss BPM Suite application server.
@@ -532,6 +532,7 @@ The steps for integrating Business Central are similar to the steps for configur
   </secure-deployment>
 </subsystem>
 ----
+. In the `standalone.xml` configuration file, remove the `<single-sign-on>` element from the `undertow` subsystem.
 . Start the Business Central instance.
 . In a browser window, navigate to `http://127.0.0.1:8080/business-central`
 * You are redirected to the Red Hat Single Sign-On login screen.
