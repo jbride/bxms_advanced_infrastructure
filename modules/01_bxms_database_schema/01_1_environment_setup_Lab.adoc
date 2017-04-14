@@ -1,7 +1,7 @@
 :scrollbar:
 :data-uri:
 :toc2:
-:course_vm: link:https://drive.google.com/open?id=0B8mmXW6hJKdiM3FKYjRIdjBKeDA[course vm]
+:course_vm: link:https://drive.google.com/file/d/0B8mmXW6hJKdiSjg4N2I4S0wycWs/view?usp=sharing[course vm]
 
 == Environment Setup Lab
 
@@ -204,11 +204,5 @@ image::images/display_options.png[]
 . At the bottom of the *Monitor Preferences* dialog, click *Apply*.
 
 ifdef::showscript[]
-
-Add the following to the VM:
-
-1)  firewall-cmd --zone=public --add-port=8380/tcp --permanent
-    firewall-cmd --zone=public --add-port=8230/tcp --permanent
-    firewall-cmd --zone=public --add-port=8000/tcp --permanent
 
 endif::showscript[]

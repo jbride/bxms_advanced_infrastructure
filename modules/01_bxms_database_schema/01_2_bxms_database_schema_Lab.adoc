@@ -291,7 +291,7 @@ The steps required to configure the Process Server to use MariaDB, rather than t
 
 . Repeat the steps performed previously to define a driver module datasource for the Process Server installation, located at `/home/jboss/lab/bpms/kieserver`.
 
-. Connect to the server from the CLI, using a port offset of 150 to launch Process Server:
+.. NOTE: You'll want to connect to the server from the CLI, using a port offset of 150 to launch Process Server:
 +
 [source,text]
 ----

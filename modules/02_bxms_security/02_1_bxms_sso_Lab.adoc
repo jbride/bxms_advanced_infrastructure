@@ -34,8 +34,6 @@ Red Hat Single Sign-On is an integrated SSO and IdM solution for browser applica
 
 The upstream project of Red Hat Single Sign-On is Keycloak: http://keycloak.jboss.org/.
 
-
-
 == Install Red Hat Single Sign-On
 
 The VM comes with a script that does the following:
@@ -68,8 +66,8 @@ image::images/rhsso-server-start-screen.png[]
 == Configure Red Hat Single Sign-On
 In this section we configure the `Red Hat Single Sign-On` product with configurations needed to provide security to our `Process Server` and web application.
 
-This lab provides both a manual approach and an automated approach for doing so as per the next two sections.
-Choose one approach.
+This lab provides both a manual approach and an automated approach.
+Choose one approach or the other.
 
 It is recommended that you elect to manually configure the Red Hat SSO server the first time you execute this lab.
 By doing so, you'll get a better appreciation of the details.
@@ -99,7 +97,11 @@ On a production system, Red Hat strongly recommends that you use SSL for all com
 
 ==== Create Clients
 
-For each of the applications involved--the Process Server back end and the front-end application--you need to create a client configuration in your realm. You also create a client that `curl` uses to access the Process Server REST API from the command line.
+In the context of SSO, a _client_ is a trusted browser app or http service in a realm.
+These _clients_ can request a login from the Red Hat SSO Server.
+
+For each of the applications involved--the Process Server back end and the front-end application--you need to create a _client_ configuration in your realm.
+You also create a _client_ that `curl` uses to access the Process Server REST API from the command line.
 
 * In the left navigation panel on the *Kieserver* realm page, click *Clients*.
 * A number of client configurations are predefined. Leave these as is.
@@ -257,7 +259,7 @@ $ ./jboss-cli.sh -c --controller=localhost:10140 ":shutdown"
 
 In this section, you configure the Process Server application to use the Red Hat Single Sign-On security domain.
 
-. Edit `/home/jboss/lab/bpms/kieserver/standalone/depoyments/kie-server.war/WEB-INF/web.xml`:
+. Edit `/home/jboss/lab/bpms/kieserver/standalone/deployments/kie-server.war/WEB-INF/web.xml`:
 .. Open the file.
 .. Replace:
 +
@@ -281,15 +283,15 @@ with:
 
 .. Save the file.
 . Log in to the Red Hat Single Sign-On server as user `admin:admin` and select the *Kieserver realm*.
-. Install the JSON file:
+. Install `keyclock.json` file for Process Server:
 .. Go the *Clients* section, open the `kieserver` client, and click the *Installation* tab.
 .. Select the `Keycloak OIDC JSON` format and click *Download*:
 +
 image::images/rhsso-server-realm-installation.png[]
 
 .. Save the file on your file system.
-. Copy the downloaded JSON configuration file to the `/home/jboss/lab/bpms/kieserver/standalone/depoyments/kie-server.war/WEB-INF/` directory.
-. Edit `/home/jboss/lab/bpms/kieserver/standalone/depoyments/kie-server.war/WEB-INF/keycloak.json`:
+. Copy the downloaded JSON configuration file to the `/home/jboss/lab/bpms/kieserver/standalone/deployments/kie-server.war/WEB-INF/` directory.
+. Edit `/home/jboss/lab/bpms/kieserver/standalone/deployments/kie-server.war/WEB-INF/keycloak.json`:
 .. Open the file.
 .. Replace the IP address of the server in the `auth-server-url` element with `127.0.0.1`.
 .. Add the following block after `"resource": "kieserver"`, making sure to add a comma after `"resource": "kieserver"`:
@@ -351,6 +353,10 @@ $ export TKN=$(curl -X POST 'http://127.0.0.1:8380/auth/realms/kieserver/protoco
 $ echo $TKN
 ----
 * Expect to see the value of the token received from the Red Hat Single Sign-On server.
+
+ifdef::showscript[]
+JA Bride:  TO-DO:  what kind of token is this ?
+endif::showscript[]
 
 . Use `curl` to access the same resource as you tried earlier with the browser, and supply the bearer token in an Authorization header:
 +
