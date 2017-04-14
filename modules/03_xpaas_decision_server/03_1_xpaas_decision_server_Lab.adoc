@@ -55,7 +55,7 @@ image::images/dserver1_lab_topology.gif[]
 
 In this section of the lab, you register for the ability to create a project in your remote OpenShift lab environment.
 
-. In your browser, navigate to https://labs.opentlc.com:
+. In your browser, navigate to the link:https://labs.opentlc.com/[OPENTLC lab portal]:
 +
 image::images/cf_login.png[]
 

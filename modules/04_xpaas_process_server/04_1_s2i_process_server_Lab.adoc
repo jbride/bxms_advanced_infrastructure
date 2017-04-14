@@ -296,7 +296,7 @@ I1028 12:49:46.470266       1 sti.go:288] Successfully pushed 172.30.22.135:5000
 
 * The image built by the builder pod is pushed to the OpenShift internal registry. This triggers the deployment of the image.
 
-. Use the OCP CLI to identify the ID of the _policyquote_ application pod that was just now started and is hosting the _Process Server_. 
+. Use the OCP CLI to identify the ID of the _policyquote_ application pod that was just now started and is hosting the _Process Server_.
 . Check this application pod's logs to ensure that the _policyquote-process_ KIE Container was deployed and started correctly in this Process Server:
 +
 [source,text]
@@ -502,7 +502,7 @@ $ curl -X PUT -H "Accept: application/json" --user user1:user "$policyquote_app/
 +
 [source,text]
 ----
-$ curl -X PUT -H "Accept: application/json" --user user1:user -d '{ "task_price" : 300 }' "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/tasks/1/states/completed"
+$ curl -X PUT -H "Accept: application/json" -H "Content-Type: application/json" --user user1:user -d '{ "task_price" : 300 }' "$policyquote_app/kie-server/services/rest/server/containers/policyquote-process/tasks/1/states/completed"
 ----
 
 . Obtain the tasks definitions in the process as the `kieserver` user, including the input and output data associations:
