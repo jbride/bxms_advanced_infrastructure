@@ -18,7 +18,7 @@ Although this approach is more practical, it is still not a good solution. The s
 
 A better solution to this problem is to use a single sign-on, or SSO, solution:
 
-image::images/sso_dataflow.gif[]
+image::images/sso_dataflow.gif[align="center"]
 
 In this approach, a user who accesses the front-end application is redirected to the Red Hat Single Sign-On server, where authentication occurs. When the login succeeds, the Red Hat Single Sign-On server issues a token. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Process Server back end, the token is passed to the server as an HTTP header and the server verifies the token. If the token is valid, the user is granted access.
 
@@ -61,9 +61,18 @@ $ ./standalone.sh
 +
 image::images/rhsso-server-start-screen.png[]
 
-== Configure Red Hat Single Sign-On Manually
+== Configure Red Hat Single Sign-On
+In this section we configure the `Red Hat Single Sign-On` product with configurations needed to provide security to our `Process Server` and web application.
 
-=== Create Realm
+This lab provides both a manual approach and an automated approach for doing so as per the next two sections.
+Choose one approach.
+
+It is recommended that you elect to manually configure the Red Hat SSO server the first time you execute this lab.
+By doing so, you'll get a better appreciation of the details.
+
+=== Manually Approach
+
+==== Create Realm
 
 The first step in configuring Red Hat Single Sign-On is to create a SSO realm for your application.
 
@@ -84,7 +93,7 @@ image::images/rhsso-server-login-tab.png[]
 [NOTE]
 On a production system, Red Hat strongly recommends that you use SSL for all communication between the applications and the Red Hat Single Sign-On server.
 
-=== Create Clients
+==== Create Clients
 
 For each of the applications involved--the Process Server back end and the front-end application--you need to create a client configuration in your realm. You also create a client that `curl` uses to access the Process Server REST API from the command line.
 
@@ -126,7 +135,7 @@ http://localhost:8000 is the URI of the AngularJS front-end application that you
 * The `curl` client lets you obtain a valid token from the Red Hat Single Sign-On server using curl. This token can then be used to access the Process Server REST API.
 * Red Hat recommends that you do not use `curl` for a production system, and that if you do use it, at least restrict its use to select users.
 
-=== Create Roles
+==== Create Roles
 
 The user's roles determine authorization. To access the Process Server REST APIs, a user must have the `kie-server` role.
 
@@ -138,7 +147,7 @@ Here, you create the `kie-server` role along with some application-specific role
 . Click *Save*.
 . Repeat these steps to create application roles such as `group1` and `group2`.
 
-=== Create Users
+==== Create Users
 
 The next step is to create some users.
 
@@ -168,9 +177,9 @@ image::images/rhsso-server-user-roles.png[]
 
 . Repeat these steps to create more users.
 
-=== Import Red Hat Single Sign-On Configuration
+=== Automated Approach
 
-Rather than entering the Red Hat Single Sign-On assets--realms, clients, users, and roles--by hand, you can import them at startup from one or more JSON files.
+Rather than entering the Red Hat Single Sign-On assets--realms, clients, users, and roles--by hand (as described in the previous section), you can import them at startup from one or more JSON files.
 
 The VM's `/opt/install/scripts/rhsso/import` directory contains JSON files for the `kieserver` realm and the users defined for this realm. All users have the password `user`.
 
