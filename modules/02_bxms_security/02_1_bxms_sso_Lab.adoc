@@ -2,7 +2,15 @@
 :data-uri:
 :toc2:
 
-== Single Sign-On Lab
+= Single Sign-On Lab
+
+.Goal
+
+* Configure Process Server to use Red Hat Single Sign-On for authentication and authorization
+
+:numbered:
+
+== Overview
 
 The out-of-the-box installations of Business Central and Process Server use properties files to manage users and roles. This makes it easier to get started with the JBoss BPM Suite platform, but it is not suitable for an enterprise deployment.
 
@@ -26,11 +34,7 @@ Red Hat Single Sign-On is an integrated SSO and IdM solution for browser applica
 
 The upstream project of Red Hat Single Sign-On is Keycloak: http://keycloak.jboss.org/.
 
-.Goal
 
-* Configure Process Server to use Red Hat Single Sign-On for authentication and authorization
-
-:numbered:
 
 == Install Red Hat Single Sign-On
 
@@ -97,16 +101,20 @@ On a production system, Red Hat strongly recommends that you use SSL for all com
 
 For each of the applications involved--the Process Server back end and the front-end application--you need to create a client configuration in your realm. You also create a client that `curl` uses to access the Process Server REST API from the command line.
 
-. In the left navigation panel on the *Kieserver* realm page, click *Clients*.
+* In the left navigation panel on the *Kieserver* realm page, click *Clients*.
 * A number of client configurations are predefined. Leave these as is.
-. Create the front-end client:
-.. Click *Create* in the upper right.
-.. Set the field values as follows:
+
+===== *front-end* client
+
+Create the front-end client:
+
+. Click *Create* in the upper right.
+. Set the field values as follows:
 * *Client Id*: Enter `frontend`.
 * *Client Protocol*: Leave as `openid-connect`.
 * *Client Template*: Leave blank.
 * *Root URL*: Leave blank.
-.. Click *Save*.
+. Click *Save*.
 . Enter the client settings:
 .. On the `frontend` client page, click the *Settings* tab.
 .. Set the field values as follows:
@@ -120,20 +128,30 @@ image::images/rhsso-server-client-frontend-settings.png[]
 http://localhost:8000 is the URI of the AngularJS front-end application that you use to test your setup.
 
 .. Click *Save*.
-. Create the `kieserver` client:
-.. Follow the steps for creating the front-end client, but enter `kieserver` as the client ID.
-.. Click the *Settings* tab and enter `bearer only` in the *Access Type* field.
+
+===== *kieserver* client
+
+Create the `kieserver` client:
+
+. Follow the steps for creating the front-end client, but enter `kieserver` as the client ID.
+. Click the *Settings* tab and enter `bearer only` in the *Access Type* field.
 
 * A `bearer only` client is used for web services that do not initiate a login, but require a valid token to grant access.
-.. Click *Save*.
-. Create the `curl` client:
-.. Follow the steps for creating the front-end client, but enter `curl` as the client ID.
-.. Click the *Settings* tab and set the following values:
+. Click *Save*.
+
+===== *curl* client
+
+The `curl` client lets you obtain a valid token from the Red Hat Single Sign-On server using curl. This token can then be used to access the Process Server REST API.
+
+Create the `curl` client:
+
+. Follow the steps for creating the front-end client, but enter `curl` as the client ID.
+. Click the *Settings* tab and set the following values:
 ** *Access Type*: Enter `public`.
 ** *Valid Redirect URIs*: Add `localhost`.
-.. Click *Save*.
-* The `curl` client lets you obtain a valid token from the Red Hat Single Sign-On server using curl. This token can then be used to access the Process Server REST API.
-* Red Hat recommends that you do not use `curl` for a production system, and that if you do use it, at least restrict its use to select users.
+. Click *Save*.
+
+Red Hat recommends that you do not use `curl` for a production system, and that if you do use it, at least restrict its use to select users.
 
 ==== Create Roles
 
@@ -454,6 +472,10 @@ In this section, you run the ticket-handling application within the built-in Pyt
 
 . In the VM, open a terminal window.
 Change to the `/home/jboss/lab/bxms-advanced-infrastructure-lab/angularjs-ticket-app/` directory.
+. Scan through the source code of this project.
++
+Pay particular attention to the values in: `scripts/config.js` and spend a bit of time to understand where and how those properties are used in the Angular based web application.
+
 . Start the Python HTTP server:
 +
 [source,text]
@@ -505,9 +527,9 @@ image::images/angular-ticket-screen.png[]
 [NOTE]
 For more details on how AngularJS works, go to https://github.com/jboss-gpe-ref-archs/bpms_rhsso.
 
-== Configure Business Central
+== Secure Business Central
 
-The steps for integrating Business Central are similar to the steps for configuring Process Server.
+The steps for securing Business Central are similar to the steps for configuring Process Server.
 
 . On the Red Hat Single Sign-On server, create a new client for the Business Central application in the `kieserver` realm, with the following properties:
 ** *Access type*: `confidential`

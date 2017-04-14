@@ -1,6 +1,7 @@
 :scrollbar:
 :data-uri:
 :toc2:
+:course_vm: link:https://drive.google.com/open?id=0B8mmXW6hJKdiM3FKYjRIdjBKeDA[course vm]
 
 == Environment Setup Lab
 
@@ -30,7 +31,7 @@ This course includes a VM preinstalled with the required tools. The VM is provid
 A 64-bit VirtualBox is mandatory. The 32-bit VirtualBox does not work for this course.
 
 .VM Components
-The `gpte-bxms-advanced-infrastructure-630.vdi` VM image includes:
+The {course_vm} VM image includes:
 
 * VirtualBox VDI format, built with VirtualBox 5.0.14
 * CentOS 7
@@ -53,7 +54,7 @@ If you are familiar with BitTorrent and have a BitTorrent client, this method is
 * Using your BitTorrent client, open the torrent file and download `gpte-bxms-advanced-infrastructure-630.vdi`.
 endif::showscript[]
 
-. Download the `bxms_advanced_infrastructure_1.0.vdi` VirtualBox image from https://drive.google.com/open?id=0B8mmXW6hJKdiM3FKYjRIdjBKeDA .
+. Download the {course_vm}
 +
 [NOTE]
 If you are participating in on-site instructor-led training (ILT), expect to receive the VM from your instructor.
@@ -61,7 +62,7 @@ If you are participating in on-site instructor-led training (ILT), expect to rec
 . Install VirtualBox by following the instructions at https://www.virtualbox.org/wiki/Downloads.
 +
 [NOTE]
-The `gpte-bxms-advanced-infrastructure-630.vdi` is a 64-bit VM, so make sure that the `amd64` version of VirtualBox is installed and that virtualization is enabled in your host machine's BIOS. Refer to VirtualBox's online documentation for assistance in configuring it for your workstation.
+The course virtual machine is a 64-bit VM, so make sure that the `amd64` version of VirtualBox is installed and that virtualization is enabled in your host machine's BIOS. Refer to VirtualBox's online documentation for assistance in configuring it for your workstation.
 
 . Start VirtualBox and navigate to *Machine -> New*.
 . In the *Create Virtual Machine* panel, populate its fields with these entries:
@@ -72,7 +73,7 @@ The `gpte-bxms-advanced-infrastructure-630.vdi` is a 64-bit VM, so make sure tha
 . In the *Memory* panel, specify `4096 MB` of RAM and click *Next*.
 . In the *Hard Disk* panel:
 .. Select *Use an existing virtual hard disk file*.
-.. Browse your hard drive and select the previously downloaded `gpte-bxms-advanced-infrastructure-630.vdi` image.
+.. Browse your hard drive and select the previously downloaded {course_vm} image.
 .. Click *Create*.
 . Click *Start*.
 
@@ -87,7 +88,7 @@ image:images/wm_login.png[]
 [TIP]
 Enable VirtualBox Guest Additions to allow the VM to use the full display resolution of your host machine. Additional information is provided in the last section of this lab: <<vbga>>.
 
-== Explore Business Central and Process Server
+== Install Red Hat BPM Suite
 
 The VM comes with a script to install and configure JBoss BPM Suite's Business Central and Process Server. The Process Server is also known as the Intelligent Process Server in JBoss BPMS for OpenShift. The script installs separate instances of Business Central and Process Server. This reflects a realistic installation setup where Business Central is used at design time and where the Process Server is used as the process/rules execution runtime.
 
@@ -120,7 +121,7 @@ ifdef::showscript[]
 
 endif::showscript[]
 
-=== Install JBoss BPM Suite
+=== Execute Installer
 
 In this section, you install the JBoss BPM Suite instances on the VM:
 
