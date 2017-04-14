@@ -70,7 +70,7 @@ Choose one approach.
 It is recommended that you elect to manually configure the Red Hat SSO server the first time you execute this lab.
 By doing so, you'll get a better appreciation of the details.
 
-=== Manually Approach
+=== Manual Approach
 
 ==== Create Realm
 
