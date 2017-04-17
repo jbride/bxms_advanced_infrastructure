@@ -19,12 +19,14 @@ In this lab, you use SSL for all communication with and between the Process Serv
 :numbered:
 
 == Prepare Certificates, Keystores, and Truststores
+In this section of the lab, we generate and import SSL certificates.
+These SSL certificates will be used to support link:https://en.wikipedia.org/wiki/Mutual_authentication[2-way mutual authentication] between the _ProcessServer_ and the Red Hat _SSO Server_.
 
 . In the lab VM, change to the `ssl` directory:
 +
 [source,text]
 ----
-$ cd ~/home/jboss/lab/ssl
+$ cd /home/jboss/lab/ssl
 ----
 
 . Generate a certificate authority (CA) certificate. If you completed the LDAP integration lab, you should already have a private key and a certificate created, and you can skip this task.
@@ -37,25 +39,31 @@ $ openssl req -new -x509 -key private/acme-ca.key -days 365 -out acme-ca.crt -su
 * When prompted for a passphrase, enter one, and remember it. You use it again later in the lab.
 
 . Generate a certificate for the SSL keystore to be used on the Red Hat Single Sign-On server:
+.. export OCP_PROJECT=<name of your OCP project>
+.. export OCP_DOMAIN=<name of your OCP domain>
++
+ie:  _cloudapps.na.openshift.opentlc.com_
+
+.. Execute:
 +
 [source,text]
 ----
-$ keytool -genkeypair -keyalg RSA -keysize 2048 -dname "CN=rhsso-<name of your OpenShift project>.<name of your OpenShift domain>" -alias xpaas-https-key -keystore xpaas-sso-https.jks
+$ keytool -genkeypair -keyalg RSA -keysize 2048 \
+          -dname "CN=rhsso-$OCP_PROJECT.$OCP_DOMAIN" \
+          -alias xpaas-https-key -keystore xpaas-sso-https.jks
 ----
-
-* Replace "<name of your OpenShift project>" and "<name of your OpenShift domain>" with the correct values for your environment.
-
++
 * When prompted for a keystore password, use the same password that you used for the key.
 
 . Generate a certificate for the SSL keystore to be used on the Process Server:
 +
 [source,text]
 ----
-$ keytool -genkeypair -keyalg RSA -keysize 2048 -dname "CN=policyquote-<name of your OpenShift project>.<name of your OpenShift domain>" -alias xpaas-https-key -keystore xpaas-ps-https.jks
+$ keytool -genkeypair -keyalg RSA -keysize 2048 \
+          -dname "CN=policyquote-$OCP_PROJECT.$OCP_DOMAIN" \
+          -alias xpaas-https-key -keystore xpaas-ps-https.jks
 ----
-
-* Replace "<name of your OpenShift project>" and "<name of your OpenShift domain>" with the correct values for your environment.
-
++
 * When prompted for a keystore password, use the same password that you used for the key.
 
 . Create certificate signing requests (CSRs) for the keys in the keystores:
@@ -71,7 +79,7 @@ $ keytool -certreq -keyalg rsa -alias xpaas-https-key -keystore xpaas-ps-https.j
 [source,text]
 ----
 $ openssl ca -config ca.cnf -out xpaas-sso.crt -infiles xpaas-sso.csr
-$ openssl ca -config ca.cnf -out xpaas-ps.crt -infiles xpaas-ps.crt
+$ openssl ca -config ca.cnf -out xpaas-ps.crt -infiles xpaas-ps.csr
 ----
 
 . Import the CA into the SSL keystores:
@@ -97,7 +105,7 @@ $ keytool -import -file xpaas-ps.crt -alias xpaas-https-key -keystore xpaas-ps-h
 $ keytool -import -file acme-ca.crt -alias xpaas.ca -keystore truststore.jks
 ----
 
-== Configure Red Hat Single Sign-On Server
+== Create Red Hat Single Sign-On Server
 
 The xPaaS collection of images for OpenShift includes an image for Red Hat Single Sign-On 7.0. An image stream for this image is installed by default in OpenShift.
 
