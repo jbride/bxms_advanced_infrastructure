@@ -293,6 +293,9 @@ image::images/gogs_register.png[]
 .. Create an account. Be sure to remember the username and password combination.
 .. Log in with your username and password.
 
+
+=== Configure `decision-server-s2i` organization in Gogs
+
 . Create an organization named `decision-server-s2i`:
 .. Click *+* at the upper right.
 .. Click *New Organization*.
