@@ -12,6 +12,7 @@ In this lab, you use SSL for all communication with and between the Process Serv
 
 .Requirements
 * Completion of the previous _Decision_ and _Process_ server labs.
+** In particular, you'll need the _gogs_ and _nexus_ pods provisioned in previous lab in your OCP lab environment.
 * Workstation with the following additional tools installed:
 ** `openssl`
 ** `keytool`
@@ -38,15 +39,14 @@ $ openssl req -new -x509 -key private/acme-ca.key -days 365 -out acme-ca.crt -su
 ----
 * When prompted for a passphrase, enter one, and remember it. You use it again later in the lab.
 
-. Generate a certificate for the SSL keystore to be used on the Red Hat Single Sign-On server:
-.. export OCP_PROJECT=<name of your OCP project>
+. Set some shell variables related to your OCP environment:
+.. export OCP_PROJECT=`oc project | sed 's/Using project \"//g' | sed 's/\".*//g'`
 .. export OCP_DOMAIN=<name of your OCP domain>
 +
 ie:  _cloudapps.na.openshift.opentlc.com_
 
-.. Execute:
+. Generate a certificate for the SSL keystore to be used on the Red Hat Single Sign-On server:
 +
-[source,text]
 ----
 $ keytool -genkeypair -keyalg RSA -keysize 2048 \
           -dname "CN=rhsso-$OCP_PROJECT.$OCP_DOMAIN" \
@@ -74,7 +74,7 @@ $ keytool -certreq -keyalg rsa -alias xpaas-https-key -keystore xpaas-sso-https.
 $ keytool -certreq -keyalg rsa -alias xpaas-https-key -keystore xpaas-ps-https.jks -file xpaas-ps.csr
 ----
 
-. Sign the CSRs with the CA certificate:
+. Sign the CSRs with the CA certificate (similar to what a legitimate Certificate Authority would do):
 +
 [source,text]
 ----
@@ -90,7 +90,7 @@ $ keytool -import -file acme-ca.crt -alias acme.ca -keystore xpaas-sso-https.jks
 $ keytool -import -file acme-ca.crt -alias acme.ca -keystore xpaas-ps-https.jks
 ----
 
-. Import the signed CSRs into the SSL keystores:
+. Import the signed certs into their respective SSL keystores:
 +
 [source,text]
 ----
@@ -98,7 +98,7 @@ $ keytool -import -file xpaas-sso.crt -alias xpaas-https-key -keystore xpaas-sso
 $ keytool -import -file xpaas-ps.crt -alias xpaas-https-key -keystore xpaas-ps-https.jks
 ----
 
-. Import the CA in a truststore:
+. Import out self-signed CA in a truststore:
 +
 [source,text]
 ----
@@ -169,7 +169,12 @@ image::images/ocp-sso-application.png[]
 
 * Note that the `rhsso` route is exposed over HTTPS.
 
-. Open a web browser, navigate to "<URL of the rhsso route>/auth/admin", and log in with a username of `admin` and password of `admin`.
+. Open a web browser, navigate to the URL retrieved from the following:
++
+-----
+$ echo -en "\nhttps://"$(oc get route/rhsso -o template --template {{.spec.host}})"/auth/admin\n\n"
+-----
+.. Log in with a username of `admin` and password of `admin`.
 
 * Because the SSL certificate is not signed by a trusted CA, expect to see a warning that the connection is unsafe.
 
@@ -185,7 +190,7 @@ image::images/rh-sso-new-realm.png[]
 
 * This creates the realm, a client for curl, and a number of roles that can be used for the `policyquote-process` application.
 
-. In the `Processserver` realm pane, click *Import*.
+. In the `Processserver` realm pane, click *Manage -> Import*.
 . Select the `processserver-users-0.json` file in the `xpaas/common/export` directory of the lab project and click *Import* to import user definitions.
 * All users have the `user` password.
 
@@ -197,8 +202,8 @@ image::images/rh-sso-new-realm.png[]
 +
 [source,text]
 ----
-$ export rhsso_url=<URL of the RH SSO server>
-$ export cacert=<path to the xpaas-ca.crt certificate file>
+$ export rhsso_url=https://"$(oc get route/rhsso -o template --template {{.spec.host}})"
+$ export cacert=<path to the acme-ca.crt certificate file>
 $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-connect/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=user1" \
@@ -210,13 +215,14 @@ $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-conne
 $ echo $TKN
 ----
 
-* Expect to obtain an encoded token:
+* Expect to obtain an encoded _access token_:
 +
 [source,text]
 ----
 $ echo $TKN
 eyJhbGciOiJSUzI1NiJ9.eyJqdGkiOiIyNWIwYjc1MS0yNGQxLTQ2MmUtYjBlMy0yYmYyZjc0YmM3ZWIiLCJleHAiOjE0NzgzNzA4MzAsIm5iZiI6MCwiaWF0IjoxNDc4MzcwNTMwLCJpc3MiOiJodHRwczovL3Joc3NvLXhwYWFzLm9wZW5zaGlmdC5jZGsudm0vYXV0aC9yZWFsbXMvcHJvY2Vzc3NlcnZlciIsImF1ZCI6ImN1cmwiLCJzdWIiOiI4NDUxZjk0MC0yYjgzLTQ3YjMtYWM3ZC04ZjQwMGUwMDE1OTciLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJjdXJsIiwic2Vzc2lvbl9zdGF0ZSI6IjliYzUzZjViLTQ0NDUtNDE0OS04MGEyLTgxY2ZiYTJjNDljNyIsImNsaWVudF9zZXNzaW9uIjoiY2JjNmEyZDgtMDk2MC00ZjQ1LWE2ZTctNzU2M2E1ODI1ODBlIiwiYWxsb3dlZC1vcmlnaW5zIjpbXSwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImFnZW50Iiwia2llLXNlcnZlciIsImdyb3VwMSJdfSwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJ2aWV3LXByb2ZpbGUiXX19LCJuYW1lIjoiIiwicHJlZmVycmVkX3VzZXJuYW1lIjoidXNlcjEifQ.Lpo3ztry9C6Zz4XLMRmZzMzYOWa0Mvh2FOFSgze1RWnb_GaK02qpHD2stcoehFOysERbPi2kC0RVGT1sAhQNa8FeLXd4gOjxeasrlyP8WlvcVkCJaBE2bdXOi_juQMqVEAymFgsDEI9JciJvuOsB8lWM8pdPan5JnrxWSi4b0-TTsUt4gibDjFZGO0eUbHeEbRFvSnYZeGp2CpzjB60r3k3xjAi5umTiUih8KSjZWfWOHbp7BFrcFT6gFpqI2aznEpPhWAh8Jiedj1ZbRamqW8BE6mja-cOywx-5taY9vD7vbWuW42HCgmQbilbZ8SHMlG2yhpJO7joSX4CRSsxWrw
 ----
+
 
 == Create Process Server Deployment Project
 
@@ -417,7 +423,7 @@ Before issuing a `curl` command against the Process Server, you must obtain a to
 [source,text]
 ----
 $ export rhsso_url=<URL of the RH SSO server>
-$ export cacert=<path to the xpaas-ca.crt certificate file>
+$ export cacert=<path to the acme-ca.crt certificate file>
 $ TKN=$(curl -X POST "$rhsso_url/auth/realms/processserver/protocol/openid-connect/token" \
  -H "Content-Type: application/x-www-form-urlencoded" \
  -d "username=user1" \
