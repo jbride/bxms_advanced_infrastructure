@@ -18,7 +18,6 @@ This advanced implementation course explores best practices for provisioning and
 * Experience using Jenkins and Maven
 * Experience using Git (at the command line)
 * Completion of the following courses offered by Red Hat OPEN:
-** _Red Hat OpenShift Implementation_
 ** _Application Development with Red Hat OpenShift_
 
 .Requirements
