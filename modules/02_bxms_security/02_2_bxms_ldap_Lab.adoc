@@ -132,7 +132,7 @@ $ sudo pk12util -i /home/jboss/lab/ssl/ldap.p12 -d /etc/openldap/certs -k /etc/o
 * When prompted for your password, enter the password for the `jboss` user.
 
 . Configure the OpenLDAP server to use the certificate directory.
-* The `/home/jboss/ldap/ldif` directory contains a file named `tls.ldif`.
+* The `/home/jboss/lab/ldif` directory contains a file named `tls.ldif`.
 
 .. Review the `tls.ldif` file, noting the value of the `olcTLSCertificateFile` attribute, which matches the name of the certificate in the pkcs12 certificate file.
 
