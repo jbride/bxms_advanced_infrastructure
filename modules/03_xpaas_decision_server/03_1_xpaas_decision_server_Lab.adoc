@@ -505,7 +505,7 @@ $ export nexus_url=http://nexus:8081
 $ export kieserver_password=kieserver1!
 $ export is_namespace=$(oc project | awk '{gsub(/"/,"",$3); print $3}')
 $ export kie_container_deployment="policyquote=com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT"
-$ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment,KIE_CONTAINER_REDIRECT_ENABLED=false,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
+$ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password -p APPLICATION_NAME=$application_name -p SOURCE_REPOSITORY_URL=$source_repo -p IMAGE_STREAM_NAMESPACE=$is_namespace -p KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment -p KIE_CONTAINER_REDIRECT_ENABLED=false -p MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
 +
 * Note that the `KIE_CONTAINER_REDIRECT_ENABLED` environment variable is set to `false`. This means that the name of the KIE container for your application will be `policyquote`, as defined in `KIE_CONTAINER_DEPLOYMENT`.
