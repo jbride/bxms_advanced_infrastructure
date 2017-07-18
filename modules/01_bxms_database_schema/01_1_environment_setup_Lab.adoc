@@ -144,11 +144,20 @@ In this section, you install the JBoss BPM Suite instances on the VM:
 ----
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.user=jboss"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.pwd=bpms"
-
+----
++
+[source,text]
+----
+/home/jboss/lab/bpms/kieserver/bin/standalone.conf
+----
++
+[source,text]
+----
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller=http://127.0.0.1:8080/business-central/rest/controller"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.user=jboss"
 #JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.controller.pwd=bpms"
 ----
+In this last edit, please remember to change the user and password provided by default for the jbos/bpms
 
 [[vbga]]
 == Install and Enable VirtualBox Guest Additions (Appendix)
