@@ -1,7 +1,7 @@
 :scrollbar:
 :data-uri:
 :toc2:
-:ocdownload: link:https://access.redhat.com/downloads/content/290/ver=3.3/rhel---7/3.3.0.35/x86_64/product-software[OpenShift CLI client]
+:ocdownload: link:https://access.redhat.com/downloads/content/290/ver=3.5/rhel---7/3.5.5.31/x86_64/product-software[OpenShift CLI client]
 
 
 == Decision Server S2I Deployment Lab
@@ -33,9 +33,9 @@ There is some client-side tooling needed for these labs.  In particular:
 * Git
 * Maven 3.3.* (or more recent)
 * curl
- 
+
 NOTE: For those using the virtual machine for this course, the above listed tooling is already installed.
-For those not using the virtual machine for this course, please install the above listed tooling at this time. 
+For those not using the virtual machine for this course, please install the above listed tooling at this time.
 
 == Lab Component Topology
 
@@ -76,10 +76,10 @@ image::images/cf_submit_button.png[]
 You have been enrolled in the OPENTLC BXMS_INFRA OpenShift environment.
 You can access your environment by going to https://master.na.openshift.opentlc.com:443 and logging in as jbride-test.
 
-NOTICE: Your environment will expire and be deleted in 14 day(s) at 2017-02-07 00:00:00 -0500. In order to conserve resources we cannot archive or restore any data in this environment. All data will be lost upon expiration. 
+NOTICE: Your environment will expire and be deleted in 14 day(s) at 2017-02-07 00:00:00 -0500. In order to conserve resources we cannot archive or restore any data in this environment. All data will be lost upon expiration.
 -----
 +
-This email confirms that your OpenShift project was created.  
+This email confirms that your OpenShift project was created.
 Please save this email.
 +
 Pay particular attention to the URL of the OCP master node referenced in this email.
@@ -312,7 +312,7 @@ image::images/view_dserver.png[]
 . Create a `policyquote` repository in the `decision-server-s2i` organization:
 .. Click the `+` symbol in the upper right, and select *New Repository*.
 .. Make sure the repository is not private. (Do not check that box.)
-.. Make sure the *Initialize this repository with selected file and template* box is unchecked. 
+.. Make sure the *Initialize this repository with selected file and template* box is unchecked.
 +
 image::images/create_new_repo.png[]
 +
@@ -387,7 +387,7 @@ This lab uses a sample application called  `policyquote`.
 The `policyquote` application is a fairly simple JBoss BRMS application that calculates the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a rule flow process) and a domain model in a single Maven project.
 
 [NOTE]
-The S2I build mechanism imposes certain limitations on the project structure. Multi-module Maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a Maven repository before the build kicks off. 
+The S2I build mechanism imposes certain limitations on the project structure. Multi-module Maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a Maven repository before the build kicks off.
 
 When using binary deployments, you have more flexibility on how to structure your project.
 
@@ -481,7 +481,7 @@ $ oc create -f decisionserver-63-is.yaml
 *** *GENERIC_WEBHOOK_SECRET:* The generic build trigger secret. This is added to the webhook URL. The default is a generated value.
 *** *IMAGE_STREAM_NAMESPACE:* The namespace in which the ImageStreams for Red Hat xPaaS images are installed. These ImageStreams are normally installed in the `openshift` namespace. You  only need to modify this if you have installed the ImageStreams in a different namespace or project (which is the case in this lab).
 *** *MAVEN_MIRROR_URL:* The URL of the Maven mirror--that is, the Nexus server.
-* This template does not contain a database service 
+* This template does not contain a database service
 ** Decision Server does not use persistence
 * Decision Server uses an insecure route--HTTP, not HTTPS
 . Import the template into your OpenShift project:
