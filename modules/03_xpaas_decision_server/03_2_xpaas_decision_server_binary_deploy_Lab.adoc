@@ -178,7 +178,7 @@ In this case, be aware that your data and configuration is lost when the Jenkins
 +
 [source,text]
 ----
-$ oc process -f xpaas-jenkins-persistent.yaml -v APPLICATION_NAME=jenkins,JENKINS_CONFIGURATION_REPOSITORY=http://gogs:3000/xpaas-jenkins/bxms-advanced-infrastructure-lab.git,JENKINS_MASTER_CONFIGURATION_CONTEXT=xpaas/common/jenkins-master,JENKINS_SLAVE_CONFIGURATION_CONTEXT=xpaas/common/jenkins-slave | oc create -f -
+$ oc process -f xpaas-jenkins-persistent.yaml APPLICATION_NAME=jenkins JENKINS_CONFIGURATION_REPOSITORY=http://gogs:3000/xpaas-jenkins/bxms-advanced-infrastructure-lab.git JENKINS_MASTER_CONFIGURATION_CONTEXT=xpaas/common/jenkins-master JENKINS_SLAVE_CONFIGURATION_CONTEXT=xpaas/common/jenkins-slave | oc create -f -
 ----
 
 . After all of the Jenkins application components are up and running, you can log in to the Jenkins master:

@@ -157,7 +157,7 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 +
 [source,text]
 ----
-$ oc process -f xpaas-gogs-persistent.yaml -v APPLICATION_NAME=gogs,POSTGRESQL_USER=gogs,GOGS_POSTGRESQL_PASSWORD=gogs,VOLUME_CAPACITY=512Mi | oc create -f -
+$ oc process -f xpaas-gogs-persistent.yaml APPLICATION_NAME=gogs POSTGRESQL_USER=gogs GOGS_POSTGRESQL_PASSWORD=gogs VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
 . Wait a few minutes for the `gogs` and `postgreslq-gogs` containers to build and deploy. After that time, only these two containers should display a status of `Running`:
@@ -349,7 +349,7 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 +
 [source,text]
 ----
-$ oc process -f xpaas-nexus-persistent.yaml -v APPLICATION_NAME=nexus,VOLUME_CAPACITY=512Mi | oc create -f -
+$ oc process -f xpaas-nexus-persistent.yaml APPLICATION_NAME=nexus VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
 === Configure
