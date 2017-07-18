@@ -400,7 +400,7 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/process-server
 ----
 $ export application_name=policyquote
 $ export source_repo=http://gogs:3000/process-server-sso/policyquote-process-sso-ocp.git
-$ export is_namespace=<name of your OpenShift project>
+$ export is_namespace=$(oc project | awk '{gsub(/"/,"",$3); print $3}')
 $ export nexus_url=http://nexus:8081
 $ export https_keystore=xpaas-ps-https.jks
 $ export https_name=xpaas-https-key

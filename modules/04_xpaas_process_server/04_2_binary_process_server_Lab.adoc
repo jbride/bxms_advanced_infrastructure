@@ -328,7 +328,7 @@ $ export application_name=policyquote
 $ export source_repo=http://gogs:3000/process-server-jenkins/policyquote-process-ocp.git
 $ export nexus_url=http://nexus:8081
 $ export kieserver_password=kieserver1!
-$ export is_namespace=<name of your OpenShift project>
+$ export is_namespace=$(oc project | awk '{gsub(/"/,"",$3); print $3}')
 $ oc new-app --template=processserver63-mysql-persistent-s2i -p APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,KIE_SERVER_PASSWORD=$kieserver_password,IMAGE_STREAM_NAMESPACE=$is_namespace,KIE_CONTAINER_REDIRECT_ENABLED=true,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
 

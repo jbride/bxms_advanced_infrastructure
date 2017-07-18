@@ -374,7 +374,7 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
 $ export application_name=policyquote
 $ export kieserver_password=kieserver1!
 $ export source_repo=http://gogs:3000/decision-server-jenkins/policyquote-ocp.git
-$ export is_namespace=<name of your OpenShift project>
+$ export is_namespace=$(oc project | awk '{gsub(/"/,"",$3); print $3}')
 $ export nexus_url=http://nexus:8081
 $ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password,APPLICATION_NAME=$application_name,SOURCE_REPOSITORY_URL=$source_repo,IMAGE_STREAM_NAMESPACE=$is_namespace,MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
