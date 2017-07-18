@@ -41,7 +41,7 @@ $ cd /home/jboss/lab
 $ ./start-jxplorer.sh
 ----
 
-. On the JXplorer main window, click *Connect* on the right of the menu bar.
+. On the JXplorer main window, select *File > Connect* menu option.
 . In the resulting window, enter these values:
 * *Host* `localhost`
 * *Port*: `389`
