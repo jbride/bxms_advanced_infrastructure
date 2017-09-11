@@ -8,4 +8,10 @@
 * Advantage: Schema not dependent on data type of process and task variables
 * Disadvantage: Process and task variable values not readily exploitable by queries
 
- 
+ifdef::showscript[]
+
+The process and task variables are marshalled to byte array and stored as a BLOB in the database.
+This allows the schema to don't be dependent on data types of process and task variables, making the engine deployable for any business or use case.
+This also makes the process and task variables hard to ready and exploit by queries.
+
+endif::showscript[]

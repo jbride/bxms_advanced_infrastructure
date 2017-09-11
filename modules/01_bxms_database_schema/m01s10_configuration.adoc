@@ -15,4 +15,18 @@
 ** On application server: Pool size and settings
 ** On database: Query optimization with correct indexes
 
- 
+ifdef::showscript[]
+
+The data source configuration is slightly different for business central and the process server:
+For both of them you will use a data source defined and managed on the application server.
+For business central you will adapt the persistence.xml hosted in the business-central.war folder to match the application server data source.
+For the process server you will use system properties to configure the persistence. Specifically you will use the properties:
+** `org.kie.server.persistence.ds`: with the JNDI name of datasource
+** `org.kie.server.persistence.dialect`: with the Hibernate dialect to use
+Also you might need to configure a data source for the Quartz framework database.
+Quartz requires its own non-JTA datasource pointing to JBoss BPM Suite database.
+Finally: in order to tune up the performance of the database transactions you might need to pay attention to the following configurations:
+** On application server: tune up the Pool size and pool settings
+** On database: perform Query optimization with correct indexes
+
+endif::showscript[]

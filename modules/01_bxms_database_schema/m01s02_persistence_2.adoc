@@ -1,0 +1,18 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Persistence in JBoss BPMS/BRMS
+
+.Design-Time Persistence
+* Business Central
+** System Git repository (organization units, project user preferences data)
+** Git repository per project
+
+ifdef::showscript[]
+
+The design time persistence is based in Git repositories to manage Business Central activities.
+The System git repository persists information about the organization units and the data related to user preferences in projects.
+Each new project that is created in business central is persisted in a new git repository for design time persistence.
+
+endif::showscript[]

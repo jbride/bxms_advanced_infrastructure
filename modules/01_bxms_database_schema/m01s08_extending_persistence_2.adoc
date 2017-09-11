@@ -1,0 +1,19 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Extending Persistence
+
+* Non-transactional data stores do not roll back in case of error
+** Manual synchronization may be necessary
+* Process and task variables not duplicated to external store
+** JBoss BPM Suite database contains only pointer to external data
+** Consider alternative solutions, such as through process or task listeners
+
+ifdef::showscript[]
+
+There is also a need to customize the interaction with the persistance database when one is using a non-transactional data store: because the data store will not be able to roll back in case of an error.
+In this case a manual synchronization will be necessary to accomplish rollback activities.
+Also the process and task variables will not be duplicated to external data store, if you need to store information about processes and tasks you will need to use alternative solutions such as process and task event listeners, because the JBoss BPM Suite database contains only pointer to external data.
+
+endif::showscript[]
