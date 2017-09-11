@@ -12,4 +12,19 @@
 ** Singleton: Session serialized to disk at server shutdown
 ** Per Request: No session persistence
 * Audit logs for processes and tasks
- 
+
+ifdef::showscript[]
+
+The runtime data persistence consists in:
+* Process and task instance state
+* Timers and signals information
+* Executor jobs and commands
+* Session state depending on the runtime strategy:
+
+When we have a PER_PROCESS_INSTANCE runtime strategy the session information is persisted in the database.
+When we have a SINGLETON runtime strategy the session information is serialized to disk at server shutdown.
+When we have a PER_REQUEST runtime strategy no session information is persisted.
+
+* The runtime data persistence also contains audit logs for processes and tasks.
+
+endif::showscript[]

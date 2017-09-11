@@ -8,4 +8,11 @@
 ** Safe points: end node, wait state, node marked as `async`
 ** Process executes in context of JTA transaction
 ** Rollback to previous persisted state in case of error
- 
+
+ifdef::showscript[]
+
+In JBoss BPM Suite the state of the process instance is persisted when the process execution reaches a safe point:
+Safe points are: end nodes, wait state and nodes marked as 'async'.
+As the process is executed in the context of a JTA transaction, in case of an error the transaction is rolled back to the previous persisted state.
+
+endif::showscript[]

@@ -13,4 +13,14 @@
 * Optimistic and Pessimistic Locking
 * Datasource Configuration
 * Database Maintenance
- 
+
+ifdef::showscript[]
+
+In this module we will examine the data persistence challenges when implementing JBoss BPM Suite.
+The challenges of persistence implementation include:
+* Runtime Data Persistence
+* Data Persistent locks
+* Data source configuration and
+* Data base maintenance activities
+
+endif::showscript[]

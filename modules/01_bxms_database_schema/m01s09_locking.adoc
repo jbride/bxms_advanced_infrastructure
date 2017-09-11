@@ -24,4 +24,12 @@
     </environment-entries>
 ----
 
- 
+ifdef::showscript[]
+
+When using process definitions with wait states or asynchronous nodes in parallel branches of the process: the process engine faces race conditions when reaching the join gateway of both branches that can lead to OptimisticLockExceptions.
+In such cases the execution engine will try to re-execute the failing branch within the same transaction, but this can lead also to unwanted double execution of some nodes.
+This is due because by default JBoss BPM Suite uses optimistic locking strategy with versioning.
+There are some cases when you might want to change this to pessimistic locking strategy.
+In order to enable the JPA PESSIMISTIC_FORCE_INCREMENT lock mode you need to add an environment entry to the deployment-descriptor: the org.kie.api.persistence.pessimistic with a true value identifier.
+
+endif::showscript[]

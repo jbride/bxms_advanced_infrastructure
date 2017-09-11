@@ -4,10 +4,27 @@
 
 == Extending Persistence
 
-* Non-transactional data stores do not roll back in case of error
-** Manual synchronization may be necessary
-* Process and task variables not duplicated to external store
-** JBoss BPM Suite database contains only pointer to external data
-** Consider alternative solutions, such as through process or task listeners
+* Support for custom marshalling strategies
+* Extend persistence schema of JBoss BPM Suite for process and/or task variables
+** Variables modeled as persistable entities, using JPA annotations
+** Kjar contains `persistence.xml` JPA descriptor, which defines additional persistent classes
+** Register `JPAPlaceholderResolverStrategy` in kjar deployment descriptor
 
- 
+* Integration with document management system or document store
+** `org.jbpm.document.Document`: Interface models process or task variable as general-purpose document
+** `org.jbpm.document.marshalling.DocumentMarshallingStrategy`: Provides marshalling strategy for document types
+** Need to provide implementation of `org.jbpm.document.service.DocumentStorageService` to interact with document store
+
+* Custom persistence solutions--for example, NoSQL database and ElasticSearch
+
+ifdef::showscript[]
+
+In order to extend the default persistence options and functionality JBoss BPM Suite supports for custom marshalling strategies that can extend the persistence schema of JBoss BPM Suite for process and/or task variables.
+In order to extend the persistence with custom marshalling strategies:
+* The Variables are ought to be modeled as persistable entities, using JPA annotations
+* We will need to include a persistence.xml JPA descriptor file in the kjar: defining additional persistent classes
+* and We will need to register the `JPAPlaceholderResolverStrategy` in the kjar deployment descriptor.
+
+Also there is an option to integrate with document management systems or document sore, for that we will make use of the `org.jbpm.document.Document` interface to define how to interact with a document properties. We will also need to register `org.jbpm.document.marshalling.DocumentMarshallingStrategy` in the deployment-descriptor and finally we need to provide implementation of `org.jbpm.document.service.DocumentStorageService` to interact with document store.
+
+endif::showscript[]
