@@ -563,7 +563,7 @@ $ curl -X GET 'http://localhost:8230/kie-server/services/rest/server/containers/
 +
 [source,text]
 ----
-$ curl -X GET 'http://localhost:8230/kie-server/services/rest/server/containers/ticket-app/tasks/1/states/started?user=user1' \
+$ curl -X PUT 'http://localhost:8230/kie-server/services/rest/server/containers/ticket-app/tasks/1/states/started?user=user1' \
 -H "Accept: application/json" \
 -H "Content-type: application/json" \
 --user jboss:bpms
@@ -580,7 +580,7 @@ Unexpected error during processing: User '[UserImpl:'user1']' does not have perm
 +
 [source,text]
 ----
-$ curl -X GET 'http://localhost:8230/kie-server/services/rest/server/containers/ticket-app/tasks/1/states/completed?user=user2' \
+$ curl -X PUT 'http://localhost:8230/kie-server/services/rest/server/containers/ticket-app/tasks/1/states/completed?user=user2' \
 -H "Accept: application/json" \
 -H "Content-type: application/json" \
 --user jboss:bpms
