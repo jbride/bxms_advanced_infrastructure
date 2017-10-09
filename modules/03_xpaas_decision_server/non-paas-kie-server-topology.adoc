@@ -4,7 +4,8 @@
 
 == CI/CD KIE Container Deployment
 
-image::images/non_paas_kserver_topology.gif[]
+image::images/non_pass_kserver_topology_bob.gif[align="center"]
+
 
 ifdef::showscript[]
 

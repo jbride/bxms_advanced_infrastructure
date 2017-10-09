@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Persistence Safe Points Video
+
+video::video/BXMS_Persistent_Safe_Points_Oct2.mp4[height="512",poster="image/video_poster.png"]
+
+ifdef::showscript[]
+
+In JBoss BPM Suite the state of the process instance is persisted when the process execution reaches a safe point:
+Safe points are: end nodes, wait state and nodes marked as 'async'.
+As the process is executed in the context of a JTA transaction, in case of an error the transaction is rolled back to the previous persisted state.
+
+endif::showscript[]

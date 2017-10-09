@@ -4,9 +4,9 @@
 
 == Authentication and Authorization
 
-[.noredheader,cols="3,2"]
-|===
-a|* Delegated to underlying application server
+image::images/bc-user-management.png[align="center",height="75%"] 
+
+* Delegated to underlying application server
 * By default, JBoss EAP uses property files to manage users, passwords, roles
 * Can be replaced by other mechanisms, such as LDAP and Database
 ** Requires configuration of security domain in JBoss EAP security subsystem
@@ -14,5 +14,3 @@ a|* Delegated to underlying application server
 * Business Central UI for user and role management:
 ** Disabled by default
 ** Works only when using property files to manage users and roles
-|image:images/bc-user-management.png[] 
-|===
