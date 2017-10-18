@@ -1,0 +1,16 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Configuration and Deployments Video 
+
+video::video/BXMS_Configuration_and_Deployments_Oct2.mp4[height="512",poster="image/video_poster.png"]
+
+ifdef::showscript[]
+
+The configuration and deployments for Business Central and the KIE-SERVER need also to be persisted in a way that the configuration and deployments can survive a server restart.
+The business central uses for the purpose of persisting its configuration and deployments: the System Git repository and the database to persist the deployments information.
+The KIE-SERVER (also known as decision or process server) uses the file system to persist the configuration and deployments of unmanaged instances.
+When the KIE-SERVER is a managed instance by a business central controller, the KIE-SERVER will use the business central to store its configuration and deployment information, the business central will use the system git and the database as stated before.
+
+endif::showscript[]

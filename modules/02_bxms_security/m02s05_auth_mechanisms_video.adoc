@@ -1,0 +1,7 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Authentication and Authorization Video
+
+video::video/BXMS_Authorization_based_on_User_Roles_Oct4.mp4[height="512",poster="image/video_poster.png"]

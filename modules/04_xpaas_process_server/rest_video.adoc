@@ -1,0 +1,9 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== REST API Video
+
+video::video/BXMS_REST_APIs_Oct2.mp4[height="512",poster="image/video_poster.png"]
+
+

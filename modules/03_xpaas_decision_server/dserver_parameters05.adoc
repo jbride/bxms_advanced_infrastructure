@@ -4,7 +4,7 @@
 
 == xPaaS Decision Server Parameters
 
-image::images/dserver_s2i_parameters.png[]
+image::images/xpaas_decision_server_bob.gif[]
 
 ifdef::showscript[]
 

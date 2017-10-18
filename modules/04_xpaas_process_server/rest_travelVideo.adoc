@@ -1,0 +1,9 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Travel Booking Video
+
+video::video/BXMS_Travel_Booking_Example_Oct6.mp4[height="512",poster="image/video_poster.png"]
+
+

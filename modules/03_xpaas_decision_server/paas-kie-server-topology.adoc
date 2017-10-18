@@ -6,7 +6,7 @@
 
 .Binary Deployment
 
-image:images/paas_kserver_topology.gif[]
+image::images/paas_kserver_topology_bob.gif[align="center"]
 
 ifdef::showscript[]
 

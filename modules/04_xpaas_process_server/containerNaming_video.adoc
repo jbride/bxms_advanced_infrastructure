@@ -1,0 +1,21 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Container Naming Video
+
+video::video/BXMS_Container_Naming_Diagram_Oct5.mp4[height="512",poster="image/video_poster.png"]
+
+ifdef::showscript[]
+
+
+* Where did the containerId hashes come from?
+** Each unique KIE Container deployment part
+** For example, `e8d626d14a44bf3cf1f127ae9fdabc91` is the MD5 sum (hex binary) of `processserver-library=org.openshift.quickstarts:processserver-library:1.3.1.Final`.
++
+[NOTE]
+The container ID overriding is done only if the `KIE_CONTAINER_REDIRECT_ENABLED` parameter is set to `true`. Otherwise, if multiple versions of the same kjar are deployed with the same container ID in `KIE_CONTAINER_DEPLOYMENT`, only the _latest_ version of that kjar/container is deployed.
+
+endif::showscript[]
+
+ 

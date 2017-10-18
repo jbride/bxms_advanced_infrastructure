@@ -1,0 +1,15 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Design-Time Persistence Video 
+
+video::video/BXMS_Design_Time_Persistence_Oct2.mp4[height="512",poster="image/video_poster.png"]
+
+ifdef::showscript[]
+
+The design time persistence is based in Git repositories to manage Business Central activities.
+The System git repository persists information about the organization units and the data related to user preferences in projects.
+Each new project that is created in business central is persisted in a new git repository for design time persistence.
+
+endif::showscript[]
