@@ -12,4 +12,15 @@
 ** (3) Process Server verifies token and creates user principal
 * Works well with default `UserGroupCallback` implementation if token contains required group information
 
- 
+ifdef::showscript[]
+
+Business Central, the Process Server and Decision Server can be integrated with Red Hat SSO, which supports SAML and OpenID Connect.
+This integration allows passing authentication token from the client application to the Process Server or Decision Server.
+The integrated solution handles the resources request in the following maner:
+1. The user logs in to the client application and obtains a token from Red Hat SSO server.
+2. The token is used as an `Authorization` header element included in the REST call to the Process server.
+3. The Process Server verifies the token and create a user Principal.
+
+This integration works well with the default `UserGroupCallback` implementation if the token contains the required group information.
+
+endif::showscript[]

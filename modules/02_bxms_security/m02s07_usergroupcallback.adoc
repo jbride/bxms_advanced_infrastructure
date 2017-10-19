@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== `UserGroupCallback` 
+== `UserGroupCallback`
 
 .Implementations
 
@@ -22,4 +22,11 @@ List<String> getGroupsForUser(String userId, List<String> groupIds, List<String>
 * Custom `UserGroupCallback` implementation can be plugged in if default implementation does not provided required information
 ** Example: Complex group membership schema that is not reflected in Principal of logged-in user
 
- 
+ifdef::showscript[]
+
+By default, JBoss BPM Suite components are configured to use a callback implementation that delegates the resolution of user's groups to the security subsystem of the application server: The implementation class is `org.jbpm.services.task.identity.JAASUserGroupCallbackImpl`.
+`org.jbpm.services.task.identity.JAASUserGroupCallbackImpl` implementation class uses JACC API to retrive user and groups (or roles) information for logged-in user.
+This default implementation is used even if the application server uses different security domain than default (property files).
+It is important to note that a custom `UserGroupCallback` implementation can be plugged in if the default implementation does not provide the required information. For example: Some times you need to build a complex group membership schema that is not reflected in the Principal information of the logged-in user. In some cases the LDAP implementation in client side defines generic roles and you need to define roles that are particular to your process implementation, like separating the sales department into `sales-product-A` and `sales-product-B`; but the LDAP implementation of those groups needs to be kept isolated from the organization roles. In this case you could implement a custom UserGroupCallback that will use a mechanism like a database to identify the users that belong to these granular groups.
+
+endif::showscript[]
