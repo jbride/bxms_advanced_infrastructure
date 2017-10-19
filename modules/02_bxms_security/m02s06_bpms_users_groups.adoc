@@ -11,4 +11,10 @@
 * User and group information not stored in JBoss BPM Suite database
 * Process engine relies on implementation of `org.kie.api.task.UserGroupCallback` to provide user and group information at runtime
 
- 
+ifdef::showscript[]
+
+The User Task Service implementation needs access to users and groups to restrict user task operations by owner identification.
+For example: A user task can be claimed only by users who are members of the group or groups that are assigned to the task as _potential owner_.
+User and groups information is not stored in the JBoss BPM Suite database, instead the process engine relies on the implementation of the `org.kie.api.task.UserGroupCallback` interface to provide user and group information at runtime.
+
+endif::showscript[]

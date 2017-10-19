@@ -18,4 +18,19 @@
 ** `plannermgmt`: Role required to access Planner perspective
 * Role names customizable to avoid using generic role names, such as `admin`
 
- 
+ifdef::showscript[]
+
+The Business Central User Interface: Is secured with basic http authentication by default.
+The Authorization is based on user roles that are defined in the web.xml file from the WEB-INF directory of the business-central.war component.
+Also the workbench-policy.properties file in the WEB-INF/classes directory of the business-central.war component affects the authorization process.
+These files contain a set of predefined role names:
+* The `admin` role has full access rights.
+* The `developer` role has full access rights with the exception ton Administration and Extensions perspectives.
+* The `analyst` role is more restricted than the `developer` role: the `analyst` role does not have access to the Deployments nor the Artifact Repositories perspectives.
+* The `user` role have access only to the Process Management and Task perspectives.
+* The `manager` role has access only to the dashboard application.
+* The `kiemgmt` role is the role required to manage Decision Server and Process Server instances.
+* The `plannermgmt` role is the role required to access the Planner perspective.
+Each one of these roles are customizable to avoid using generic role names, such as `admin`.
+
+endif::showscript[]
