@@ -25,5 +25,8 @@ $ curl
 
 ifdef::showscript[]
 
+The KIE Container can be deployed to the KIE Server web application by invoking the KIE Server REST API.
+The endpoint for execution has the following form: http://[server]/kie-server/services/rest/server/containers/[container_name]
+Use the PUT HTTP method of the endpoint and provide the group-id, artifact-id and version of the deployment unit that is to create a KIE Container as shown in the slide's example.
 
 endif::showscript[]

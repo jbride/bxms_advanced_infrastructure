@@ -14,4 +14,6 @@ NOTE: KIE Session persistence and/or replication needs to be handled by applicat
 
 ifdef::showscript[]
 
+JBoss BRMS allows stateless and stateful knowledge sessions. OCP Decision server only allows for invoking stateless sessions.
+
 endif::showscript[]

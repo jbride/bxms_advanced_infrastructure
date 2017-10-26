@@ -21,6 +21,10 @@
 
 ifdef::showscript[]
 
-http://maven.apache.org/guides/mini/guide-mirror-settings.html
+When using the Decision Server template from the Red Hat registry, the template supports parameters to tune up the runtime and provide with the information about the `KIE Containers` that need to be initialized.
+The supported parameters are:
+`SOURCE_REPOSITORY_URL`: Represents the URL to version-controlled application source code. This parameter is used during S2I approach to specify the source code location. Generally this will refer to a git repository.
+`SOURCE_REPOSITORY_REF`: Represents the Git branch or tag to reference. When using `SOURCE_REPOSITORY_URL` the default value for `SOURCE_REPOSITORY_REF` is `Master`, we can specify a different branch name.
+`CONTEXT_DIR`: We can specify a path within the `SOURCE_CODE_REPOSITORY` to be built during S2I approach.
 
 endif::showscript[]

@@ -15,4 +15,8 @@
 
 ifdef::showscript[]
 
+The BRMS KIE Server leverages the fact that the JBoss BRMS rules engine runtime exposes REST and SOAP APIs. This runtime is distributed as a web application built on top of JBoos EAP, and it is also supported on WebLogic and WebSphere web server technologies.
+The BRMS KIE Server includes only the runtime engine, based in a feature-complete JBoss BRMS exeuction engie, does not include UI for interaction.
+This web application is modular and extensible and supports for JSON and XML payloads, and it is built so it can manage one or more `KIE Containers`
+
 endif::showscript[]

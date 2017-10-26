@@ -15,4 +15,8 @@
 * Stateless Ksession Only
 * xPaaS Decision Server
 
+ifdef::showscript[]
 
+In this module we will study the Openshift configuration for the Red Hat Decision Server container and its configuration options.
+
+endif::showscript[]

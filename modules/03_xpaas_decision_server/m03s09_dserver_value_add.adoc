@@ -17,4 +17,7 @@ In traditional, non-PaaS approach, DevOps team has to develop & manage the above
 
 ifdef::showscript[]
 
+The OCP Decision Server leverages all DevOps advantages from PaaS, as it offers an standard image format for Development, Operations and QA teams that allows Load Balancing, Horizontal scalability and Rolling and recreate Deployment strategies.
+The OCP Decision Server can leverage Paas CI/CD.
+
 endif::showscript[]

@@ -9,5 +9,10 @@ image::images/non_pass_kserver_topology_bob.gif[align="center"]
 
 ifdef::showscript[]
 
+A Continuous Integration and Delivery can be configured for the KIE Container Deployment:
+1. A git source code control server presents its changes to a Jenkins orchestrator.
+2. Jenkins generates the binary files that are stored in a Nexus Maven repository and executes the pipeline that will generate a `KIE Container` in a JBoss EAP installation.
+3. The Nexus Maven repository hosts the binary files so the JBoss BPMS KIE Server can found them.
+4. The JBoss KIE Server web application, hosted in a JBoss EAP instance receives the notification from the Jenkins pipeline to start a new container. The `start new container` request contains information about the binary that the JBoss KIE Server web application will have to find in the Nexus repository. Then the JBoss KIE Server starts the `KIE Container` with the requested binary.
 
 endif::showscript[]
