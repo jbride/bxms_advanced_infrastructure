@@ -15,4 +15,12 @@ image::images/kie-server-api-post.png[]
 
 ifdef::showscript[]
 
+Using the KIE Server REST API provides with a POST verb implementation to execute the rules and rule flows contained in a KIE Container.
+The endpoint for executing the rules through Batch operations is located at: http://[kie-application-url]/services/rest/server/containers/instances/{id}
+> Where {id} is the container id.
+This enpoint can receive a payload as a parameter, this payload can execute different methods to interact with the execution knowledge session like:
+** InsertObject: This method will add facts to the execution context.
+** StartProcess: This method will execute a RuleFlow process that specifies the rules execution order.
+** FireAllRules: This method will fire all selected rules from the execution context.
+
 endif::showscript[]

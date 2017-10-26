@@ -17,4 +17,10 @@
 
 ifdef::showscript[]
 
+As the Payload to KIE Server Batch API can contain multiple batch commands, they are executed in a single transaction by the KIE Server. The commands are executed by default in an _stateles_ knowledge session.
+The commands that can be executed are found in the packages:
+** `org.drools.core.command.runtime.rules.*`
+and
+** `org.drools.core.command.runtime.process.*`
+
 endif::showscript[]

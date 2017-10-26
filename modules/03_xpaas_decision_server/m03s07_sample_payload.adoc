@@ -10,4 +10,6 @@ image:images/sample_payload.png[]
 
 ifdef::showscript[]
 
+In this slide we can see an example of a payload with information about the facts to be inserted in the execution context and a `RuleFlow` that will be executed with the given input.
+
 endif::showscript[]

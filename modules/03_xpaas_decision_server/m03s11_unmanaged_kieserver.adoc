@@ -45,4 +45,6 @@
 
 ifdef::showscript[]
 
+JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of KIE Servers, but the OCP Decision Server leverages _unmanaged_ approach: OCP by default handles application pod mgmt.
+
 endif::showscript[]

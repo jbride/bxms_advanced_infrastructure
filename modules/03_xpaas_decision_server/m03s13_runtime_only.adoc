@@ -12,5 +12,7 @@
 
 ifdef::showscript[]
 
-endif::showscript[]
+OCP Decision Server image does not include BRMS rules authoring tools. For rules authoring we should use BRMS Business Central or the Drools plug-in of JBoss Development Studio.
+OCP Decision Server assumes that the workflow to generate DRL and BPMN2 components is already in place and that the application source code should contain all rules and process definition artifacts.
 
+endif::showscript[]
