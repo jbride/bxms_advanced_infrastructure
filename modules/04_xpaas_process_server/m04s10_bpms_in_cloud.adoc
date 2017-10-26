@@ -11,4 +11,6 @@ image::images/pserver_in_registry.png[]
 
 ifdef::showscript[]
 
+The JBoss BPM Suite is available as containerized xPaaS image known as the _Intellingent Process Server_
+
 endif::showscript[]

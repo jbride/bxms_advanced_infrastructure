@@ -10,4 +10,6 @@ image:images/rest_pdefinition.png[]
 
 ifdef::showscript[]
 
+We can also confirm that the BPM Extension is enabled because in the `kie-server/docs` endpoint we can see the process definition endpoints available.
+
 endif::showscript[]

@@ -18,4 +18,6 @@ image::images/amq_image.png[]
 
 ifdef::showscript[]
 
+The OCP Red Hat Registry facilitates templates to integrate AMQ as the broker for the JMS technology.
+
 endif::showscript[]

@@ -14,4 +14,7 @@ image:images/kie-server-lab-process-instance-svg.png[]
 
 ifdef::showscript[]
 
+We can also confirm that the BPM-UI Extension is enabled because in the `kie-server/docs` endpoint we can see the process image endpoints available.
+The process image endpoints will give us access to the process definition or a given process instance image state.
+
 endif::showscript[]

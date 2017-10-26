@@ -14,4 +14,16 @@
 ** (6) Conversation ID (KIE, BRM, BPM)
 ** (7) Default Container ID (KIE, BRM, BPM)
 
- 
+ifdef::showscript[]
+
+The resolution of the proper container ID depends on the method invoked sequentially by the client:
+
+1. The Process Instance ID is used to find the proper container that has started the given process Instance Id.
+2. The Correlation Key is used to find the proper container that has started a process instance with the given correlation key.
+3. The task instance id is used to find the container that has a process waiting for a given task id conclusion.
+4. The work item id is used to identify the container and the process id.
+5. The Job request id.
+6. The conversation id
+7. Finally the default container ID is used if the resolver was unable to find another container responsible for the execution.
+
+endif::showscript[]

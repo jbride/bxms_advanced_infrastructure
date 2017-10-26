@@ -12,4 +12,9 @@
 ** `1.3.1.Final` version is latest, thus default
 ** Not `1.3.0.Final` version
 
- 
+ifdef::showscript[]
+
+The default container ID is used if the resolver was unable to find another container responsible for the execution.
+The default container is determined as the _latest_ version of the kjar's `releaseId` for the same container name.
+
+endif::showscript[]

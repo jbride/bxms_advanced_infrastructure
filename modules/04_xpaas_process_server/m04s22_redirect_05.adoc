@@ -12,4 +12,12 @@
 ** Full deployment hash: `e8d626d14a44bf3cf1f127ae9fdabc91`
 ** Deployment alias (Client Redirects): `processserver-library`
 
- 
+ifdef::showscript[]
+
+When the client application is to use the Process Server endpoints to consume its services: in most cases, clients must target a particular container by name to execute the server-side functions.
+The client can find the proper container by:
+* Using the full deployment part
+* Using the deployment hash _or_
+* Using the deployment Alias: This will trigger a CLIENT REDIRECT functionality that we are about to explain.
+
+endif::showscript[]

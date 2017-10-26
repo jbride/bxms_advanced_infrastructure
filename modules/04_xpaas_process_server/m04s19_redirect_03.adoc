@@ -16,4 +16,8 @@ KIE_CONTAINER_DEPLOYMENT=processserver-library=org.openshift.quickstarts:process
 KIE_CONTAINER_REDIRECT_ENABLED=true
 ----
 
- 
+ifdef::showscript[]
+
+When creating a new container in OCP then, the process server templates allow multiple versions of the same kjar in the create instruction.
+
+endif::showscript[]

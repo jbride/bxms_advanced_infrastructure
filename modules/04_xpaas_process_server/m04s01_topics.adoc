@@ -17,5 +17,8 @@
 * Container Resolution Process
 * Default Container ID
 
+ifdef::showscript[]
 
- 
+In this module we will study the Openshift configuration for the Red Hat Intelligent Process Server container and its configuration options.
+
+endif::showscript[]
