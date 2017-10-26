@@ -12,4 +12,10 @@
 
 ifdef::showscript[]
 
+Also when configuring JBoss BPM Suite we have the possibility to use JMS queues for:
+
+** Process Server JMS API
+** Asynchronous BAM events
+** Asynchronous job executor
+
 endif::showscript[]

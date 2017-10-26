@@ -11,4 +11,9 @@
 ** Change `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` variable to include _both_ old _and_ new container deployments using _same_ container ID, and commit to source control
 ** https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers[GitHub Webhooks] mechanism can then pick up updated `./sti/environment` file in source, triggering new S2I build
 
- 
+ifdef::showscript[]
+
+For this purpose the variable `KIE_CONTAINER_REDIRECT_ENABLED` was created.
+This variable is set to True by default so you could specify weather to include or not the old and new container deployment versions.
+
+endif::showscript[]

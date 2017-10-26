@@ -9,4 +9,8 @@
 * Support for earlier versions especially important for stateful interactions
 ** Example: BPM process lasting months
 
- 
+ifdef::showscript[]
+
+The Decision Server and the Intelligent Process Server images allow for multiple versions of KIE Containers, in a way that updated versions of the same KIE Containers can run concurrently with earlier versions in the same Process Server pod. This is especially important for stateful interactions as BPM Processes could last for months before they come to a conclusion.
+
+endif::showscript[]

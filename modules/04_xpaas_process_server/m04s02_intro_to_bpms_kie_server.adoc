@@ -9,7 +9,7 @@
 [source,xml]
 -----
 <kie-server-info>
-  
+
   ...
 
   <capabilities>BPM</capabilities>
@@ -23,5 +23,9 @@
 * BPM-UI extension: Form definitions and process image
 
 ifdef::showscript[]
+
+The KIE-Server component has the option to enable or disable its extensions. To enable the Intelligent Process Server we are talking about a KIE-Server war component which BPM and BPM-UI extensions are enabled.
+The BPM Extension enables processes, tasks and asynchronous job execution.
+The BPM-UI extension enables form definitions and process images.
 
 endif::showscript[]

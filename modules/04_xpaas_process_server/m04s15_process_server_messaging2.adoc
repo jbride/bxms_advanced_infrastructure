@@ -18,4 +18,6 @@ image::images/pserver_in_registry.png[]
 
 ifdef::showscript[]
 
+The OCP Red Hat Registry facilitates templates to integrate HornetQ as the broker for the JMS technology.
+
 endif::showscript[]

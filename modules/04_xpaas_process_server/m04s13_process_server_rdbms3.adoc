@@ -19,4 +19,9 @@ image::images/postgresql_image.png[]
 
 ifdef::showscript[]
 
+In order to instantiate the containerized image of the Intelligent Process server with Postgres as the RDBMS for persistence technology, the following templates are also available in the Red Hat registry:
+
+* `processserver63-postgresql-persistent-s2i`
+* `processserver63-amq-postgresql-persistent-s2i`
+
 endif::showscript[]

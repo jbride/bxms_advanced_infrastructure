@@ -12,4 +12,10 @@
 ** In REST interface by using servlet filter
 ** In JMS interface by using EJB interceptor
 
- 
+ifdef::showscript[]
+
+When using the Deployment alias: the incoming request is redirected to an specific deployed container in the server. For this purpose, a multi-step container resolution process is used to determine which version of the container is targeted by the redirect.
+The process is followed in REST interface by using a sevlet filter.
+The process is also followed in the JMS interface by using an EJB interceptor.
+
+endif::showscript[]

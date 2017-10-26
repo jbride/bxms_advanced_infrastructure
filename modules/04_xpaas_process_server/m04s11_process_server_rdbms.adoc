@@ -15,4 +15,12 @@ Persistence needed for:
 
 ifdef::showscript[]
 
+When using JBoss BPM Suite (containerized or not) we must be aware that we need to provide with persistence details to allow Process Instances and their information to be available for future reference.
+When using JBoss BPM Suite we must be aware that there will be a requirement to persist:
+* Process Instance state
+* Human Task state
+* BAM audit trail
+* Executor jobs
+* Quartz based timers
+
 endif::showscript[]
