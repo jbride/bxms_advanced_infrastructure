@@ -2,15 +2,18 @@
 :data-uri:
 :noaudio:
 
-== Persistence in JBoss BPMS/BRMS
+== Persistence in JBoss BPM Suite
 
 .Runtime Data Persistence
 * JBoss BPM Suite: SQL database
-* JBoss BRMS: not required
+* JBoss BRMS: Not required
 
 ifdef::showscript[]
 
-The Runtime data persistence for JBoss BPM Suite is stored in a SQL database.
-For BRMS there is no runtime data persistence required.
+Transcript:
+
+Runtime data persistence for JBoss BPM Suite is stored in an SQL database.
+
+For JBoss BRMS, runtime data persistence is not required.
 
 endif::showscript[]

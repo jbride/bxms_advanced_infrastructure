@@ -5,26 +5,23 @@
 == Extending Persistence
 
 * Support for custom marshalling strategies
-* Extend persistence schema of JBoss BPM Suite for process and/or task variables
-** Variables modeled as persistable entities, using JPA annotations
-** Kjar contains `persistence.xml` JPA descriptor, which defines additional persistent classes
-** Register `JPAPlaceholderResolverStrategy` in kjar deployment descriptor
+* Extend persistence schema of JBoss BPM Suite for process and task variables
+** Variables modeled as persistable entities using JPA annotations
+** KJAR contains `persistence.xml` JPA descriptor, which defines additional persistent classes
+** Register `JPAPlaceholderResolverStrategy` in KJAR deployment descriptor
 
-* Integration with document management system or document store
-** `org.jbpm.document.Document`: Interface models process or task variable as general-purpose document
-** `org.jbpm.document.marshalling.DocumentMarshallingStrategy`: Provides marshalling strategy for document types
-** Need to provide implementation of `org.jbpm.document.service.DocumentStorageService` to interact with document store
-
-* Custom persistence solutions--for example, NoSQL database and ElasticSearch
 
 ifdef::showscript[]
 
-In order to extend the default persistence options and functionality JBoss BPM Suite supports for custom marshalling strategies that can extend the persistence schema of JBoss BPM Suite for process and/or task variables.
-In order to extend the persistence with custom marshalling strategies:
-* The Variables are ought to be modeled as persistable entities, using JPA annotations
-* We will need to include a persistence.xml JPA descriptor file in the kjar: defining additional persistent classes
-* and We will need to register the `JPAPlaceholderResolverStrategy` in the kjar deployment descriptor.
+Transcript:
 
-Also there is an option to integrate with document management systems or document sore, for that we will make use of the `org.jbpm.document.Document` interface to define how to interact with a document properties. We will also need to register `org.jbpm.document.marshalling.DocumentMarshallingStrategy` in the deployment-descriptor and finally we need to provide implementation of `org.jbpm.document.service.DocumentStorageService` to interact with document store.
+To extend the default persistence options and functionality, JBoss BPM Suite supports custom marshalling strategies that can extend the persistence schema of JBoss BPM Suite for process and task variables.
+
+To extend persistence with custom marshalling strategies:
+
+* Model variables as persistable entities using JPA annotations
+* Include a `persistence.xml` JPA descriptor file in the KJAR to define additional persistent classes
+* Register the `JPAPlaceholderResolverStrategy` in the KJAR deployment descriptor
+
 
 endif::showscript[]

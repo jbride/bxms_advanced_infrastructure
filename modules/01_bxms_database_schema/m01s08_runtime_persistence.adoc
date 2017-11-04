@@ -2,28 +2,35 @@
 :data-uri:
 :noaudio:
 
-== Runtime Data Persistence
+== Persistence in JBoss BPM Suite
+
+.Runtime Data Persistence
 
 * Process and task instance state
 * Timers and signals
 * Jobs
-* Session state: Depends on runtime strategy
-** Per Process Instance: Session persisted in database
+* Session state, depends on runtime strategy:
+** Per-process instance: Session persisted in database
 ** Singleton: Session serialized to disk at server shutdown
-** Per Request: No session persistence
+** Per-request: No session persistence
 * Audit logs for processes and tasks
 
 ifdef::showscript[]
 
-The runtime data persistence consists in:
+Transcript:
+
+Runtime data persistence consists of:
+
 * Process and task instance state
 * Timers and signals information
 * Executor jobs and commands
-* Session state depending on the runtime strategy:
+* Session state, depending on runtime strategy:
 
-When we have a PER_PROCESS_INSTANCE runtime strategy the session information is persisted in the database.
-When we have a SINGLETON runtime strategy the session information is serialized to disk at server shutdown.
-When we have a PER_REQUEST runtime strategy no session information is persisted.
+** For per-process instance runtime strategy, the session information is persisted in the database.
+
+** For a singleton runtime strategy, the session information is serialized to disk at server shutdown.
+
+** For a per-request runtime strategy, no session information is persisted.
 
 * The runtime data persistence also contains audit logs for processes and tasks.
 

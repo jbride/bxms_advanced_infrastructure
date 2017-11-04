@@ -2,13 +2,15 @@
 :data-uri:
 :noaudio:
 
-== Runtime Data Persistence Video 
+== Persistence in JBoss BPM Suite
+
+.Runtime Data Persistence Video
+
+
 
 video::video/BXMS_RunTime_Data_Persistence_Oct2.mp4[height="512",poster="image/video_poster.png"]
 
 ifdef::showscript[]
 
-The Runtime data persistence for JBoss BPM Suite is stored in a SQL database.
-For BRMS there is no runtime data persistence required.
 
 endif::showscript[]

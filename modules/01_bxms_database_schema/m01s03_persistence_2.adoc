@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== Persistence in JBoss BPMS/BRMS
+== Persistence in JBoss BPM Suite
 
 .Design-Time Persistence
 * Business Central
@@ -11,8 +11,12 @@
 
 ifdef::showscript[]
 
-The design time persistence is based in Git repositories to manage Business Central activities.
-The System git repository persists information about the organization units and the data related to user preferences in projects.
-Each new project that is created in business central is persisted in a new git repository for design time persistence.
+Transcript:
+
+Design-time persistence for managing Business Central activities is based in Git repositories.
+
+The system Git repository persists information about organization units and data related to user preferences in projects.
+
+For design-time persistence, each new project that is created in Business Central is persisted in a new Git repository.
 
 endif::showscript[]

@@ -13,16 +13,19 @@
 ** Proprietary: Oracle, SQLServer, DB2, Sybase
 
 * Default persistence settings in JBoss BPM Suite
-** Uses embedded H2 in memory database
+** Embedded H2 in memory database
 ** Not supported in production
 
 ifdef::showscript[]
 
-By default JBoss BPM Suite is not configured to use persistence.
-When you configure JBoss BPM Suite to use persistence you will make use of JPA targeting a SQL database.
-There is some community effort configurations that use NoSQL databases for persist runtime data: These configurations are not supported are not part of the product.
-The supported open source databases are: PostgreSQL, MySQL/MariaDB
-The supported proprietary databases are: Oracle, SQLServer, DB2 and Sybase
-The default persistence settings in JBoss BPM Suite use an embedded H2 in memory database. This default persistence configuration is not recommended for production.
+Transcript:
+
+By default JBoss BPM Suite is not configured to use persistence. To configure JBoss BPM Suite to use persistence, use JPA targeting an SQL database.
+
+Some community effort configurations use NoSQL databases to persist runtime data. These configurations are not supported and are not part of the product.
+
+Supported open-source databases include PostgreSQL and MySQL/MariaDB. The supported proprietary databases are Oracle, SQLServer, DB2, and Sybase.
+
+The default persistence settings in JBoss BPM Suite use an embedded H2 in memory database. This persistence configuration is not recommended for production.
 
 endif::showscript[]
