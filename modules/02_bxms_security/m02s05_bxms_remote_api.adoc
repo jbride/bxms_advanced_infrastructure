@@ -2,22 +2,29 @@
 :data-uri:
 :noaudio:
 
-== Decision Server & Process Server Remote APIs
+== Remote APIs
+
+.Realtime Decision Server and Intelligent Process Server Remote APIs
 
 * REST API secured with basic authentication
-* `kie-server`: Required role
+* `kie-server`: required role
 ** No fine-grained authorization model
-** xPaaS images use servlet filter to disallow operations, for example creating or destroying KIE containers
-* JMS API secured on JBoss EAP JMS subsystem level
+** xPaaS images use servlet filter to disallow operations
+*** Example: creating or destroying KIE containers
+* JMS API secured on JBoss Enterprise Application Platform (EAP) JMS subsystem level
 ** `admin`: Required role for users to post messages
 
 ifdef::showscript[]
 
-The Decision and Process Server Remote APIs are secured with basic http authentication by default.
-The users with access to REST API execution need to have the `kie-server` role.
-There is no fine-grained authorization model for the REST APIs, all users with the `kie-server` role can find and try to execute each one of the server endpoints.
-The xPaaS images use servlet filter to disallow operations for creating or destroying KIE Containers.
-There is also a JMS remote API, which is secured on the JBoss EAP JMS subsystem level.
-The users that require access to the JMS API are ought to be assigned to the `admin` role.
+Transcript:
+
+The Realtime Decision and Intelligent Process Server remote APIs are secured with basic HTTP authentication by default.
+
+Users with access to REST API execution need to have the `kie-server` role. There is no fine-grained authorization model for the REST APIs. All users with the `kie-server` role can find and try to execute each one of the server endpoints.
+
+The xPaaS images use a servlet filter to disallow operations for creating or destroying KIE containers.
+
+There is also a JMS remote API that is secured on the JBoss EAP JMS subsystem level.
+Users that require access to the JMS API need to be assigned the `admin` role.
 
 endif::showscript[]

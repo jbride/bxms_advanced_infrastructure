@@ -2,11 +2,10 @@
 :data-uri:
 :noaudio:
 
-== `UserGroupCallback`
+== Users and Groups
+.`UserGroupCallback` Configuration
 
-.Configuration
-
-* In Process Server, alternative implementations can be plugged in through system properties
+* In Intelligent Process Server, alternative implementations can be plugged in through system properties
 * To use provided LDAP implementation:
 ** `org.jbpm.ht.callback=ldap`
 ** `jbpm.usergroup.callback.properties=<URI of callback configuration file>`
@@ -16,16 +15,17 @@
 
 ifdef::showscript[]
 
-In order to provide an UserGroupCallback implementation one can use the `org.jbpm.ht.callback` property and provide the implementation name. The implementation name options are:
-* *mvel*: Default; mostly used for testing.
-* *ldap*: LDAP; requires additional configuration in the `jbpm.usergroup.callback.properties` file.
-* *db*: Database; requires additional configuration in the `jbpm.usergroup.callback.properties` file.
-* *jaas*: JAAS; delegates to the container to fetch information about user data.
-* *props*: A simple property file; requires additional file that will keep all information (users and groups).
-* *custom*: A custom implementation; you must specify the fully qualified name of the class in the `org.jbpm.ht.custom.callback`.
+Transcript:
 
-The most commonly configured options are `ldap` and `custom`.
-When using `ldap`: one must also provide a properties file in the `jbpm.usergroup.callback.properties` property.
-When using `custom`: one must also provide with the Fully Qualified Class Name of the custom UserGroupCallback implementation class name in the `org.jbpm.ht.custom.callback` property
+To provide a `UserGroupCallback` implementation, you can use the `org.jbpm.ht.callback` property and provide the implementation name. The implementation name options are:
+
+* `mvel`: Default; primarily used for testing
+* `ldap`: LDAP; requires additional configuration in the `jbpm.usergroup.callback.properties` file
+* `db`: Database; requires additional configuration in the `jbpm.usergroup.callback.properties` file
+* `jaas`: JAAS; delegates to the container to fetch information about user data
+* `props`: A simple property file; requires an additional file to keep all information (users and groups)
+* `custom`: A custom implementation; you must specify the fully qualified name of the class in `org.jbpm.ht.custom.callback`.
+
+The most commonly configured options are `ldap` and `custom`. When using `ldap`, you must also provide a properties file in the `jbpm.usergroup.callback.properties` property. When using `custom`, you must also provide the fully qualified class name of the custom `UserGroupCallback` implementation class name in the `org.jbpm.ht.custom.callback` property.
 
 endif::showscript[]

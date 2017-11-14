@@ -4,17 +4,17 @@
 
 == Summary
 
-* Security in JBoss BPMS/BRMS
+* Security in JBoss BPM Suite
 * Business Central User Interface
 * Remote APIs
 * Authentication and Authorization
 * Users and Groups
-* `UserGroupCallback`
-* Red Hat Single Sign-On Integration
+* Integration with Red Hat Single Sign-On
 
 ifdef::showscript[]
 
-In this module studied topics that provide options for integrating the JBoss BPMS product with different authentication and authorization providers.
-We also examined the different integration points in the product to provide authorization granularity and integration with Red Hat SSO.
+Transcript:
+
+This module discussed integrating JBoss BPM Suite with different authentication and authorization providers. It covered the areas in JBoss BPM Suite that you need to consider when implementing security: the Business Central UI application, Business Central remote APIs, the Realtime Decision Server and Intelligent Process Server remote APIs, authentication and authorization, and users and groups. The module concluded by examining the use of different integration points in JBoss BPM Suite to provide authorization granularity and integration with Red Hat Single Sign-On.
 
 endif::showscript[]

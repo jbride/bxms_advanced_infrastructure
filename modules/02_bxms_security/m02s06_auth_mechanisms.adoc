@@ -4,22 +4,28 @@
 
 == Authentication and Authorization
 
-image::images/bc-user-management.png[align="center",height="75%"]
-
-* Delegated to underlying application server
+[.noredheader,cols="<,^"]
+|======
+a|* Delegated to underlying application server
 * By default, JBoss EAP uses property files to manage users, passwords, roles
-* Can be replaced by other mechanisms, such as LDAP and Database
-** Requires configuration of security domain in JBoss EAP security subsystem
-** Change `<security-domain>` element in `jboss-web.xml` of Business Central and `kie-server.war` to point to new security domain
-* Business Central UI for user and role management:
-** Disabled by default
-** Works only when using property files to manage users and roles
+* Can be replaced by LDAP, database, others
+** Requires configuration of security domain in JBoss EAP security subsystem:
+** Change `<security-domain>` element in `jboss-web.xml` of Business 
+|image:images/bc-user-management.png[align="center",height="75%"]
+|======
+
 
 
 ifdef::showscript[]
 
-The Authentication and Authorization in JBoss BPM suite is delegated to the underlying application server.
-When using JBoss EAP as the application server, JBoss EAP uses property files to manage users, passwords and roles. The JBoss EAP default usage of property files can be replaced by other authentication and authorization mechanisms, such as LDAP or Database: In order to replace this authentication and authorization methods it is required to configure a JBoss EAP security subsystem, once the security subsystem is configured it is required to change the `<security-domain>` element of the `jboss-web.xml` file of the `business-central.war` and the `kie-server.war` to point to the new configured security domain.
-Business Central has a demo UI element section for user and role management: This UI element for user and role management is disabled by default and it only works when using property files to manage users and roles.
+Transcript:
+
+Authentication and authorization in JBoss BPM suite is delegated to the underlying application server.
+
+When using JBoss EAP as the application server, JBoss EAP uses property files to manage users, passwords and roles. The JBoss EAP default usage of property files can be replaced by other authentication and authorization mechanisms such as LDAP or a database.
+
+To replace the authentication and authorization method, you  must configure a JBoss EAP security subsystem. Once the security subsystem is configured, change the `<security-domain>` element of the `jboss-web.xml` file of the `business-central.war` and the `kie-server.war` to point to the new security domain.
+
+
 
 endif::showscript[]

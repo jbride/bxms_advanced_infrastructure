@@ -2,21 +2,23 @@
 :data-uri:
 :noaudio:
 
-== Security in JBoss BPMS/BRMS
-
+== Security in JBoss BPM Suite
 * Business Central UI application
 * Business Central remote APIs
-* Decision Server & Process Server remote APIs
-* Intelligent Process Server of JBoss BPM Suite for OpenShift remote APIs
-* JBoss BPM Suite: User Tasks resolution of users and groups
+* Realtime Decision Server and Intelligent Process Server remote APIs
+* Intelligent Process Server for OpenShift remote APIs
+* JBoss BPM Suite: User Tasks resolution for users and groups
 
 ifdef::showscript[]
 
-When thinking about the security implementation for JBoss BPM Suite authentication and authorization we are ought to think about different sections of security:
-* *Business Central UI application*: We are to implement the way that the users can authenticate to use the Business Central UI application to instantiate processes and work in human tasks.
-* *Business Central remote APIs*: Not all users will also have access to execute all Business Central commands through the REST APIs, we also need to think and define the way that different users and group of users interact with the Business Central remote APIs.
-* *Decision Server & Process Server remote APIs*: We also need to define the way that users will interact with the KIE Server APIs. This will provide authentication and authorization granularity for the KIE Server remote APIs.
-* *Intelligent Process Server of JBoss BPM Suite for OpenShift remote APIs*: When defining a cloud based environment we also need to think on how users will authenticate and how to integrate their permissions with the Intelligent Process Server.
-* *JBoss BPM Suite: User Tasks resolution of users and groups*: By knowing the interfaces that interact through the process execution to tell the users and groups one can implement a custom method to add even more granularity.
+Transcript:
+
+When thinking about the security implementation for JBoss BPM Suite authentication and authorization, consider the following:
+
+* *Business Central UI application*: You must implement the way that users are authenticated by the Business Central UI application to be able to instantiate processes and work in Human Tasks.
+* *Business Central remote APIs*: Not all users need access to all Business Central commands through the REST APIs. You need to think about and define the way that different users and groups interact with the Business Central remote APIs.
+* *Realtime Decision Server and Intelligent Process Server remote APIs*: You also need to define the way that users interact with these APIs to provide authentication and authorization granularity for the remote APIs.
+* *Intelligent Process Server for OpenShift remote APIs*: When defining a cloud-based environment, you also need to consider how users authenticate and how to integrate their permissions with the Intelligent Process Server.
+* *JBoss BPM Suite User Tasks resolution for users and groups*: By using the interfaces that interact with process execution and users and groups, you can implement a custom method to add even more granularity.
 
 endif::showscript[]
