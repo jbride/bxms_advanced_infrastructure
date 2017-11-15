@@ -2,21 +2,25 @@
 :data-uri:
 :noaudio:
 
-== BRMS KIE Server
+== JBoss BRMS Realtime Decision Server
 
 * Runtime JBoss BRMS rules engine exposes REST and SOAP APIs
-* Web application built on top of JBoss EAP
+* Web application built on top of JBoss Enterprise Application Platform (EAP)
 ** Also supported on WebLogic and WebSphere
 * Pure runtime engine, no UI
 * Includes feature-complete JBoss BRMS execution engine
 * Modular and extensible
 * Support for JSON and XML payload
-* Can manage one or more `KIE Containers`
+* Can manage one or more KIE containers
 
 ifdef::showscript[]
 
-The BRMS KIE Server leverages the fact that the JBoss BRMS rules engine runtime exposes REST and SOAP APIs. This runtime is distributed as a web application built on top of JBoos EAP, and it is also supported on WebLogic and WebSphere web server technologies.
-The BRMS KIE Server includes only the runtime engine, based in a feature-complete JBoss BRMS exeuction engie, does not include UI for interaction.
-This web application is modular and extensible and supports for JSON and XML payloads, and it is built so it can manage one or more `KIE Containers`
+Transcript:
+
+The JBoss BRMS Realtime Decision Server leverages the fact that the JBoss BRMS rules engine runtime exposes REST and SOAP APIs. This runtime is distributed as a web application built on top of JBoss EAP, and it is also supported by WebLogic and WebSphere web server technologies.
+
+The Realtime Decision Server includes only the runtime engine, based in a feature-complete JBoss BRMS execution engine. It does not include a UI for interaction.
+
+This web application is modular and extensible, supports JSON and XML payloads, and is built to manage one or more KIE containers.
 
 endif::showscript[]

@@ -2,36 +2,26 @@
 :data-uri:
 :noaudio:
 
-== xPaaS Decision Server
+== Realtime Decision Server for OpenShift
 
 .Parameters
 
 * `MAVEN_MIRROR_URL`
-** URL of local Maven server that _mirrors_ all _external:*_ Maven repositories
+** URL of local Maven server that _mirrors_ all _external_ Maven repositories
 ** Value included in custom `<mirror/>` entry in application project's `pom.xml`
 ** Used to pull Maven dependencies during S2I
-** Used to pull built kjar application if using binary deployment approach
+** Used to pull built KJAR application if using binary deployment approach
 
 * `KIE_CONTAINER_DEPLOYMENT`
-** Specify unique identifier of Drools applications that execute in Decision Server
+** Specifies unique identifier of Drools applications that execute in Realtime Decision Server
 ** Format convention pipe-delimited: `containerId=groupId:artifactId:version|c2=g2:a2:v2`
-
-* `KIE_CONTAINER_REDIRECT_ENABLED`
-** Enable redirect functionality for KIE containers
-** Defaults to `true`
-** Expect `true` when versions of same kjar deployed side by side
 
 ifdef::showscript[]
 
-`MAVEN_MIRROR_URL`: Represents the URL to the local Maven server that mirrors all external Maven repositories. This value is included in the custom <mirror/> entry in the application project's `pom.xml`. Is used to pull the Maven dependencies during S2I. It is also used to pull a built kjar application if using the binary deployment approach.
-`KIE_CONTAINER_DEPLOYMENT`: In this parameter we can specify one or more kjar projects to be initialized as `KIE-Containers`. The different deployment units can be pipe-delimited.
+Transcript:
 
-To deploy multiple concurrent versions, the KIE_CONTAINER_REDIRECT_ENABLED variable must be set to true. This variable defaults to true and only needs to be explicitly included in the .s2i/environment file if setting to false.
+The `MAVEN_MIRROR_URL` parameter represents the URL to the local Maven server that mirrors all external Maven repositories. This value is included in the custom `<mirror/>` entry in the application project's `pom.xml` file. It is used to pull the Maven dependencies during S2I. It is also used to pull a built KJAR application if the binary deployment approach is used.
 
-The KIE_CONTAINER_REDIRECT_ENABLED variable enables override of the container ID. When set to true, a unique md5 sum hash is generated from the <alias>=<group_id>:<artifact_id>:<version> for each version of the application. It also enables alias redirection so that client requests using the deployment alias are redirected to the container of the correct version.
-
-If set to false, the deployment alias is used as the container ID and multiple concurrent versions are not possible. If multiple versions of an application are specified for KIE_CONTAINER_DEPLOYMENT, and KIE_CONTAINER_REDIRECT_ENABLED is set to false, only the latest version of the application will be deployed and alias redirection will be disabled.
-
-Changing the KIE_CONTAINER_REDIRECT_ENABLED variable in the .s2i/environment file of a running application generates a new container ID for the running application, which may make it incompatible with any clients using the old container ID.
+The `KIE_CONTAINER_DEPLOYMENT` parameter specifies one or more KJAR projects to be initialized as KIE containers. The different deployment units can be pipe-delimited.
 
 endif::showscript[]

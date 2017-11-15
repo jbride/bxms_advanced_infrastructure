@@ -4,15 +4,18 @@
 
 == Runtime Rules Engine Only
 
-* BRMS rules authoring tools not included:
+* JBoss BRMS rules authoring tools not included:
 ** BRMS Business Central
 ** Drools plug-in of JBDS
-. Assumes workflow to transform to DRL and BPMN2 is already in place.
-. Application source code should contain all rules and process definition artifacts.
+*** Assumes that workflow to transform to DRL and BPMN2 is in place
+*** Application source code must contain all rules and process definition artifacts
 
 ifdef::showscript[]
 
-OCP Decision Server image does not include BRMS rules authoring tools. For rules authoring we should use BRMS Business Central or the Drools plug-in of JBoss Development Studio.
-OCP Decision Server assumes that the workflow to generate DRL and BPMN2 components is already in place and that the application source code should contain all rules and process definition artifacts.
+Transcript:
+
+The Realtime Decision Server for OpenShift image does not include BRMS rules authoring tools. For rules authoring, use BRMS Business Central or the Drools plug-in of JBoss Development Studio.
+
+The Realtime Decision Server for OpenShift assumes that the workflow to generate DRL and BPMN2 components is already in place and that the application source code contains all of the needed rules and process definition artifacts.
 
 endif::showscript[]

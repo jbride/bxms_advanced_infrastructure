@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== xPaaS Decision Server
+== Realtime Decision Server for OpenShift
 
 .Parameters
 
@@ -12,7 +12,7 @@
 
 * `SOURCE_REPOSITORY_REF`
 ** Git branch/tag reference
-** Default: Master
+** Default: `Master`
 ** Used during S2I
 
 * `CONTEXT_DIR`
@@ -21,10 +21,16 @@
 
 ifdef::showscript[]
 
-When using the Decision Server template from the Red Hat registry, the template supports parameters to tune up the runtime and provide with the information about the `KIE Containers` that need to be initialized.
+Transcript:
+
+When using the Decision Server template from the Red Hat registry, the template supports parameters to tune up the runtime and provide information about the KIE containers that need to be initialized.
+
 The supported parameters are:
-`SOURCE_REPOSITORY_URL`: Represents the URL to version-controlled application source code. This parameter is used during S2I approach to specify the source code location. Generally this will refer to a git repository.
-`SOURCE_REPOSITORY_REF`: Represents the Git branch or tag to reference. When using `SOURCE_REPOSITORY_URL` the default value for `SOURCE_REPOSITORY_REF` is `Master`, we can specify a different branch name.
-`CONTEXT_DIR`: We can specify a path within the `SOURCE_CODE_REPOSITORY` to be built during S2I approach.
+
+* `SOURCE_REPOSITORY_URL`, which represents the URL to version-controlled application source code. This parameter is used during S2I approach to specify the source code location. Generally it refers to a Git repository.
+
+* `SOURCE_REPOSITORY_REF`, which represents the Git branch or tag to reference. When using `SOURCE_REPOSITORY_URL`, the default value for `SOURCE_REPOSITORY_REF` is `Master`. You can specify a different branch name.
+
+* `CONTEXT_DIR`: You can specify a path within the `SOURCE_CODE_REPOSITORY` to be built during S2I approach.
 
 endif::showscript[]

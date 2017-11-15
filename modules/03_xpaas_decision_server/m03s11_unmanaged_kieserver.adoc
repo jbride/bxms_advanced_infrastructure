@@ -2,12 +2,12 @@
 :data-uri:
 :noaudio:
 
-== `Unmanaged` Decision Server Only
+== Unmanaged Realtime Decision Server Only
 
-* JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of KIE Servers
-* OCP Decision Server leverages _unmanaged_ approach
-** OCP by default handles application pod mgmt (ie; HA and scalability)
-* Example _unmanaged_ XML found in `$JBOSS_HOME` of Decision Server pod:
+* JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of Realtime Decision Server and Intelligent Process Server
+* Realtime Decision Server for OpenShift leverages only _unmanaged_ approach
+** OpenShift by default handles application pod management (HA and scalability)
+* Example _unmanaged_ XML found in `$JBOSS_HOME` of Realtime Decision Server pod:
 +
 [source,xml]
 -----
@@ -45,6 +45,8 @@
 
 ifdef::showscript[]
 
-JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of KIE Servers, but the OCP Decision Server leverages _unmanaged_ approach: OCP by default handles application pod mgmt.
+Transcript:
+
+JBoss BPM Suite allows for _unmanaged_ and _managed_ administration of Realtime Decision Server and Intelligent Process Server, but the Realtime Decision Server for OpenShift leverages only the _unmanaged_ approach. OpenShift by default handles application pod management.
 
 endif::showscript[]

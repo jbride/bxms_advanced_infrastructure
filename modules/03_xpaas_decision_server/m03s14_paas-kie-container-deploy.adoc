@@ -2,29 +2,35 @@
 :data-uri:
 :noaudio:
 
-== OCP Decision Server Deployment
+==  Realtime Decision Server for OpenShift Deployment
 
-* S2I deployment:
+* Source-to-image (S2I) deployment:
 ** No proper version management of built artifact
-** Kjar rebuilt from source at every deployment
+** KJAR rebuilt from source at every deployment
 ** Violates _build once, deploy everywhere_ principle
 ** Tests not executed as part of S2I build
 
-* Prebuild kjar binary deployment:
-** Typically involves use of OpenShift Jenkins image and Groovy-based workflow plug-in
+* Prebuild KJAR binary deployment:
+** Typically involves OpenShift Jenkins image and Groovy-based workflow plug-in
 
 * In both approaches:
-** Kjar and dependencies make it to `~/.m2/` repository of Decision Server pod
-** Decision Server then reads `unmanaged` `kie-server-state` XML configs to create KIE Container
+** KJAR and dependencies created in `~/.m2/` repository of Realtime Decision Server pod
+** Realtime Decision Server then reads `unmanaged` `kie-server-state` XML configurations to create KIE container
 
 
 ifdef::showscript[]
 
-When deploying the Decision Server to OCP we have 2 main options:
-1. Source 2 Image Deployment.
-2. Binary deployment.
-When using the Source 2 Image deployment the kjar is rebuilt from source code at every deployment. This can be useful during the development phase, but there is no proper version management of the built artifact, the tests are not executed as part of the S2I build and violates the _build once, deploy everywhere_ principle.
-When using the Binary Deployment: a prebuilt binary kjar is used through OpenShift Jenkins image and the Groovy-based workflow plug-in.
-In both approaches the kjar and its dependencies are created in the `~/.m2/` repository of the Decision Server pod, then the Decision Server reads the `unmanaged` `kie-server-state` XML configuration files to create the KIE Container.
+Transcript:
+
+When deploying the Realtime Decision Server for OpenShift, you have two main options:
+
+* Source-to-image, or S2I, deployment
+* Binary deployment
+
+When using the S2I deployment, the KJAR is rebuilt from source code at every deployment. This can be useful during the development phase, but there is no proper version management of the built artifact. The tests are not executed as part of the S2I build, which violates the _build once, deploy everywhere_ principle.
+
+When using the binary deployment, a prebuilt binary KJAR is used through OpenShift Jenkins image and the Groovy-based workflow plug-in.
+
+In both approaches, the KJAR and its dependencies are created in the `~/.m2/` repository of the Realtime Decision Server pod, after which the server reads the `unmanaged` and `kie-server-state` XML configuration files to create the KIE container.
 
 endif::showscript[]

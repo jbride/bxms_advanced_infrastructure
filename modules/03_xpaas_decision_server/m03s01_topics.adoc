@@ -4,19 +4,22 @@
 
 == Module Topics
 
+* JBoss BRMS Realtime Decision Server
+* CI/CD KIE Container Deployment
 * Realtime Decision Server
-* Non-PaaS Decision Server Deployment
-* Non-PaaS KIE Container Deployment
-* REST API
 * Batch Execution
-* Red Hat JBoss BRMS in Cloud
-* Decision Server Advantages
-* Unmanaged Decision Server Only
+* Realtime Decision Server for OpenShift
+* Unmanaged Realtime Decision Server Only
 * Stateless Ksession Only
-* xPaaS Decision Server
+* Runtime Rules Engine Only
+* Realtime Decision Server for OpenShift Deployment
+* Realtime Decision Server for OpenShift
+
 
 ifdef::showscript[]
 
-In this module we will study the Openshift configuration for the Red Hat Decision Server container and its configuration options.
+Transcript:
+
+This module describes configuring Red Hat OpenShift Container Platform for the Red Hat Realtime Decision Server container. The module begins with an introduction to the JBoss BRMS Realtime Decision Server and CI/CD KIE container deployment. Next the Realtime Decision Server is discussed in more detail, including the REST API, the batch API and batch execution, and its availability as a containerized OpenShift image. Managed and unmanaged server administration are covered, as well as source-to-image deployment. The module concludes with a look at the Realtime Decision Server for OpenShift.
 
 endif::showscript[]

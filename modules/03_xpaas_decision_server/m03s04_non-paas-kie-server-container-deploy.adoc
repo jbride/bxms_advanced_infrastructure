@@ -2,9 +2,9 @@
 :data-uri:
 :noaudio:
 
-== KIE Container Deployment
+== CI/CD KIE Container Deployment
 
-* KIE Container can be deployed to KIE Server by invoking KIE Server REST API:
+* KIE container can be deployed to Realtime Decision Server by invoking Realtime Decision Server REST API:
 +
 [source,text]
 -----
@@ -25,8 +25,12 @@ $ curl
 
 ifdef::showscript[]
 
-The KIE Container can be deployed to the KIE Server web application by invoking the KIE Server REST API.
-The endpoint for execution has the following form: http://[server]/kie-server/services/rest/server/containers/[container_name]
-Use the PUT HTTP method of the endpoint and provide the group-id, artifact-id and version of the deployment unit that is to create a KIE Container as shown in the slide's example.
+Transcript:
+
+The Realtime Decision Server can be deployed to the Realtime Decision Server web application by invoking the Realtime Decision Server REST API.
+
+The HTTP endpoint for execution has the form shown in the example.
+
+Use the PUT HTTP method of the endpoint and provide the `group-id`, `artifact-id`, and `version` of the deployment unit that is to create a KIE container, as shown here.
 
 endif::showscript[]

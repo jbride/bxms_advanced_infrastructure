@@ -1,0 +1,26 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Realtime Decision Server for OpenShift
+
+.Parameters
+
+* `KIE_CONTAINER_REDIRECT_ENABLED`
+** Enables redirect functionality for KIE containers
+** Defaults to `true`
+** Expect `true` when versions of same KJAR deployed side by side
+
+ifdef::showscript[]
+
+Transcript:
+
+To deploy multiple concurrent versions, the `KIE_CONTAINER_REDIRECT_ENABLED` variable must be set to `true`. This variable defaults to `true` and needs to be explicitly included in the `.s2i/environment` file only when you want to set it to `false`.
+
+The `KIE_CONTAINER_REDIRECT_ENABLED` variable enables override of the container ID. When set to `true`, a unique MD5 sum hash is generated from the `<alias>=<group_id>:<artifact_id>:<version>` for each version of the application. This parameter also enables alias redirection so that client requests using the deployment alias are redirected to the container of the correct version.
+
+If `KIE_CONTAINER_REDIRECT_ENABLED` is set to `false`, the deployment alias is used as the container ID, and multiple concurrent versions are not possible. If multiple versions of an application are specified for `KIE_CONTAINER_DEPLOYMENT`, and `KIE_CONTAINER_REDIRECT_ENABLED` is set to `false`, only the latest version of the application is deployed, and alias redirection is disabled.
+
+Changing the `KIE_CONTAINER_REDIRECT_ENABLED` variable in the `.s2i/environment` file of a running application generates a new container ID for the running application, which may make it incompatible with any clients using the old container ID.
+
+endif::showscript[]

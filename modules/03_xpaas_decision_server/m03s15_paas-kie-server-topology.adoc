@@ -2,18 +2,22 @@
 :data-uri:
 :noaudio:
 
-== xPaaS Decision Server
+== Realtime Decision Server for OpenShift
 
 .Binary Deployment
 
-image::images/paas_kserver_topology_bob.gif[align="center"]
+image:images/paas_kserver_topology_bob.gif[align="center"]
 
 ifdef::showscript[]
 
-When using the Binary Deployment: The Decision Server topology for the deployment works in this way:
-1. A git server receives the changes to rules and ruleflows source code.
-2. When the change is detected by web-hooks, those changes are pulled in a Jenkins server that will perform 2 tasks in the pipeline: first the Jenkins pipeline will generate binaries to be uploaded to a Nexus Maven Repository, and second, the Jenkins pipeline executes the `oc new-app` command with the required parameters to trigger an OCP container creation.
-3. The OCP master receives the parameters from the `oc new-app` command and retrieves the required information from the Red Hat OCP Registry and from the Maven repository to create a Container Node.
-4. A new container is started in OCP with the given Docker image and the Maven binaries.
+Transcript:
+
+When using the binary deployment, the Realtime Decision Server topology for the deployment works this way:
+
+. A Git server receives the changes to rules and ruleflows source code.
+. When the changes are detected by webhooks, they are pulled into a Jenkins server that performs two tasks in the pipeline. First, the Jenkins server generates binaries to be uploaded to a Nexus Maven repository. Then the Jenkins server executes the `oc new-app` command with the required parameters to trigger creation of an OpenShift container.
+
+. The OpenShift master receives the parameters from the `oc new-app` command and retrieves the required information from the Red Hat OpenShift registry and the Maven repository to create a container node.
+. A new container is started in OpenShift with the given Docker image and the Maven binaries.
 
 endif::showscript[]
