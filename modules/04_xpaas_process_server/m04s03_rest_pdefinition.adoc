@@ -4,12 +4,14 @@
 
 == REST API
 
-.Process Definitions
+.*Process Definitions*
 
 image:images/rest_pdefinition.png[]
 
 ifdef::showscript[]
 
-We can also confirm that the BPM Extension is enabled because in the `kie-server/docs` endpoint we can see the process definition endpoints available.
+Transcript:
+
+You can confirm that a BPM extension is enabled in the `kie-server/docs` endpoint. You can see that the process definition endpoints are available.
 
 endif::showscript[]

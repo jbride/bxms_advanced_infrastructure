@@ -10,15 +10,13 @@
 * JBoss BPM Suite Database
 * JBoss BPM Suite Messaging
 * Redirect Capability
-* New KIE Versions
 * Container Naming
 * Client Targeting
-* Client Alias Redirects
-* Container Resolution Process
-* Default Container ID
 
 ifdef::showscript[]
 
-In this module we studied the Openshift configuration for the Red Hat Intelligent Process Server container and its configuration options.
+Transcript:
+
+This module described configuring Red Hat OpenShift Container Platform for the Red Hat Intelligent Process Server container. The module began by discussing the capabilities of the Intelligent Process Server and continued with an in-depth look at the REST API. Next it described the JBoss BPM Suite database and messaging capabilities. The module concluded by delving into the redirect capability, container naming, and client targeting.
 
 endif::showscript[]

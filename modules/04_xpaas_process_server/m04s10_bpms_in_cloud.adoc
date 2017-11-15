@@ -5,12 +5,14 @@
 == JBoss BPM Suite in Cloud
 
 * JBoss BPM Suite available as containerized xPaaS image
-* JBoss BPM Suite in OpenShift &equiv; _Intelligent Process Server_
+* JBoss BPM Suite in OpenShift &equiv; Intelligent Process Server for OpenShift
 +
 image::images/pserver_in_registry.png[]
 
 ifdef::showscript[]
 
-The JBoss BPM Suite is available as containerized xPaaS image known as the _Intellingent Process Server_
+Transcript:
+
+The JBoss BPM Suite is available as a containerized xPaaS image known as the Intelligent Process Server for OpenShift.
 
 endif::showscript[]

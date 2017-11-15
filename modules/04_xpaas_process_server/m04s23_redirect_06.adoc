@@ -2,20 +2,23 @@
 :data-uri:
 :noaudio:
 
-== Client Alias Redirects
+== Client Targeting
+.Client Alias Redirects
 
-* Deployment alias: Incoming request redirected to specific deployed KIE container in server
+* For deployment alias, incoming request redirected to specific deployed KIE container in server
 
-* Multi-step container resolution process used to determine _which_ version of container targeted by redirect
+* Multistep container resolution process determines _which_ version of container targeted by redirect
 
-* This process is followed:
+* Process is followed:
 ** In REST interface by using servlet filter
 ** In JMS interface by using EJB interceptor
 
 ifdef::showscript[]
 
-When using the Deployment alias: the incoming request is redirected to an specific deployed container in the server. For this purpose, a multi-step container resolution process is used to determine which version of the container is targeted by the redirect.
-The process is followed in REST interface by using a sevlet filter.
-The process is also followed in the JMS interface by using an EJB interceptor.
+Transcript:
+
+When using the deployment alias, the incoming request is redirected to a specific deployed container in the server. For this purpose, a multistep container resolution process is used to determine which version of the container is targeted by the redirect.
+
+The process is followed in the REST interface by using a servlet filter, or followed in the JMS interface by using an EJB interceptor.
 
 endif::showscript[]

@@ -9,7 +9,7 @@ ifdef::revealjs_slideshow[]
 Red Hat JBoss BPM Suite 6 Implementation
 
 [#cover-h2]
-xPaaS Intelligent Process Server
+Intelligent Process Server for OpenShift
 
 [#cover-logo]
 image::{revealjs_cover_image}[]
