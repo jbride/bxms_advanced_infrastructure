@@ -5,13 +5,15 @@
 == Binary Serialization
 
 * Process and task variables marshalled to byte array and stored as BLOB
-* Advantage: Schema not dependent on data type of process and task variables
+* Advantage: Schema independent of process data type and task variables
 * Disadvantage: Process and task variable values not readily exploitable by queries
 
 ifdef::showscript[]
 
-The process and task variables are marshalled to byte array and stored as a BLOB in the database.
-This allows the schema to don't be dependent on data types of process and task variables, making the engine deployable for any business or use case.
-This also makes the process and task variables hard to ready and exploit by queries.
+Transcript:
+
+Process and task variables are marshalled to a byte array and stored as a BLOB in the database.
+
+This allows the schema to be independent of the process data types and task variables, which makes the engine deployable for any business or use case. However, this also makes the process and task variables difficult to exploit by queries.
 
 endif::showscript[]

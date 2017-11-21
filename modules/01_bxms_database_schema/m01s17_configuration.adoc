@@ -4,29 +4,36 @@
 
 == Datasource Configuration
 
-* Slightly different for Business Central and Process Server
-* Use datasource defined and managed on application server
+* Slightly different for Business Central and Intelligent Process Server
+* Use data source defined and managed on application server
 * Business Central: Adapt `persistence.xml` in `business-central.war` to match datasource
-* Process Server: Use system properties to configure persistence:
+* Intelligent Process Server: Use system properties to configure persistence:
 ** `org.kie.server.persistence.ds`: JNDI name of datasource
 ** `org.kie.server.persistence.dialect`: Hibernate dialect to use
 * Quartz requires own non-JTA datasource pointing to JBoss BPM Suite database
-* Datasource and database tuning
+* Datasource and database tuning:
 ** On application server: Pool size and settings
 ** On database: Query optimization with correct indexes
 
 ifdef::showscript[]
 
-The data source configuration is slightly different for business central and the process server:
-For both of them you will use a data source defined and managed on the application server.
-For business central you will adapt the persistence.xml hosted in the business-central.war folder to match the application server data source.
-For the process server you will use system properties to configure the persistence. Specifically you will use the properties:
-** `org.kie.server.persistence.ds`: with the JNDI name of datasource
-** `org.kie.server.persistence.dialect`: with the Hibernate dialect to use
-Also you might need to configure a data source for the Quartz framework database.
-Quartz requires its own non-JTA datasource pointing to JBoss BPM Suite database.
-Finally: in order to tune up the performance of the database transactions you might need to pay attention to the following configurations:
-** On application server: tune up the Pool size and pool settings
-** On database: perform Query optimization with correct indexes
+Transcript:
+
+The datasource configuration is slightly different for Business Central and the Intelligent Process Server:
+
+* For both of them, use a datasource defined and managed on the application server.
+
+* For Business Central, adapt the `persistence.xml` file hosted in the `business-central.war` folder to match the application server datasource.
+
+* For the Intelligent Process Server, use system properties to configure the persistence. Specifically, set:
+** `org.kie.server.persistence.ds` with the JNDI name of datasource
+** `org.kie.server.persistence.dialect` with the Hibernate dialect to use
+
+Also, you may need to configure a datasource for the Quartz framework database. Quartz requires its own non-JTA datasource pointing to the JBoss BPM Suite database.
+
+Finally, to tune up the performance of the database transactions, you may need to pay attention to the following configurations:
+
+* On the application server, tune the pool size and pool settings.
+* On the database, perform query optimization with the correct indexes.
 
 endif::showscript[]

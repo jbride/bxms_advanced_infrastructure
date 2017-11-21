@@ -1,0 +1,20 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Extending Persistence
+
+* Integration with document management system or document store:
+** `org.jbpm.document.Document`: Interface models process or task variable as general-purpose document
+** `org.jbpm.document.marshalling.DocumentMarshallingStrategy`: Provides marshalling strategy for document types
+** Need to provide implementation of `org.jbpm.document.service.DocumentStorageService` to interact with document store
+
+* Custom persistence solutions--for example, NoSQL database and ElasticSearch
+
+ifdef::showscript[]
+
+Transcript:
+
+You can also integrate with a document management system or document store. To do that, use the `org.jbpm.document.Document` interface to define how to interact with document properties. You also need to register `org.jbpm.document.marshalling.DocumentMarshallingStrategy` in the deployment descriptor. And finally, you need to provide an implementation of `org.jbpm.document.service.DocumentStorageService` to interact with the document store.
+
+endif::showscript[]

@@ -4,14 +4,14 @@
 
 == Optimistic and Pessimistic Locking
 
-* JPA in JBoss BPM Suite engine uses by default optimistic locking strategy with versioning
-* May lead to race conditions -- `OptimisticLockException`
+* By default JPA in JBoss BPM Suite engine uses optimistic locking strategy with versioning
+* May lead to race conditions: `OptimisticLockException`
 ** Process definitions with wait states or asynchronous nodes in parallel branches
 * Engine can recover from `OptimisticLockException`
 ** Failing branch is re-executed within same transaction
 * JBoss BPM Suite engine can be configured to use pessimistic locking strategy
 ** JPA `PESSIMISTIC_FORCE_INCREMENT` lock mode
-** Enable pessimistic locking by setting environment entry `org.kie.api.persistence.pessimistic` to `true` in kjar deployment descriptor:
+** To enable, set environment entry `org.kie.api.persistence.pessimistic` to `true` in KJAR deployment descriptor:
 +
 [source,xml]
 ----
@@ -26,10 +26,12 @@
 
 ifdef::showscript[]
 
-When using process definitions with wait states or asynchronous nodes in parallel branches of the process: the process engine faces race conditions when reaching the join gateway of both branches that can lead to OptimisticLockExceptions.
-In such cases the execution engine will try to re-execute the failing branch within the same transaction, but this can lead also to unwanted double execution of some nodes.
-This is due because by default JBoss BPM Suite uses optimistic locking strategy with versioning.
-There are some cases when you might want to change this to pessimistic locking strategy.
-In order to enable the JPA PESSIMISTIC_FORCE_INCREMENT lock mode you need to add an environment entry to the deployment-descriptor: the org.kie.api.persistence.pessimistic with a true value identifier.
+Transcript:
+
+When process definitions with wait states or asynchronous nodes are used in parallel branches of a process, the process engine faces race conditions when it reaches the join gateway of both branches, which can can lead to `OptimisticLockExceptions`.
+
+In such cases, the execution engine tries to re-execute the failing branch within the same transaction. This can lead to unwanted double execution of some nodes. This is because JBoss BPM Suite defaults to using an optimistic locking strategy with versioning.
+
+There are cases when you may want to change this to a pessimistic locking strategy. To enable the JPA `PESSIMISTIC_FORCE_INCREMENT` lock mode, you must add an environment entry to the deployment descriptor `org.kie.api.persistence.pessimistic` with a `true` value identifier.
 
 endif::showscript[]

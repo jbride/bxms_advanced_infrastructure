@@ -4,8 +4,7 @@
 
 == Summary
 
-* Persistence in JBoss BPMS/BRMS
-* Runtime Data Persistence
+* Persistence in JBoss BPM Suite
 * Persistence Technology
 * Persistence and Safe Points
 * Binary Serialization
@@ -16,11 +15,10 @@
 
 ifdef::showscript[]
 
-In this module we studied the data persistence challenges when implementing JBoss BPM Suite.
-The challenges of persistence implementation include:
-* Runtime Data Persistence
-* Data Persistent locks
-* Data source configuration and
-* Data base maintenance activities
+Transcript:
+
+This module examined the data persistence challenges when implementing JBoss BPM Suite. It began with a detailed discussion, with videos, of three categories of persistence: design-time data persistence, configuration and deployments persistence, and runtime data persistence. The module continued with a look at persistence technology, persistence and safe points, binary serialization, and extending persistence, followed by explanations of optimistic and pessimistic locking. The module concluded with datasource configuration and database maintenance. 
+
+
 
 endif::showscript[]

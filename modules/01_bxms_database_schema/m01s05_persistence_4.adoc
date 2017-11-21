@@ -2,21 +2,26 @@
 :data-uri:
 :noaudio:
 
-== Persistence in JBoss BPMS/BRMS
+== Persistence in JBoss BPM Suite
 
 .Configuration and Deployments
 * Business Central
 ** System Git repository
 ** Database (deployments)
-* Decision Server, Process Server
+* Realtime Decision Server, Intelligent Process Server
 ** File system for _unmanaged_ instances
-** Business Central Controller for _managed_ instances
+** Business Central controller for _managed_ instances
 
 ifdef::showscript[]
 
-The configuration and deployments for Business Central and the KIE-SERVER need also to be persisted in a way that the configuration and deployments can survive a server restart.
-The business central uses for the purpose of persisting its configuration and deployments: the System Git repository and the database to persist the deployments information.
-The KIE-SERVER (also known as decision or process server) uses the file system to persist the configuration and deployments of unmanaged instances.
-When the KIE-SERVER is a managed instance by a business central controller, the KIE-SERVER will use the business central to store its configuration and deployment information, the business central will use the system git and the database as stated before.
+Transcript:
+
+The configuration and deployments for Business Central and the Realtime Decision Server and Intelligent Process Server must also be persisted so that the configuration and deployments can survive a server restart.
+
+To persist configuration and deployment information, Business Central uses the system Git repository and database.
+
+The Realtime Decision Server and Intelligent Process Server use the file system to persist the configuration and deployments of unmanaged instances.
+
+When these server instances are managed by a Business Central controller, they use Business Central to store configuration and deployment information. Business Central uses the system Git repository and database as stated.
 
 endif::showscript[]

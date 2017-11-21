@@ -2,20 +2,23 @@
 :data-uri:
 :noaudio:
 
-== Persistence in JBoss BPMS/BRMS
+== Persistence in JBoss BPM Suite
 
-* Persistence types:
-** Design-time persistence
-** Configuration and deployments
-** Runtime data persistence
+.Persistence Types
+* Design-time persistence
+* Configuration and deployments
+* Runtime data persistence
 
 ifdef::showscript[]
 
-When examining the persistence type options available for JBoss BPM Suite we find that we can classify the persistence configuration in the following categories:
+Transcript:
+
+Three types of persistence configuration are available for Red Hat JBoss BPM Suite:
+
 * Design-time persistence
 * Configuration and deployments persistence
 * Runtime data persistence
 
-Each one of these categories need to be accounted when facing the challenges of sharing information between the teams and keep the information alive and ready for review and analysis.
+Each of these categories needs to be accounted when facing the challenges of sharing information between teams and keeping information alive and ready for review and analysis.
 
 endif::showscript[]

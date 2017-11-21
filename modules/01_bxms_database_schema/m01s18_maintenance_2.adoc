@@ -1,0 +1,25 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Database Maintenance
+
+* Periodic cleaning recommended to keep database size manageable:
+** If audit data must be retained, copy to separate data store
+** Perform automatic cleaning with scheduled maintenance job:
+*** `org.jbpm.executor.commands.LogCleanupCommand`
+*** Highly configurable example of scheduled database maintenance job
+
+ifdef::showscript[]
+
+Transcript:
+
+
+Periodic cleaning is therefore recommended to keep the database size manageable:
+
+* If the audit data must be retained, copy historic audit data to a separate database.
+* And perform an automatic cleaning with a scheduled maintenance job.
+
+The product contains an out-of-the-box implementation example of a scheduled database maintenance job in the `org.jbpm.executor.commands.LogCleanupCommand` class.
+
+endif::showscript[]

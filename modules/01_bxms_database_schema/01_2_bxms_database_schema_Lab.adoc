@@ -1,33 +1,34 @@
 :scrollbar:
 :data-uri:
+:linkattrs:
 :toc2:
 
-== JBoss BPM Suite Database Schema Lab
+== Database Schema Lab
 
-The installation performed by the `install-bpms.sh` script yields an installation of Business Central configured to use the built-in H2 database, which is not supported for production usage. In this lab, you update the configuration to use MariaDB instead of H2.
+The installation performed by the `install-bpms.sh` script yields an installation of Business Central configured to use the built-in H2 database, which is not supported for production use. In this lab, you update the configuration to use MariaDB instead of H2.
 
 .Goals
-* Configure Business Central and Process Server to use MariaDB, rather than the built-in H2 database
+* Configure Business Central and Intelligent Process Server to use MariaDB instead of the built-in H2 database
 * Understand the JBoss BPM Suite database schema
 
 .Requirements
-* Business Central and Process Server installed, as described in the _Introduction Lab_ in the _Red Hat JBoss BPM Suite 6 Implementation_ course
+* Business Central and Intelligent Process Server installed, as described in the previous lab
 
 :numbered:
 
 == Configure Business Central to Use MariaDB
 
-In this section, you perform the steps to reconfigure Business Central to use MariaDB instead of H2. Configuring JBoss BPM Suite to run on other supported relational databases uses steps similar to these. See https://access.redhat.com/articles/704703 for details.
+In this section, you reconfigure Business Central to use MariaDB instead of H2. Configuring JBoss BPM Suite to run on other supported relational databases uses steps similar to these. See link:https://access.redhat.com/articles/704703[Red Hat JBoss BPM Suite 6 Supported Configurations^] for details.
 
 You also configure Business Central to use the Quartz scheduler library to implement timers and timer-based functionality in Business Central.
 
-=== Define Datasources
+=== Define Data Sources
 
-In the next steps, you add datasource definitions to the application server configuration. This can be done in several ways. In this lab, you create the datasources using the Red Hat JBoss Enterprise Application Platform (JBoss EAP) CLI.
+In the next steps, you add data source definitions to the application server configuration. This can be done in several ways. In this lab, you create the data sources using the Red Hat JBoss Enterprise Application Platform (JBoss EAP) CLI.
 
 . Make sure Business Central is shut down.
 
-. Open a terminal window, navigate to the `bin` directory of the Business Central installation, and start the application server in _admin_ mode:
+. Open a terminal window, navigate to the `bin` directory of the Business Central installation, and start the application server in `admin` mode:
 +
 [source,text]
 ----
@@ -59,26 +60,26 @@ $ ./jboss-cli.sh --connect
 [standalone@localhost:9990 /] /subsystem=datasources/jdbc-driver=mysql:add(driver-xa-datasource-class-name=com.mysql.jdbc.jdbc2.optional.MysqlXADataSource,driver-name=mysql,driver-module-name=com.mysql)
 ----
 
-. Create the datasource that the JBoss BPM Suite engine uses:
+. Create the data source that the JBoss BPM Suite engine uses:
 +
 [source,text]
 ----
 [standalone@localhost:9990 /] data-source add --name=jbpmDS --jndi-name="java:jboss/datasources/jbpmDS" --driver-name=mysql --user-name=jboss --password=jboss --exception-sorter-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLExceptionSorter --valid-connection-checker-class-name=org.jboss.jca.adapters.jdbc.extensions.mysql.MySQLValidConnectionChecker --connection-url="jdbc:mysql://${mysql.host.ip}:${mysql.host.port}/${mysql.bpms.schema}?transformedBitIsBoolean=true&sessionVariables=storage_engine=InnoDB"
 ----
 
-* The datasource uses the driver you configured in the previous step.
+* The data source uses the driver you configured in the previous step.
 +
 [NOTE]
 The connection URL to the database instance uses system property placeholders, rather than hard-coding the values.
 
-. Enable the datasource:
+. Enable the data source:
 +
 [source,text]
 ----
 [standalone@localhost:9990 /] /subsystem=datasources/data-source=jbpmDS:enable
 ----
 
-. Provide Quartz with its own datasource definition:
+. Provide Quartz with its own data source definition:
 +
 [source,text]
 ----
@@ -90,13 +91,14 @@ The connection URL to the database instance uses system property placeholders, r
 
 . Shut down the application server.
 
-. Open `/home/jboss/lab/bpms/bc/standalone/configuration/standalone.xml` in a text editor, and review the `datasources` subsystem to review the changes you made to the server configuration file.
+. Open `/home/jboss/lab/bpms/bc/standalone/configuration/standalone.xml` in a text editor.
+. Review the `datasources` subsystem to see the changes you made to the server configuration file.
 
 === Modify Application Configuration Files
 
-The persistence unit defined in `persistence.xml` of the Business Central application still refers to the H2 datasource. In this section, you point the persistence unit to the MariaDB datasource, and change the Hibernate dialect.
+The persistence unit defined in `persistence.xml` of the Business Central application still refers to the H2 data source. In this section, you point the persistence unit to the MariaDB data source, and change the Hibernate dialect.
 
-. Open a terminal, and change to the directory containing the `persistence.xml` of the Business Central application:
+. Open a terminal, and change to the directory containing the Business Central application's `persistence.xml` file:
 +
 [source,text]
 ----
@@ -110,9 +112,8 @@ $ cd ~/lab/bpms/bc/standalone/deployments/business-central.war/WEB-INF/classes/M
 $ sed -i s@java:jboss/datasources/ExampleDS@java:jboss/datasources/jbpmDS@ persistence.xml
 $ sed -i s@org.hibernate.dialect.H2Dialect@org.hibernate.dialect.MySQL5Dialect@ persistence.xml
 ----
-
-* Expect the `persistence.xml` file to look similar to this:
 +
+.Sample Output
 [source,xml]
 ----
 <persistence version="2.0"
@@ -145,22 +146,21 @@ tence_2_0.xsd
   </persistence-unit>
 ----
 
-. In a terminal window, change to the directory containing the `jboss-web.xml` of the Dashboard Builder application:
+. Change to the directory containing the Dashboard Builder application's `jboss-web.xml` file:
 +
 [source,text]
 ----
 $ cd ~/lab/bpms/bc/standalone/deployments/dashbuilder.war/WEB-INF/
 ----
 
-. Change the Dashboard Builder application reference to the H2 datasource to `ExampleDS`:
+. Change the Dashboard Builder application's reference to the H2 data source to `ExampleDS`:
 +
 [source,text]
 ----
 $ sed -i s@java:jboss/datasources/ExampleDS@java:jboss/datasources/jbpmDS@ jboss-web.xml
 ----
-
-* Expect the `jboss-web.xml` file to look like this:
 +
+.Sample Output
 [source,xml]
 ----
 <jboss-web>
@@ -184,33 +184,15 @@ $ sed -i s@java:jboss/datasources/ExampleDS@java:jboss/datasources/jbpmDS@ jboss
 </jboss-web>
 ----
 
-ifdef::showscript[]
-
-=== Understand Configuration
-
-.  Note that the _persistence.xml_ file you just modified includes the following property:
-+
------
-<property name="hibernate.hbm2ddl.auto" value="update" />
------
-.. What are the alternative values for this property?
-.. Why would the value currently being used be ideal for a production environment?
-.. What does this value imply about the state of the JBoss BPM Suite schema in the database to which the runtime connects?
-
-1.a : create-drop, create, validate, none
-1.b : so that
-
-endif::showscript[]
-
 === Create Tables in MariaDB
 
 Creating the JBoss BPM Suite database tables in the database is not strictly necessary. The JBoss BPM Suite engine leverages the Java Persistence API (JPA), and as such the database tables can be created on the fly at server startup. Red Hat recommends using the provided Data Definition Language (DDL) scripts to create the database up front, as these DDL scripts also contain definitions for indexes that are not created if JPA handles the database creation.
 
-In an enterprise environment, the user associated with the datasource may not have permission to create tables, which makes it necessary to create the tables up front.
+In an enterprise environment, the user associated with the data source may not have permission to create tables, which makes it necessary to create the tables up front.
 
-If using Quartz as the implementation for timers, you must create the Quartz tables. These cannot be created automatically at server startup.
+If you are using Quartz as the implementation for timers, you must create the Quartz tables. These cannot be created automatically at server startup.
 
-The DDL scripts for JBoss BPM Suite are included in the _BPMS Supplementary Tools_ package, which can be downloaded from the Red Hat Customer Portal. It contains DDL scripts for MySQL and PostgreSQL as well as DB2, Oracle, SQL Server and Sybase.
+The DDL scripts for JBoss BPM Suite are included in the _BPMS Supplementary Tools_ package, which can be downloaded from the Red Hat Customer Portal. It contains DDL scripts for MySQL and PostgreSQL as well as DB2, Oracle, SQL Server, and Sybase.
 
 The DDL scripts for MySQL/MariaDB are in the `/opt/install/scripts/bpms/ddl` directory of the lab VM.
 
@@ -221,7 +203,7 @@ The DDL scripts for MySQL/MariaDB are in the `/opt/install/scripts/bpms/ddl` dir
 $ mysql --user=root
 ----
 
-. Create the database for Business Central, grant privileges to the `jboss` user (defined in the datasource), and exit from the MySQL prompt:
+. Create the database for Business Central, grant privileges to the `jboss` user (defined in the data source), and exit from the MySQL prompt:
 +
 [source,text]
 ----
@@ -254,7 +236,7 @@ $ pluma bin/standalone.conf
 ----
 +
 [NOTE]
-In the `standalone.conf`, the system properties for the MariaDB database are already added (near line 77).
+In the `standalone.conf` file, the system properties for the MariaDB database are already added (near line 77).
 
 . Configure the Business Central engine to use Quartz, by adding the following line at the end of the file:
 +
@@ -266,7 +248,7 @@ JAVA_OPTS="$JAVA_OPTS -Dorg.quartz.properties=/opt/install/scripts/bpms/quartz/q
 +
 [NOTE]
 ====
-* You can find more details about how to configure Quartz at http://www.quartz-scheduler.org/documentation.
+* You can find more details about how to configure Quartz in the link:http://www.quartz-scheduler.org/documentation[Quartz documentation^].
 * JBoss BPM Suite uses version 1.8.5 of the Quartz library.
 ====
 
@@ -281,24 +263,24 @@ $ ./bin/standalone.sh
 
 * Expect the server to start without errors.
 
-== Configure Process Server to Use MariaDB
+== Configure Intelligent Process Server to Use MariaDB
 
-The steps required to configure the Process Server to use MariaDB, rather than the built-in H2 database, are similar to those for Business Central. In this case, there is no `persistence.xml` configuration file to adapt. With Process Server, the persistence unit is built programmatically when the BPM extension is started. Configuration is provided through system properties.
+The steps required to configure Intelligent Process Server to use MariaDB, rather than the built-in H2 database, are similar to those for Business Central. In this case, there is no `persistence.xml` configuration file to adapt. With Intelligent Process Server, the persistence unit is built programmatically when the BPM extension is started. Configuration is provided through system properties.
 
 . Repeat the steps to create the tables in a new schema in the MariaDB called `bpmskieserver`.
 +
-* Because the Process Server does not use Dashboard Builder, there is no need to import the dashboard tables.
+* Because Intelligent Process Server does not use Dashboard Builder, there is no need to import the dashboard tables.
 
-. Repeat the steps performed previously to define a driver module datasource for the Process Server installation, located at `/home/jboss/lab/bpms/kieserver`.
+. Repeat the steps to define a driver module data source for the Intelligent Process Server installation, located at `/home/jboss/lab/bpms/kieserver`.
 
-.. NOTE: You'll want to connect to the server from the CLI, using a port offset of 150 to launch Process Server:
+.. Connect to the server from the CLI, using a port offset of 150 to launch Intelligent Process Server:
 +
 [source,text]
 ----
 $ ./jboss-cli.sh --connect --controller=127.0.0.1:10140
 ----
 
-. Open the `/home/jboss/lab/bpms/kieserver/bin/standalone.conf` file and add these lines at the end of the file:
+.. Open the `/home/jboss/lab/bpms/kieserver/bin/standalone.conf` file and add these lines to the end of the file:
 +
 [source,text]
 ----
@@ -307,7 +289,7 @@ JAVA_OPTS="$JAVA_OPTS -Dorg.kie.server.persistence.dialect=org.hibernate.dialect
 JAVA_OPTS="$JAVA_OPTS -Dorg.quartz.properties=/opt/install/scripts/bpms/quartz/quartz.properties"
 ----
 
-. Save the file.
+.. Save the file.
 
 . Start the server and verify that there are no errors in the logs.
 
@@ -325,7 +307,7 @@ $ cd ~/lab
 $ git clone https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab
 ----
 
-. Build and install the project kjar into the local Maven repository:
+. Build and install the project KJAR into the local Maven repository:
 +
 [source,text]
 ----
@@ -333,9 +315,9 @@ $ cd ~/lab/bxms-advanced-infrastructure-lab/process-kjar
 $ mvn clean install
 ----
 
-. Determine the URL to the supported Red Hat's Maven repository, where the JBoss BPM Suite dependencies used to build this project came from.
+. Determine the URL to the supported Red Hat Maven repository that contains the JBoss BPM Suite dependencies used to build this project.
 
-. Switch to the `bin` directory of `kie-server`, and create a `user1` user belonging to the `group1` group in Process Server:
+. Switch to the `~/kieserver/bin` directory and create a `user1` user belonging to the `group1` group in Intelligent Process Server:
 +
 [source,text]
 ----
@@ -344,15 +326,14 @@ $ ./add-user.sh -u user1 -p user -g kie-server,group1 -a -s -sc /home/jboss/lab/
 ----
 * You use this user to work with User Tasks in the sample processes.
 
-. Start the Process Server and deploy the kjar you built in the previous step:
+. Start Intelligent Process Server and deploy the KJAR you built:
 +
 [source,text]
 ----
 $ curl -X PUT -H "Accept:application/json" -H "Content-Type:application/json" --user jboss:bpms -d '{ "release-id" : { "group-id" : "com.redhat.gpte.bpms-advanced-infrastructure", "artifact-id" : "process-kjar", "version" : "1.0" } }' "http://localhost:8230/kie-server/services/rest/server/containers/container1"
 ----
-
-* Expect to receive a response similar to this:
 +
+.Sample Output
 [source,json]
 ----
 {
@@ -379,9 +360,9 @@ $ curl -X PUT -H "Accept:application/json" -H "Content-Type:application/json" --
 }
 ----
 
-* The deployed kjar contains two simple processes:
+* The deployed KJAR contains two simple processes:
 
-** `process-with-usertask`: This process has a User Task assigned to `group1`. The process takes a `var` process variable  of type `String`, which is passed to the User Task:
+** `process-with-usertask`: This process has a User Task assigned to `group1`. The process takes a `var` process variable of type `String`, which is passed to the User Task:
 +
 image::images/process-with-usertask.png[]
 
@@ -407,8 +388,7 @@ $ mysql --user=jboss --password=jboss bpmskieserver
 MariaDB [bpmskieserver]> show tables;
 ----
 +
-* Expect your results to look similar to this:
-+
+.Sample Output
 [source,text]
 ----
 +--------------------------------+
@@ -452,9 +432,8 @@ $ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json"
 ----
 MariaDB [bpmskieserver]> select * from processinstanceinfo \G
 ----
-
-* Expect your results to look similar to this:
 +
+.Sample Output
 [source,text]
 ----
 *************************** 1. row ***************************
@@ -475,7 +454,7 @@ var     ` jprocessStartEventr)
 
 * Note that the process variables are stored as a byte array in the `processInstanceByteArray` column, which is of type BLOB.
 
-* The kjar uses `PER_REQUEST` runtime strategy. For each request a new _ksession_ is created and disposed of at the end of the request. Session state is not stored.
+* The KJAR uses `PER_REQUEST` runtime strategy. For each request a new `ksession` is created and disposed of at the end of the request. The session state is not stored.
 
 . Verify this by querying the `sessioninfo` table:
 +
@@ -484,8 +463,7 @@ var     ` jprocessStartEventr)
 MariaDB [bpmskieserver]> select * from sessioninfo;
 ----
 +
-* Expect your results to show an empty set:
-+
+.Sample Output
 [source,text]
 ----
 Empty set (0.00 sec)
@@ -493,15 +471,14 @@ Empty set (0.00 sec)
 
 ==== Examine User Task State
 
-. Verify that a User Task is created and its state stored in the `task` table:
+. Verify that a User Task is created and its state is stored in the `task` table:
 +
 [source,text]
 ----
 MariaDB [bpmskieserver]> select * from task \G
 ----
-
-* Expect your results to look like this:
 +
+.Sample Output
 [source,text]
 ----
 *************************** 1. row ***************************
@@ -551,8 +528,8 @@ documentAccessType: 0
 ----
 MariaDB [bpmskieserver]> select * from content \G
 ----
-* Expect your results to look similar to this:
 +
+.Sample Output
 [source,text]
 ----
 *************************** 1. row ***************************
@@ -577,10 +554,10 @@ GroupId
 ----
 MariaDB [bpmskieserver]> select * from organizationalentity;
 ----
-* The JBoss BPM Suite engine stores only a reference to users and groups, not the relationship between both.
+* The JBoss BPM Suite engine stores only a reference to users and groups, not the relationship between them.
 * Users and groups are added to the table when _seen_ for the first time by the engine.
-* Expect your results to look like this:
 +
+.Sample Output
 [source,text]
 ----
 +-------+----------------+
@@ -600,8 +577,9 @@ MariaDB [bpmskieserver]> select * from organizationalentity;
 MariaDB [bpmskieserver]> select * from peopleassignments_potowners;
 ----
 
-* In this case, the User Task is assigned to `group1`, so this table contains one row:
+* In this case, the User Task is assigned to `group1`, so this table contains one row.
 +
+.Sample Output
 [source,text]
 ----
 +---------+-----------+
@@ -612,7 +590,7 @@ MariaDB [bpmskieserver]> select * from peopleassignments_potowners;
 1 row in set (0.00 sec)
 ----
 
-. Examine the `processinstancelog`, `nodeinstancelog` and `variableinstancelog` tables:
+. Examine the `processinstancelog`, `nodeinstancelog`, and `variableinstancelog` tables:
 +
 [source,text]
 ----
@@ -633,15 +611,14 @@ MariaDB [bpmskieserver]> select * from taskvariableimpl \G
 
 ==== Manipulate and Examine Task State
 
-. Verify the task status, stored in the `task` table,  before claiming the task:
+. Verify the task status stored in the `task` table:
 +
 [source,text]
 ----
 MariaDB [bpmskieserver]> select id,status,actualOwner_id from task;
 ----
-
-* Expect to see that the status is `Ready` and the Owner ID is `NULL`:
 +
+.Sample Output
 [source,text]
 ----
 +----+--------+----------------+
@@ -664,9 +641,8 @@ $ curl -X PUT -H "Accept: application/json" -H "Content-Type: application/json" 
 ----
 MariaDB [bpmskieserver]> select id,status,actualOwner_id from task;
 ----
-
-* Expect your results to look similar to this:
 +
+.Sample Output
 [source,text]
 ----
 +----+----------+----------------+
@@ -682,9 +658,8 @@ MariaDB [bpmskieserver]> select id,status,actualOwner_id from task;
 ----
 MariaDB [bpmskieserver]> select * from organizationalentity;
 ----
-
-* Expect your results to look similar to this:
 +
+.Sample Output
 [source,text]
 ----
 +-------+----------------+
@@ -711,9 +686,8 @@ $ curl -X PUT -H "Accept: application/json" -H "Content-Type: application/json" 
 ----
 MariaDB [bpmskieserver]> select id,status,actualOwner_id from task;
 ----
-
-* Expect your results to look similar to this:
 +
+.Sample Output
 [source,text]
 ----
 +----+------------+----------------+
@@ -726,29 +700,33 @@ MariaDB [bpmskieserver]> select id,status,actualOwner_id from task;
 
 . Complete the task:
 +
+[source,text]
 ----
 $ curl -X PUT -H "Accept: application/json" -H "Content-Type: application/json" --user user1:user -d '{ "taskVar" : "after the user task" }' "http://localhost:8230/kie-server/services/rest/server/containers/container1/tasks/1/states/completed"
 ----
 
 . Verify that once the task is complete, the process instance reaches an end node, and completes:
 +
+[source,text]
 ----
 MariaDB [bpmskieserver]> select * from processinstanceinfo;
 ----
-* The data in the `processinstanceinfo` table for this process instance is purged:
 +
+.Sample Output
+[source,text]
 ----
 Empty set (0.00 sec)
 ----
+* The data in the `processinstanceinfo` table for this process instance is purged.
 
 . Verify that the process log tables (`processinstancelog`, `nodeinstancelog`, `variableinstancelog`) are not cleared when a process instance completes:
 +
+[source,text]
 ----
 MariaDB [bpmskieserver]> select * from processinstancelog \G
 ----
-
-* Expect to see results similar to this:
 +
+.Sample Output
 [source,text]
 ----
 *************************** 1. row ***************************
@@ -770,7 +748,7 @@ processInstanceDescription: process-with-usertask
 1 row in set (0.00 sec)
 ----
 
-* The task tables (`task`, `peopleassignments_*`, `content`, `audittaskimpl`, `taskvariableimpl`) are also not cleared when the task completes or the process instance finishes.
+* The task tables (`task`, `peopleassignments_*`, `content`, `audittaskimpl`, and `taskvariableimpl`) are also not cleared when the task completes or the process instance finishes.
 
 ==== Examine Timer State
 
@@ -783,11 +761,13 @@ $ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json"
 
 . Verify that the timer definition is stored in the `qrtz_triggers` table:
 +
+[source,text]
 ----
 MariaDB [bpmskieserver]> select * from qrtz_triggers \G
 ----
-
-* Expect to see the timer definition:
++
+.Sample Output
+[source,text]
 ----
 *************************** 1. row ***************************
   TRIGGER_NAME: 5-2-1_trigger
@@ -815,7 +795,7 @@ PREV_FIRE_TIME: -1
 
 ==== Explore Per-Process Instance Runtime Strategy
 
-When using `PER_PROCESS_INSTANCE` runtime strategy, the same ksession is used during the lifetime of the process instance. In this case, the session state is persisted into the `sessioninfo` database table and linked to the process instance. Every request for a process instance will start with rehydrating a ksession from the persisted state. In this section, you illustrate this:
+When using `PER_PROCESS_INSTANCE` runtime strategy, the same `ksession` is used during the lifetime of the process instance. In this case, the session state is persisted into the `sessioninfo` database table and linked to the process instance. Every request for a process instance starts with rehydrating a `ksession` from the persisted state. In this section, you illustrate this.
 
 . In a terminal window, change directories to `/home/jboss/lab/bxms-advanced-infrastructure-lab/process-kjar/`.
 . Open the `src/main/resources/META-INF/kie-deployment-descriptor.xml` file for editing.
@@ -832,7 +812,7 @@ When using `PER_PROCESS_INSTANCE` runtime strategy, the same ksession is used du
 $ mvn clean install
 ----
 
-. Deploy the newly built kjar:
+. Deploy the newly built KJAR:
 +
 [source,text]
 ----
@@ -852,9 +832,8 @@ $ curl -X POST -H "Accept: application/json" -H "Content-Type: application/json"
 ----
 MariaDB [bpmskieserver]> select * from sessioninfo \G
 ----
-
-* Expect your output to look similar to this:
 +
+.Sample Output
 [source,text]
 ----
 *************************** 1. row ***************************
@@ -871,14 +850,14 @@ DEFAULT"*
 1 row in set (0.00 sec)
 ----
 
-. Verify that the `contextmappinginfo` table links the persisted ksession to the process instance:
+. Verify that the `contextmappinginfo` table links the persisted `ksession` to the process instance:
 +
+[source,text]
 ----
 MariaDB [bpmskieserver]> select * from contextmappinginfo;
 ----
-
-* Expect your output to be similar to this:
 +
+.Sample Output
 [source,text]
 ----
 +-----------+------------+-------------+------------+---------+
@@ -895,12 +874,4 @@ MariaDB [bpmskieserver]> select * from contextmappinginfo;
 
 ==== Explore Singleton Runtime Strategy
 
-When using `SINGLETON` runtime strategy, one ksession is shared by all process instances of a deployment. The session state is kept in memory as long as the server is up. When shutting down the server, the session state is serialized to disk. In this case, the `sessioninfo` table is not used.
-
-ifdef::showscript[]
-
-1) `hibernate.hbm2ddl.auto` system property?
-2) `~/.m2/repository` ownership set to: temp / users
-3) What if the same database was used for both Business Central, Process Server, and Dashboard Builder?
-
-endif::showscript[]
+When using `SINGLETON` runtime strategy, one `ksession` is shared by all process instances of a deployment. The session state is kept in memory as long as the server is up. When shutting down the server, the session state is serialized to disk. In this case, the `sessioninfo` table is not used.

@@ -7,13 +7,15 @@
 * Non-transactional data stores do not roll back in case of error
 ** Manual synchronization may be necessary
 * Process and task variables not duplicated to external store
-** JBoss BPM Suite database contains only pointer to external data
-** Consider alternative solutions, such as through process or task listeners
+** JBoss BPM Suite database contains only pointers to external data
+** Consider alternative solutions such as process and task event listeners
 
 ifdef::showscript[]
 
-There is also a need to customize the interaction with the persistance database when one is using a non-transactional data store: because the data store will not be able to roll back in case of an error.
-In this case a manual synchronization will be necessary to accomplish rollback activities.
-Also the process and task variables will not be duplicated to external data store, if you need to store information about processes and tasks you will need to use alternative solutions such as process and task event listeners, because the JBoss BPM Suite database contains only pointer to external data.
+Transcript:
+
+You must also customize the interaction with the persistence database when using a non-transactional data store, because the data store cannot roll back in case of an error. A manual synchronization is required to accomplish rollback activities.
+
+Also, process and task variables are not duplicated to an external data store. If you need to store information about processes and tasks, you must use alternative solutions such as process and task event listeners. The JBoss BPM Suite database contains only pointers to external data.
 
 endif::showscript[]
