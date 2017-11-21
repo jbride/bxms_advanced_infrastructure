@@ -2,7 +2,7 @@
 :data-uri:
 :noaudio:
 
-== xPaaS Decision Server
+== Realtime Decision Server for OpenShift
 
 .Parameters
 
@@ -12,6 +12,8 @@
 
 ifdef::showscript[]
 
-The parameters specified before can be set in the `oc new-app` parameters (after the template name) or can be given in an environment variables file.
+Transcript:
+
+The parameters described can be set in `oc new-app` after the template name, or can be provided in an environment variables file.
 
 endif::showscript[]

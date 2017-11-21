@@ -2,18 +2,20 @@
 :data-uri:
 :noaudio:
 
-== Statelesss KSession Only
+== Stateless Ksession Only
 
-* JBoss BRMS KIE Server allows for:
+* JBoss BRMS Realtime Decision Server allows for:
 ** Stateless sessions
 ** Stateful sessions
 +
-NOTE: KIE Session persistence and/or replication needs to be handled by application.
+NOTE: KIE session persistence and replication need to be handled by application.
 
-* OCP _Decision Server_ only allows for invoking stateless sessions.
+* Realtime Decision Server for OpenShift allows invoking only stateless sessions
 
 ifdef::showscript[]
 
-JBoss BRMS allows stateless and stateful knowledge sessions. OCP Decision server only allows for invoking stateless sessions.
+Transcript:
+
+JBoss BRMS allows stateless and stateful knowledge sessions.  Realtime Decision Server for OpenShift allows only stateless sessions.
 
 endif::showscript[]

@@ -2,7 +2,10 @@
 :data-uri:
 :noaudio:
 
-== Decision Server Video
+
+== Realtime Decision Server for OpenShift
+
+.Realtime Decision Server Video
 
 video::video/BXMS_xPaaS_DecisionServer_Oct2.mp4[height="512",poster="image/video_poster.png"]
 

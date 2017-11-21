@@ -2,10 +2,12 @@
 :data-uri:
 :noaudio:
 
-== KIE Server Batch API
+== Realtime Decision Server
 
-* Payload to KIE Server can contain multiple batch commands
-* KIE Server executes all commands in single transaction
+.Batch API
+
+* Payload to Realtime Decision Server can contain multiple batch commands
+* Realtime Decision Server executes all commands in single transaction
 * Batch commands work with _stateless_ ksession
 * Batch commands found in:
 ** `org.drools.core.command.runtime.rules.*`
@@ -17,10 +19,10 @@
 
 ifdef::showscript[]
 
-As the Payload to KIE Server Batch API can contain multiple batch commands, they are executed in a single transaction by the KIE Server. The commands are executed by default in an _stateles_ knowledge session.
-The commands that can be executed are found in the packages:
-** `org.drools.core.command.runtime.rules.*`
-and
-** `org.drools.core.command.runtime.process.*`
+Transcript:
+
+Because the payload to the Realtime Decision Server batch API can contain multiple batch commands, they are executed in a single transaction by the Realtime Decision Server. The commands are executed by default in a _stateless_ knowledge session.
+
+The commands that can be executed are found in the packages `org.drools.core.command.runtime.rules.*` and `org.drools.core.command.runtime.process.*`.
 
 endif::showscript[]

@@ -16,12 +16,8 @@ include::m03s14_paas-kie-container-deploy.adoc[]
 include::m03s15_paas-kie-server-topology.adoc[]
 include::m03s16_dserver_parameters0.adoc[]
 include::m03s17_dserver_parameters1.adoc[]
-include::m03s18_dserver_parameters2.adoc[]
-include::m03s19_dserver_parameters05.adoc[]
-include::m03s20_summary.adoc[]
+include::m03s18_dserver_parameters1_2.adoc[]
+include::m03s19_dserver_parameters2.adoc[]
+include::m03s20_dserver_parameters05.adoc[]
+include::m03s21_summary.adoc[]
 
-ifdef::showscript[]
-
-https://access.redhat.com/documentation/en/red-hat-xpaas/
-
-endif::showscript[]

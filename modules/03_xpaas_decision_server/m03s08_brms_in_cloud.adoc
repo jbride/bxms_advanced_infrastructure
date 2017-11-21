@@ -2,19 +2,22 @@
 :data-uri:
 :noaudio:
 
-== OCP Decision Server
+== Realtime Decision Server for OpenShift
 
-* Red Hat JBoss BRMS available as containerized OCP image:
+* Red Hat JBoss BRMS available as containerized OpenShift Container Platform image:
 +
-image::images/dserver_in_registry.png[]
+image:images/dserver_in_registry.png[]
 
-* Official name: xPaaS Image for Red Hat JBoss BRMS
-.. aka: `Realtime Decision Server`
-* JBoss BRMS _stateless_ KIE Server in Red Hat OCP &equiv; `Decision Server`
+* Realtime Decision Server official image name: xPaaS Image for Red Hat JBoss BRMS
+
+
 
 ifdef::showscript[]
 
-Red Hat JBoss BRMS is also available as a containerized Openshift Container Platform image.
-The official name of the xPaaS image for Red Hat JBoss BRMS is `Decision Server`
+Transcript:
+
+The stateless Realtime Decision Server is available as an image for Red Hat JBoss BRMS. It is officially called xPaaS Image for Red Hat JBoss BRMS.  
+
+
 
 endif::showscript[]
