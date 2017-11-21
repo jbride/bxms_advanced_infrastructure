@@ -1,0 +1,23 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Authentication and Authorization
+
+[.noredheader,cols="<,^"]
+|======
+a|* Business Central UI for user and role management:
+** Disabled by default
+** Works only when using property files to manage users and roles
+|image:images/bc-user-management.png[align="center",height="75%"]
+|======
+
+
+
+ifdef::showscript[]
+
+Transcript:
+
+Business Central has a demo UI element section for user and role management. This UI section is disabled by default. It works only when using property files to manage users and roles.
+
+endif::showscript[]

@@ -1,0 +1,9 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Business Central User Interface
+
+.Business Central User Interface Video
+
+video::video/BXMS_BusinessCentral_User_Interface_Oct4.mp4[height="512",poster="image/video_poster.png"]

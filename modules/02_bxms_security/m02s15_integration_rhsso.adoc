@@ -1,0 +1,27 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Integration with Red Hat Single Sign-On
+
+* Business Central, Intelligent Process Server, and Realtime Decision Server can be integrated with Red Hat Single Sign-On
+* Supports SAML and OpenID Connect
+* Allows passing authentication token from client application to Process Server or Decision Server:
+** User logs in to client application and obtains token from Red Hat Single Sign-On server
+** Token passes through `Authorization` header of REST call to Intelligent Process Server
+** Intelligent Process Server verifies token and creates user principal
+* Works well with default `UserGroupCallback` implementation if token contains required group information
+
+ifdef::showscript[]
+
+Transcript:
+
+Business Central, the Intelligent Process Server, and the Realtime Decision Server can be integrated with Red Hat Single Sign-On, which supports SAML and OpenID Connect. This integration allows passing authentication token from the client application to the Intelligent Process Server or Realtime Decision Server. The integrated solution handles the resources request in the following manner:
+
+* The user logs in to the client application and obtains a token from the Red Hat Single Sign-On server.
+* The token is used as an `Authorization` header element included in the REST call to the Intelligent Process Server.
+* The Intelligent Process Server verifies the token and create a user principal.
+
+This integration works well with the default `UserGroupCallback` implementation if the token contains the required group information.
+
+endif::showscript[]

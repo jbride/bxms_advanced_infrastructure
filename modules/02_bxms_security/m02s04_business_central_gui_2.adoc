@@ -1,0 +1,34 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Business Central User Interface
+
+* Predefined roles:
+** `admin`: Full access rights
+** `developer`: Full access rights, excluding Administration, Extensions perspectives
+** `analyst`: More restricted than developer, no access to Deployments and Artifact Repositories perspectives
+** `user`: Access only to Process Management and Tasks perspectives
+** `manager`: Access only to dashboard application
+** `kiemgmt`: Role required to manage Realtime Decision Server and Intelligent Process Server instances
+** `plannermgmt`: Role required to access Planner perspective
+* Role names customizable to avoid generic role names like `admin`
+
+ifdef::showscript[]
+
+Transcript:
+
+
+These files contain a set of predefined roles:
+
+* The `admin` role has full access rights.
+* The `developer` role has full access rights with the exception of the Administration and Extensions perspectives.
+* The `analyst` role is more restricted than the `developer` role. The `analyst` role does not have access to the Deployments and the Artifact Repositories perspectives.
+* The `user` role has access only to the Process Management and Task perspectives.
+* The `manager` role has access only to the dashboard application.
+* The `kiemgmt` role is the role required to manage Realtime Decision Server and Intelligent Process Server instances.
+* The `plannermgmt` role is the role required to access the Planner perspective.
+
+Each of the role names is customizable so you can to avoid generic role names such as `admin`.
+
+endif::showscript[]

@@ -1,0 +1,26 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Users and Groups
+.Bypass Authenticated User
+
+* Log in to Intelligent Process Server with _system_ user
+* Task operations performed on behalf of real user
+* Real username passed in as query parameter to remote API
+* Front-end applications do not require knowledge of user passwords
+* Enable with system property `org.kie.server.bypass.auth.user=true`
+* When enabled, requires configuration of `UserGroupCallBack` implementation
+** Default callback returns group information of system user
+
+ifdef::showscript[]
+
+Transcript:
+
+In some cases it is easier for an external application to use a _system_ user to connect to the Intelligent Process Server and perform task operations on behalf of a real user. This is useful way of simplifying authentication to the Intelligent Process Server as a back-end resource of your application.
+
+Logging in to the Intelligent Process Server with a system user and performing operations on behalf of a real user is referred to as "bypassing the authenticated user." The real user name is passed in as a query parameter to the remote API. Thus the front-end application does not require knowledge of user passwords.
+
+To bypass the authenticated user, you must set the `org.kie.server.bypass.auth.user` property to `true`. When `bypass.auth.user` is enabled, a custom `UserGroupCallback` implementation must be configured. The custom `UserGroupCallback` implementation is required because the default callback returns the group information of the system user, not the bypassed user.
+
+endif::showscript[]

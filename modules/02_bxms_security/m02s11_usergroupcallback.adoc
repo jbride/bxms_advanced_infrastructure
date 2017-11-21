@@ -1,0 +1,30 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Users and Groups
+.`UserGroupCallback` Implementation
+
+* `org.kie.api.task.UserGroupCallback`:
++
+[source,java]
+----
+boolean existsUser(String userId);
+boolean existsGroup(String groupId);
+List<String> getGroupsForUser(String userId, List<String> groupIds, List<String> allExistingGroupIds);
+----
+
+* By default, Business Central and Intelligent Process Server configured to use callback implementation that delegates to security subsystem of application server:
+** `org.jbpm.services.task.identity.JAASUserGroupCallbackImpl`
+** Implementation uses JACC API to retrieve user and group (roles) information for logged-in user
+
+ifdef::showscript[]
+
+Transcript:
+
+By default, JBoss BPM Suite components are configured to use a callback implementation that delegates the resolution of users' groups to the security subsystem of the application server. The implementation class is `org.jbpm.services.task.identity.JAASUserGroupCallbackImpl`.
+
+The `org.jbpm.services.task.identity.JAASUserGroupCallbackImpl` implementation class uses JACC API to retrieve user and group (or role) information for logged-in users.
+
+
+endif::showscript[]

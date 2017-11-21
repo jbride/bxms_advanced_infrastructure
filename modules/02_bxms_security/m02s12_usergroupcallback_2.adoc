@@ -1,0 +1,20 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Users and Groups
+.`UserGroupCallback` Implementation
+
+* Default implementation used even if the application server uses security domain different from default
+* Custom `UserGroupCallback` implementation can be plugged in if default implementation does not provide required information
+** Example: Complex group membership schema that is not reflected in principal of logged-in user
+
+ifdef::showscript[]
+
+Transcript:
+
+This default implementation is used even if the application server uses a security domain different from the default (property files).
+
+It is important to note that a custom `UserGroupCallback` implementation can be plugged in if the default implementation does not provide the required information. For example, sometimes you need to build a complex group membership schema that is not reflected in the principal information of the logged-in user. In some cases, the client-side LDAP implementation defines generic roles, and you need to define roles that are particular to your process implementation, such as separating the sales department into `sales-product-A` and `sales-product-B`. The LDAP implementation of those groups needs to be kept isolated from the organization roles. In this case, you could implement a custom `UserGroupCallback` that uses a mechanism like a database to identify the users that belong to these granular groups.
+
+endif::showscript[]

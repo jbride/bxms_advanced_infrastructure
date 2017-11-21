@@ -1,0 +1,31 @@
+:scrollbar:
+:data-uri:
+:noaudio:
+
+== Users and Groups
+.`UserGroupCallback` Configuration
+
+* In Intelligent Process Server, alternative implementations can be plugged in through system properties
+* To use provided LDAP implementation:
+** `org.jbpm.ht.callback=ldap`
+** `jbpm.usergroup.callback.properties=<URI of callback configuration file>`
+* To use custom implementation:
+** `org.jbpm.ht.callback=custom`
+** `org.jbpm.ht.custom.callback=<FQN of implementation class>`
+
+ifdef::showscript[]
+
+Transcript:
+
+To provide a `UserGroupCallback` implementation, you can use the `org.jbpm.ht.callback` property and provide the implementation name. The implementation name options are:
+
+* `mvel`: Default; primarily used for testing
+* `ldap`: LDAP; requires additional configuration in the `jbpm.usergroup.callback.properties` file
+* `db`: Database; requires additional configuration in the `jbpm.usergroup.callback.properties` file
+* `jaas`: JAAS; delegates to the container to fetch information about user data
+* `props`: A simple property file; requires an additional file to keep all information (users and groups)
+* `custom`: A custom implementation; you must specify the fully qualified name of the class in `org.jbpm.ht.custom.callback`.
+
+The most commonly configured options are `ldap` and `custom`. When using `ldap`, you must also provide a properties file in the `jbpm.usergroup.callback.properties` property. When using `custom`, you must also provide the fully qualified class name of the custom `UserGroupCallback` implementation class name in the `org.jbpm.ht.custom.callback` property.
+
+endif::showscript[]
