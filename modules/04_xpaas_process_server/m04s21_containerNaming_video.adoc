@@ -2,6 +2,7 @@
 :data-uri:
 :noaudio:
 
-== Container Naming Video
+== Container Naming
+.Container Naming Video
 
 video::video/BXMS_Container_Naming_Diagram_Oct5.mp4[height="512",poster="image/video_poster.png"]

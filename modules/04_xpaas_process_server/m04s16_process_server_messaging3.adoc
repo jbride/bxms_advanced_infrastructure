@@ -8,16 +8,19 @@
 
 * Intelligent Process Server can leverage JBoss AMQ
 
-** Templates:
-*** `processserver63-amq-mysql-persistent-s2i`
-*** `processserver63-amq-postgresql-persistent-s2i`
-** Support AMQ image:
+* Templates available in Red Hat registry:
+** `processserver63-amq-mysql-persistent-s2i`
+** `processserver63-amq-postgresql-persistent-s2i`
+
+* Support AMQ image:
 +
 image::images/amq_image.png[]
 
 
 ifdef::showscript[]
 
-The OCP Red Hat Registry facilitates templates to integrate AMQ as the broker for the JMS technology.
+Transcript:
+
+The Red Hat OpenShift registry provides templates for integrating AMQ as the broker for the JMS technology.
 
 endif::showscript[]

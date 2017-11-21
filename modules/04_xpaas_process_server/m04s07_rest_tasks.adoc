@@ -4,12 +4,14 @@
 
 == REST API
 
-.Tasks
+.*Tasks*
 
 image:images/rest_tasks.png[]
 
 ifdef::showscript[]
 
-When enabling the BPM Extension: in the `kie-server/docs` endpoint we can see the task endpoints available.
+Transcript:
+
+When enabling the BPM extension in the `kie-server/docs` endpoint, you can see that the task endpoints are available.
 
 endif::showscript[]

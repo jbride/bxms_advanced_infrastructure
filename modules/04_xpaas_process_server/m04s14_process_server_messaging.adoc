@@ -4,18 +4,19 @@
 
 == JBoss BPM Suite Messaging
 
+
+.JMS Queues
+
 * Used for:
-** Process Server JMS API
+** Intelligent Process Server JMS API
 ** Asynchronous BAM events
 ** Asynchronous job executor
 
 
 ifdef::showscript[]
 
-Also when configuring JBoss BPM Suite we have the possibility to use JMS queues for:
+Transcript:
 
-** Process Server JMS API
-** Asynchronous BAM events
-** Asynchronous job executor
+When configuring JBoss BPM Suite, you can use JMS queues for the Intelligent Process Server JMS API, asynchronous BAM events, and the asynchronous job executor.
 
 endif::showscript[]

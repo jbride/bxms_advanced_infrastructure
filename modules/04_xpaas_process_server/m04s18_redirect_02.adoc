@@ -1,19 +1,26 @@
 :scrollbar:
 :data-uri:
 :noaudio:
+:linkattrs:
 
-== New KIE Versions
+== Redirect Capability
+.New KIE Versions
 
 * Set `KIE_CONTAINER_REDIRECT_ENABLED` to `true`
 * Specify `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` variable in `./sti/environment` file
 ** Overrides `KIE_CONTAINER_DEPLOYMENT` variable in template
 * When new version available:
-** Change `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` variable to include _both_ old _and_ new container deployments using _same_ container ID, and commit to source control
-** https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers[GitHub Webhooks] mechanism can then pick up updated `./sti/environment` file in source, triggering new S2I build
+** Change `KIE_CONTAINER_DEPLOYMENT_OVERRIDE` variable to include _both_ old _and_ new container deployments
+** Use _same_ container ID
+** Commit to source control
+** link:https://docs.openshift.com/enterprise/3.1/dev_guide/builds.html#webhook-triggers[GitHub Webhooks^] mechanism picks up updated `./sti/environment` file in source, triggering new S2I build
 
 ifdef::showscript[]
 
-For this purpose the variable `KIE_CONTAINER_REDIRECT_ENABLED` was created.
-This variable is set to True by default so you could specify weather to include or not the old and new container deployment versions.
+Transcript:
+
+For multiple versions of KIE containers, the variable `KIE_CONTAINER_REDIRECT_ENABLED` was created.
+
+This variable is set to `true` by default, so you can specify whether to include or exclude the old and new container deployment versions.
 
 endif::showscript[]

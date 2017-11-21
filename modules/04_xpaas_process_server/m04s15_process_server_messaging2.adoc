@@ -8,16 +8,19 @@
 
 * Intelligent Process Server can leverage embedded HornetQ
 
-** Templates:
-*** `processserver63-mysql-persistent-s2i`
-*** `processserver63-postgresql-persistent-s2i`
-** HornetQ broker embedded in process server:
+* Templates available in Red Hat registry:
+** `processserver63-mysql-persistent-s2i`
+** `processserver63-postgresql-persistent-s2i`
+
+* HornetQ broker embedded in process server:
 +
 image::images/pserver_in_registry.png[]
 
 
 ifdef::showscript[]
 
-The OCP Red Hat Registry facilitates templates to integrate HornetQ as the broker for the JMS technology.
+Transcript:
+
+The Red Hat OpenShift registry provides templates for integrating HornetQ as the broker for the JMS technology.
 
 endif::showscript[]

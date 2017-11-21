@@ -2,11 +2,13 @@
 :data-uri:
 :noaudio:
 
-== Default Container ID
+
+== Client Targeting
+.Default Container ID
 
 * Selected if specific container ID not resolved
 
-* Default container determined as _latest_ version of kjar's `releaseId` (GAV) for same container name
+* Default container determined as _latest_ version of KJAR's `releaseId` (GAV) for same container name
 
 * In previous `processserver-library` example:
 ** `1.3.1.Final` version is latest, thus default
@@ -14,7 +16,10 @@
 
 ifdef::showscript[]
 
-The default container ID is used if the resolver was unable to find another container responsible for the execution.
-The default container is determined as the _latest_ version of the kjar's `releaseId` for the same container name.
+Transcript:
+
+The default container ID is used if the resolver is unable to find another container responsible for the execution.
+
+The default container is determined as the _latest_ version of the KJAR's `releaseId` for the same container name.
 
 endif::showscript[]

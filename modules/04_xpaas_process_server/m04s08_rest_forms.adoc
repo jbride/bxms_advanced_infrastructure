@@ -4,7 +4,7 @@
 
 == REST API
 
-.Forms
+.*Forms*
 
 image:images/rest_forms.png[]
 
@@ -14,7 +14,10 @@ image:images/descriptor-process-start-form.png[]
 
 ifdef::showscript[]
 
-Also, when enabling the BPM-UI Extension: in the `kie-server/docs` endpoint we can see the form endpoints available.
+Transcript:
+
+Also, when enabling the BPM-UI extension in the `kie-server/docs` endpoint, you can see that the form endpoints are available.
+
 The form endpoints allows developers to read a form configuration and build translation protocols for different UI technologies and display the form controls in their own ways.
 
 endif::showscript[]

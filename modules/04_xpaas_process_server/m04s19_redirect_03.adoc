@@ -4,11 +4,11 @@
 
 == Container Naming
 
-* Intelligent Process Server images allow multiple versions of same kjars
-* New version overrides original container ID with hash version including kjar version
+* Intelligent Process Server images allow multiple versions of same KJARs
+* New version overrides original container ID with hash version that includes KJAR version
 
-.Example
-
+* Example:
++
 [[app-listing]]
 [source,bash]
 ----
@@ -18,6 +18,8 @@ KIE_CONTAINER_REDIRECT_ENABLED=true
 
 ifdef::showscript[]
 
-When creating a new container in OCP then, the process server templates allow multiple versions of the same kjar in the create instruction.
+Transcript:
+
+When creating a new container in OpenShift, the process server templates allow multiple versions of the same KJAR in the create instruction.
 
 endif::showscript[]
