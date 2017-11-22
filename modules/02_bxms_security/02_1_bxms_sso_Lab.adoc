@@ -1,38 +1,39 @@
 :scrollbar:
 :data-uri:
+:linkattrs:
 :toc2:
 
-= Single Sign-On Lab
+== Single Sign-On Lab
 
 .Goal
 
-* Configure Process Server to use Red Hat Single Sign-On for authentication and authorization
+* Configure Intelligent Process Server to use Red Hat Single Sign-On for authentication and authorization
 
 :numbered:
 
 == Overview
 
-The out-of-the-box installations of Business Central and Process Server use properties files to manage users and roles. This makes it easier to get started with the JBoss BPM Suite platform, but it is not suitable for an enterprise deployment.
+The out-of-the-box installations of Business Central and Intelligent Process Server use properties files to manage users and roles. This makes it easier to get started with the JBoss BPM Suite platform, but it is not suitable for an enterprise deployment.
 
-In most enterprises, users and roles are managed centrally, using a central user directory such as LDAP. You can configure Business Central and Process Server to use a central user directory for authentication and authorization. Both components delegate the handling of authentication and authorization to the security subsystem of the underlying application server, which is based on JAAS.
+In most enterprises, users and roles are managed centrally, using a central user directory such as LDAP. You can configure Business Central and Intelligent Process Server to use a central user directory for authentication and authorization. Both components delegate the handling of authentication and authorization to the security subsystem of the underlying application server, which is based on JAAS.
 
 As a result, if you want to use, for example, an LDAP server for authentication and authorization, you must configure the application server to use a login module implementation for LDAP rather than for the default server.
 
-A few issues remain, especially in the case of Process Server. Process Server is a runtime component meant to be used as a remote business rules and process execution engine. It is typically accessed over the REST/HTTP remote API, although there is also a JMS-based API that can be useful in integration scenarios. The REST/HTTP API uses Basic authentication. That means the Process Server client, such as a front-end GUI application, must include the user's username and password with every request. The client applications must know or have access to the usernames and passwords. Moreover, with Basic authentication, the username and password are passed in the clear as unencrypted base64-encoded text.
+A few issues remain, especially in the case of Intelligent Process Server. Intelligent Process Server is a runtime component meant to be used as a remote business rules and process execution engine. It is typically accessed over the REST/HTTP remote API, although there is also a JMS-based API that can be useful in integration scenarios. The REST/HTTP API uses Basic authentication. That means the Intelligent Process Server client, such as a front-end GUI application, must include the user's username and password with every request. The client applications must know or have access to the usernames and passwords. Moreover, with Basic authentication, the username and password are passed in the clear as unencrypted base64-encoded text.
 
-Process Server does allow for authentication as a _system user_, which can perform operations on behalf of the real user. In this case, the username is passed in as a query parameter in the REST calls. In other words, if Process Server is configured to bypass the real user, the front end needs to know only the username and password of the system user.
+Intelligent Process Server does allow for authentication as a _system user_, which can perform operations on behalf of the real user. In this case, the username is passed in as a query parameter in the REST calls. In other words, if Intelligent Process Server is configured to bypass the real user, the front end needs to know only the username and password of the system user.
 
-Although this approach is more practical, it is still not a good solution. The system user password must be hard-coded in the client application, and you cannot restrict access to Process Server based on the real user.
+Although this approach is more practical, it is still not a good solution. The system user password must be hard-coded in the client application, and you cannot restrict access to Intelligent Process Server based on the real user.
 
 A better solution to this problem is to use a single sign-on, or SSO, solution:
 
 image::images/sso_dataflow.gif[align="center"]
 
-In this approach, a user who accesses the front-end application is redirected to the Red Hat Single Sign-On server, where authentication occurs. When the login succeeds, the Red Hat Single Sign-On server issues a token. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Process Server back end, the token is passed to the server as an HTTP header and the server verifies the token. If the token is valid, the user is granted access.
+In this approach, a user who accesses the front-end application is redirected to the Red Hat Single Sign-On server, where authentication occurs. When the login succeeds, the Red Hat Single Sign-On server issues a token. This token contains the username and the roles attributed to this user. Whenever the front-end application accesses the Intelligent Process Server back end, the token is passed to the server as an HTTP header and the server verifies the token. If the token is valid, the user is granted access.
 
-Red Hat Single Sign-On is an integrated SSO and IdM solution for browser applications and RESTful web services. It is built on top of the OAuth 2.0, Open ID Connect, JSON Web Token (JWT), and SAML 2.0 specifications.
+Red Hat Single Sign-On is an integrated SSO and IdM solution for browser applications and RESTful web services. It is built on top of the OAuth 2.0, OpenID Connect, JSON Web Token (JWT), and SAML 2.0 specifications.
 
-The upstream project of Red Hat Single Sign-On is Keycloak: http://keycloak.jboss.org/.
+The upstream project of Red Hat Single Sign-On is link:http://keycloak.jboss.org/[Keycloak^].
 
 == Install Red Hat Single Sign-On
 
@@ -47,7 +48,7 @@ The VM comes with a script that does the following:
 In this section, you install and start the Red Hat Single Sign-On server:
 
 . In the VM, open a terminal and change to the `/home/jboss/lab` directory.
-. Execute the `install-rhsso.sh` script as user `jboss`.
+. As the `jboss` user, execute the `install-rhsso.sh` script.
 . Review the `install-rhsso.sh` script, which delegates to the `install-rhsso-instance.sh` script in the `/opt/install/scripts/rhsso` directory.
 . Change to the `/home/jboss/lab/rhsso/bin` directory and launch the server:
 +
@@ -58,37 +59,34 @@ $ ./standalone.sh
 ----
 
 . When the server has started, open a browser and navigate to `localhost:8380/auth/admin`.
-. Log in with user `admin:admin`.
-* Expect the server start screen to look similar to this:
+. Log in to the Red Hat Single Sign-On Admin Console as the `admin:admin` user.
+* Expect the Admin Console to look similar to this:
 +
 image::images/rhsso-server-start-screen.png[]
 
 == Configure Red Hat Single Sign-On
-In this section we configure the `Red Hat Single Sign-On` product with configurations needed to provide security to our `Process Server` and web application.
 
-This lab provides both a manual approach and an automated approach.
-Choose one approach or the other.
+In this section, you configure Red Hat Single Sign-On to provide security to your Intelligent Process Server and web application.
 
-It is recommended that you elect to manually configure the Red Hat SSO server the first time you execute this lab.
-By doing so, you'll get a better appreciation of the details.
+This lab provides both a manual approach and an automated approach. Choose whichever approach you prefer. It is recommended that you manually configure the Red Hat Single Sign-On server the first time you execute this lab to better understand the details.
 
 === Manual Approach
 
 ==== Create Realm
 
-The first step in configuring Red Hat Single Sign-On is to create a SSO realm for your application.
+The first step in configuring Red Hat Single Sign-On is to create an SSO realm for your application.
 
-. On the Red Hat Single Sign-On screen, hover over the *Realm* list and click *Add realm*:
+. In the Admin Console, hover over the *Realm* list and click *Add realm*:
 +
 image::images/click_add_realm.png[]
 
-. Enter `kieserver` in the *Name* field, and leave the *Enabled* option set to `ON`:
+. Enter `kieserver` in the *Name* field, and leave the *Enabled* option set to *ON*:
 +
 image::images/rhsso-server-create-realm.png[]
 
 . Click *Create*.
 . On the *Kieserver* realm page, click the *Login* tab.
-. Set *Require SSL* to `none` and click *Save*:
+. Set *Require SSL* to *none* and click *Save*:
 +
 image::images/rhsso-server-login-tab.png[]
 +
@@ -97,73 +95,68 @@ On a production system, Red Hat strongly recommends that you use SSL for all com
 
 ==== Create Clients
 
-In the context of SSO, a _client_ is a trusted browser app or http service in a realm.
-These _clients_ can request a login from the Red Hat SSO Server.
+In the context of SSO, a _client_ is a trusted browser application or HTTP service in a realm. These clients can request a login from the Red Hat Single Sign-On server.
 
-For each of the applications involved--the Process Server back end and the front-end application--you need to create a _client_ configuration in your realm.
-You also create a _client_ that `curl` uses to access the Process Server REST API from the command line.
+For each of the applications involved--the Intelligent Process Server back end and the front-end application--you need to create a client configuration in your realm. You also create a client that `curl` uses to access the Intelligent Process Server REST API from the command line.
 
-* In the left navigation panel on the *Kieserver* realm page, click *Clients*.
-* A number of client configurations are predefined. Leave these as is.
+===== Create Front-End Client
 
-===== *front-end* client
+In this section, you create the front-end client.
 
-Create the front-end client:
-
-. Click *Create* in the upper right.
+. In the left menu bar on the *Kieserver* realm page, click *Clients*.
+* The predefined client configurations appear.
+. Click the *Create* button on the right.
 . Set the field values as follows:
-* *Client Id*: Enter `frontend`.
-* *Client Protocol*: Leave as `openid-connect`.
-* *Client Template*: Leave blank.
-* *Root URL*: Leave blank.
+* *Client ID*: `frontend`
+* *Client Protocol*: Leave `openid-connect`
+* *Client Template*: Leave blank
+* *Root URL*: Leave blank
 . Click *Save*.
-. Enter the client settings:
-.. On the `frontend` client page, click the *Settings* tab.
-.. Set the field values as follows:
-* *Access Type*: Enter `public`.
-* *Valid Redirect URIs*: Add `localhost:8000/*`.
-* *Web Origins*: Add `localhost:8000`.
+. On the `frontend` client page, click the *Settings* tab.
+. Set the field values as follows:
+* *Access Type*: *public*
+* *Valid Redirect URIs*: `localhost:8000/*`
+* *Web Origins*: `localhost:8000`
 +
 image::images/rhsso-server-client-frontend-settings.png[]
 +
 [NOTE]
-http://localhost:8000 is the URI of the AngularJS front-end application that you use to test your setup.
+`http://localhost:8000` is the URI of the AngularJS front-end application that you use to test your setup.
 
-.. Click *Save*.
-
-===== *kieserver* client
-
-Create the `kieserver` client:
-
-. Follow the steps for creating the front-end client, but enter `kieserver` as the client ID.
-. Click the *Settings* tab and enter `bearer only` in the *Access Type* field.
-
-* A `bearer only` client is used for web services that do not initiate a login, but require a valid token to grant access.
 . Click *Save*.
 
-===== *curl* client
+===== Create `kieserver` Client
 
-The `curl` client lets you obtain a valid token from the Red Hat Single Sign-On server using curl. This token can then be used to access the Process Server REST API.
+In this section, you create the `kieserver` client.
 
-Create the `curl` client:
+. Follow the steps for creating the front-end client, but enter `kieserver` as the client ID.
+. Click the *Settings* tab and select *bearer only* in the *Access Type* field.
++
+NOTE: A _bearer only_ client is used for web services that do not initiate a login, but require a valid token to grant access.
+
+. Click *Save*.
+
+===== Create `curl` Client
+
+In this section, you create the `curl` client. The `curl` client lets you obtain a valid token from the Red Hat Single Sign-On server using cURL. This token can then be used to access the Intelligent Process Server REST API.
 
 . Follow the steps for creating the front-end client, but enter `curl` as the client ID.
 . Click the *Settings* tab and set the following values:
-** *Access Type*: Enter `public`.
-** *Valid Redirect URIs*: Add `localhost`.
+* *Access Type*: *public*
+* *Valid Redirect URIs*: `localhost`
 . Click *Save*.
 
-Red Hat recommends that you do not use `curl` for a production system, and that if you do use it, at least restrict its use to select users.
+Red Hat recommends that you do not use `curl` for a production system--and if you must use it, at least restrict its use to select users.
 
 ==== Create Roles
 
-The user's roles determine authorization. To access the Process Server REST APIs, a user must have the `kie-server` role.
+The user's roles determine authorization. To access the Intelligent Process Server REST APIs, a user must have the `kie-server` role.
 
-Here, you create the `kie-server` role along with some application-specific roles for use within Process Server.
+In this section, you create the `kie-server` role along with some application-specific roles for use within Intelligent Process Server.
 
-. On the *Kieserver* realm page, in the left navigation panel, click *Roles*.
-. Click *Add Role* at the upper right.
-. Set the role name as `kie-server`.
+. On the *Kieserver* realm page, in the left menu bar, click *Roles*.
+. Click the *Add Role* button on the right.
+. Enter `kie-server` in the *Role Name* field.
 . Click *Save*.
 . Repeat these steps to create application roles such as `group1` and `group2`.
 
@@ -171,26 +164,27 @@ Here, you create the `kie-server` role along with some application-specific role
 
 The next step is to create some users.
 
-. On the *Kieserver* realm page, in the left navigation panel, click *Users*.
-. Add a user:
-.. Click *Add User* at the upper right.
-.. On the *Add user* page, enter a username such as `user1`, and leave the other fields as is.
-.. Click *Save*:
+. On the *Kieserver* realm page, in the left menu bar, click *Users*.
+. Click the *Add user* button on the right.
+. Enter a username such as `user1`, and leave the other fields as is.
+. Click *Save*:
 +
 image::images/rhsso-server-create-user.png[]
 
 . Set the user's password:
 .. Click the *Credentials* tab for the newly created user.
 .. Enter a value such as `user` for the user password, and enter it again to confirm.
-.. Switch the *Temporary* setting to `Off`.
-* Setting *Temporary* to `Off` prevents the user from having to change the password at first login. In a production environment, Red Hat recommends that you leave this setting `On`.
+.. Switch the *Temporary* setting to *OFF*.
++
+NOTE: Setting *Temporary* to *OFF* prevents the user from having to change the password at first login. In a production environment, Red Hat recommends that you leave it set to *ON*.
 
 .. Click *Reset password*:
 +
 image::images/rhsso-server-create-user-password.png[]
+
 . Assign user roles:
 .. Click the *Role Mappings* tab.
-.. Make sure the user has the `kie-server` role and one or more application roles.
+.. Make sure the user has the *kie-server* role and one or more application roles.
 .. Click *Save*:
 +
 image::images/rhsso-server-user-roles.png[]
@@ -213,18 +207,18 @@ In this section, you import these JSON files into the Red Hat Single Sign-On ser
 $ ./standalone.sh -Dkeycloak.migration.action=import -Dkeycloak.migration.provider=dir -Dkeycloak.migration.strategy=OVERWRITE_EXISTING -Dkeycloak.migration.dir=/opt/install/scripts/rhsso/import
 ----
 
-. Log in to the server with user `admin:admin`.
+. Log in to the server as the `admin:admin` user.
 . Verify that the import of the `kieserver` realm is successful.
 
-== Configure Process Server
+== Configure Intelligent Process Server
 
 === Install Red Hat Single Sign-On Client Adapter for JBoss EAP 7
 
-In this section, you install the Red Hat Single Sign-On client adapter on the Process Server instance. The installation adds a new security domain that Process Server uses instead of the out-of-the-box security domain that employs properties files for user and role configuration.
+In this section, you install the Red Hat Single Sign-On client adapter on the Intelligent Process Server instance. The installation adds a new security domain that Intelligent Process Server uses instead of the out-of-the-box security domain that employs properties files for user and role configuration.
 
-. If the Process Server instance is running, shut it down by pressing *Ctrl+C* in the terminal window where you started JBoss BPM Suite.
+. If the Intelligent Process Server instance is running, shut it down by pressing *Ctrl+C* in the terminal window where you started JBoss BPM Suite.
 
-. Unzip the RHT SSO adapter for JBoss EAP 7 (provided in your lab environment) to the `/home/jboss/lab/bpms/kieserver` directory:
+. Unzip the Red Hat Single Sign-On adapter for JBoss EAP 7 (provided in your lab environment) to the `/home/jboss/lab/bpms/kieserver` directory:
 +
 [source,text]
 ----
@@ -232,7 +226,7 @@ $ unzip /opt/install/scripts/rhsso/resources/rh-sso-7.0.0-eap7-adapter.zip -d /h
 ----
 
 . Start the `kie-server` instance in admin-only mode:
-.. In a terminal window, `cd` to `/home/jboss/lab/bpms/kieserver/bin`.
+.. In a terminal window, change to the `/home/jboss/lab/bpms/kieserver/bin` directory.
 .. Run the following:
 +
 [source,text]
@@ -255,9 +249,9 @@ $ ./jboss-cli.sh -c --controller=localhost:10140 ":shutdown"
 {"outcome" => "success"}
 ----
 
-=== Configure Process Server WAR `web.xml`
+=== Configure Intelligent Process Server WAR `web.xml`
 
-In this section, you configure the Process Server application to use the Red Hat Single Sign-On security domain.
+In this section, you configure the Intelligent Process Server application to use the Red Hat Single Sign-On security domain.
 
 . Edit `/home/jboss/lab/bpms/kieserver/standalone/deployments/kie-server.war/WEB-INF/web.xml`:
 .. Open the file.
@@ -282,10 +276,10 @@ with:
 ----
 
 .. Save the file.
-. Log in to the Red Hat Single Sign-On server as user `admin:admin` and select the *Kieserver realm*.
-. Install `keyclock.json` file for Process Server:
-.. Go the *Clients* section, open the `kieserver` client, and click the *Installation* tab.
-.. Select the `Keycloak OIDC JSON` format and click *Download*:
+. Log in to the Red Hat Single Sign-On server as the `admin:admin` user and select the *Kieserver realm*.
+. Install the `keyclock.json` file for Intelligent Process Server:
+.. Go to the *Clients* section, open the `kieserver` client, and click the *Installation* tab.
+.. Select the *Keycloak OIDC JSON* format and click *Download*:
 +
 image::images/rhsso-server-realm-installation.png[]
 
@@ -304,7 +298,7 @@ image::images/rhsso-server-realm-installation.png[]
   "principal-attribute" : "preferred_username"
 ----
 
-* After the changes, expect the file contents to look similar to this:
+.. Verify that your edited file looks similar to this:
 +
 [source,json]
 ----
@@ -322,10 +316,10 @@ image::images/rhsso-server-realm-installation.png[]
 }
 ----
 
-** The `enable-cors` setting enables CORS support by the Red Hat Single Sign-On adapter. It handles preflight requests and sets the required HTTP headers. This is especially important when accessing the Process Server APIs through JavaScript in a browser, as is the case for the AngularJS client application. For a good overview of  CORS, refer to http://www.html5rocks.com/en/tutorials/cors/.
+** The `enable-cors` setting enables CORS support by the Red Hat Single Sign-On adapter. It handles preflight requests and sets the required HTTP headers. This is especially important when accessing the Intelligent Process Server APIs through JavaScript in a browser, as is the case for the AngularJS client application. For a good overview of CORS, refer to this link:http://www.html5rocks.com/en/tutorials/cors/[tutorial^].
 ** The `principal-attribute` defines the attribute to use for the principal name of the logged-in user. By default, this is the generated user ID. When set to `preferred_username`, the username is used instead.
-. Restart the Process Server instance:
-.. In a terminal window, `cd` to `/home/jboss/lab/bpms/kieserver/bin`.
+. Restart the Intelligent Process Server instance:
+.. In a terminal window, change to the `/home/jboss/lab/bpms/kieserver/bin` directory.
 .. Execute the startup script:
 +
 [source,text]
@@ -333,7 +327,7 @@ image::images/rhsso-server-realm-installation.png[]
 $ ./standalone.sh
 ----
 
-. To test that Basic authentication no longer works, try in a browser to navigate to `localhost:8230/kie-server/services/rest/server`.
+. To test that Basic authentication no longer works, in a browser, try to navigate to `localhost:8230/kie-server/services/rest/server`.
 * Expect to receive a 401 (Unauthorized) HTTP status code.
 
 . To verify the correct setup, open a terminal window and use `curl` to retrieve a bearer token:
@@ -355,10 +349,10 @@ $ echo $TKN
 * Expect to see the value of the token received from the Red Hat Single Sign-On server.
 
 ifdef::showscript[]
-JA Bride:  TO-DO:  what kind of token is this ?
+JA Bride:  TO-DO:  What kind of token is this?
 endif::showscript[]
 
-. Use `curl` to access the same resource as you tried earlier with the browser, and supply the bearer token in an Authorization header:
+. Use `curl` to access the same resource that you tried to access earlier with the browser, and supply the bearer token in an Authorization header:
 +
 [source,text]
 ----
@@ -367,8 +361,8 @@ $ curl -X GET 'http://127.0.0.1:8230/kie-server/services/rest/server' \
 -H "Authorization: Bearer $TKN"
 ----
 
-* Expect to see a response from the Process Server similar to this:
 +
+.Sample Output
 [source,json]
 ----
 {
@@ -390,20 +384,20 @@ $ curl -X GET 'http://127.0.0.1:8230/kie-server/services/rest/server' \
   }
 }
 ----
-* The first `curl` command obtains a token from the Red Hat Single Sign-On for `user1`, using the curl client, and extracts the token value from the response.
-* The second `curl` command calls the Process Server REST API, passing the token as an Authorization header. The Red Hat Single Sign-On security subsystem on Process Server verifies the validity of the token and extracts the user ID and roles. If the user in the token has the correct roles (`kie-server`), access is granted.
+* The first `curl` command obtains a token from the Red Hat Single Sign-On for `user1`, using the `curl` client, and extracts the token value from the response.
+* The second `curl` command calls the Intelligent Process Server REST API, passing the token as an Authorization header. The Red Hat Single Sign-On security subsystem on Intelligent Process Server verifies the validity of the token and extracts the user ID and roles. If the user in the token has the correct roles (`kie-server`), access is granted.
 
-=== Deploy Test Archive on Process Server
+=== Deploy Test Archive on Intelligent Process Server
 
-To demonstrate how a client application can interact with Process Server using Red Hat Single Sign-On to manage security, a process archive is included in the lab project--which you cloned in the previous module--in the `ticket-kjar` folder.
+To demonstrate how a client application can interact with Intelligent Process Server using Red Hat Single Sign-On to manage security, a process archive is included in the lab project--which you cloned in the previous module--in the `ticket-kjar` folder.
 
-This process has a simplified ticket handling process definition, with one human task. Users can create ticket process instances and assign them to one or more groups. This creates a human task that can be claimed and completed by users belonging to the assigned groups:
+This process has a simplified ticket handling process definition, with one Human Task. Users can create ticket process instances and assign them to one or more groups. This creates a Human Task that can be claimed and completed by users belonging to the assigned groups:
 
 image::images/ticket-process-definition.png[]
 
 To deploy this process archive, you need to build it with Maven and deploy it to the local Maven repository.
 
-. In a terminal window, change to the `/home/jboss/lab/bxms-advanced-infrastructure-lab/ticket-kjar` directory and build and install the project in the local Maven repository.
+. In a terminal window, change to the `/home/jboss/lab/bxms-advanced-infrastructure-lab/ticket-kjar` directory and build and install the project in the local Maven repository:
 +
 [source,text]
 ----
@@ -423,7 +417,7 @@ $ export TKN=$(curl -X POST 'http://127.0.0.1:8380/auth/realms/kieserver/protoco
  -d 'client_id=curl'| sed 's/.*access_token":"//g' | sed 's/".*//g')
 ----
 
-. Deploy the ticket process kjar on Process Server:
+. Deploy the ticket process KJAR on Intelligent Process Server:
 +
 [source,text]
 ----
@@ -433,8 +427,8 @@ $ curl -X PUT 'http://localhost:8230/kie-server/services/rest/server/containers/
 -H "Authorization: Bearer $TKN" \
 -d '{"release-id" : {"group-id" : "com.redhat.gpte.bpms-advanced-infrastructure", "artifact-id" : "ticket-kjar", "version" : "1.0" } }'
 ----
-* Expect the response to look similar to this:
 +
+.Sample Output
 [source,json]
 ----
 {
@@ -464,35 +458,37 @@ $ curl -X PUT 'http://localhost:8230/kie-server/services/rest/server/containers/
 
 === Test with AngularJS Client Application
 
-To test the integration of Process Server with Red Hat Single Sign-On, the lab project contains an AngularJS application in the `angularjs-ticket-app` folder.
+To test the integration of Intelligent Process Server with Red Hat Single Sign-On, the lab project contains an AngularJS application in the `angularjs-ticket-app` folder.
 
 This application lets you do the following:
 
-* Create process instances of the ticket-handling process model described in the previous module, and assign the tasks to groups.
+* Create process instances of the ticket-handling process model described in the previous section, and assign the tasks to groups.
 * Get the list of tasks assigned to the logged-in user or a group to which the user belongs.
 * Claim, start, and complete tasks.
 
-==== Run and Access Ticket Application From Python Web Server
+==== Run and Access Ticket Application from Python Web Server
 
 In this section, you run the ticket-handling application within the built-in Python HTTP server.
 
-. In the VM, open a terminal window.
-Change to the `/home/jboss/lab/bxms-advanced-infrastructure-lab/angularjs-ticket-app/` directory.
-. Scan through the source code of this project.
+. In the VM, open a terminal window and navigate to the directory containing the ticket application:
 +
-Pay particular attention to the values in: `scripts/config.js` and spend a bit of time to understand where and how those properties are used in the Angular based web application.
+[source,text]
+----
+$ cd `~/lab/bxms-advanced-infrastructure-lab/angularjs-ticket-app/`
+----
+. Scan through the source code of this project.
+.. Pay particular attention to the values in `scripts/config.js` and make sure you understand where and how those properties are used in the Angular-based web application.
 
 . Start the Python HTTP server:
 +
 [source,text]
 ----
-$ cd `~/lab/bxms-advanced-infrastructure-lab/angularjs-ticket-app/`
 $ python -m SimpleHTTPServer
 Serving HTTP on 0.0.0.0 port 8000 ...
 ----
 . Open a browser window and navigate to `http://localhost:8000` to access the application.
 
-* As part of the application bootstrap, a login sequence is initiated with the Red Hat Single Sign-On server using the Red Hat Single Sign-On Javascript adapter, which is installed as a dependency in the AngularJS app. You are redirected to the Red Hat Single Sign-On login screen:
+* As part of the application bootstrap, a login sequence is initiated with the Red Hat Single Sign-On server using the Red Hat Single Sign-On JavaScript adapter, which is installed as a dependency in the AngularJS application. You are redirected to the Red Hat Single Sign-On login screen:
 +
 image::images/rhsso-server-login-screen.png[]
 
@@ -504,7 +500,7 @@ image::images/angular-client-screen.png[]
 
 ==== Interact with Processes and Tasks
 
-In this section, you interact with the processes and tasks in your application.  *Create Ticket* launches a new process instance of the ticket process and *My Tickets* shows a paginated list of tasks assigned to the logged-in user.
+In this section, you interact with the processes and tasks in your application. *Create Ticket* launches a new process instance of the ticket process and *My Tickets* shows a paginated list of tasks assigned to the logged-in user.
 
 . Create a ticket:
 .. Click *Create Ticket*.
@@ -531,23 +527,23 @@ image::images/angular-ticket-screen.png[]
 * This forces a logout on the Red Hat Single Sign-On server and causes a redirect to the Red Hat Single Sign-On login page.
 +
 [NOTE]
-For more details on how AngularJS works, go to https://github.com/jboss-gpe-ref-archs/bpms_rhsso.
+For more details on how AngularJS works, see link:https://github.com/jboss-gpe-ref-archs/bpms_rhsso[Integration of BPMS with RH SSO^] in GitHub.
 
 == Secure Business Central
 
-The steps for securing Business Central are similar to the steps for configuring Process Server.
+The steps for securing Business Central are similar to the steps for configuring Intelligent Process Server.
 
 . On the Red Hat Single Sign-On server, create a new client for the Business Central application in the `kieserver` realm, with the following properties:
-** *Access type*: `confidential`
+** *Access Type*: *confidential*
 ** *Root URL*: `http://127.0.0.1:8080`
 ** *Base URL*: `/business-central`
 ** *Valid redirection URIs*: `/business-central/*`
-. On the Red Hat Single Sign-On server, create a `jboss` user with the following:
+. On the Red Hat Single Sign-On server, create a `jboss` user with the following properties:
 ** *Password*: `bpms`
-** *Assigned role*: `admin`
+** *Assigned Role*: *admin*
 . On the Business Central server, install the Red Hat Single Sign-On adapter for JBoss EAP 7.
-. As an alternative to configuring the web application with a `keycloak.json` JSON file in the web application's `WEB-INF` directory, add the configuration settings to the `keycloak` subsystem in the `standalone.xml` configuration file as follows:
-.. Download the settings from the *Installation* tab of the client definition on the Red Hat Single Sign-On server and choose the *Keycloak OIDC JBoss Subsystem XML* format.
+. As an alternative to configuring the web application with a `keycloak.json` file in the web application's `WEB-INF` directory, add the configuration settings to the `keycloak` subsystem in the `standalone.xml` configuration file as follows:
+.. Download the settings from the *Installation* tab of the client definition on the Red Hat Single Sign-On server and select the *Keycloak OIDC JBoss Subsystem XML* format.
 .. Add the XML snippet to the `keycloak` subsystem definition in the `standalone.xml` configuration file of the JBoss BPM Suite application server.
 .. Change the name of the `secure-deployment` to `business-central.war`.
 .. Change the `auth-server-url` value to `http://127.0.0.1:8380/auth`.
@@ -581,6 +577,6 @@ The steps for securing Business Central are similar to the steps for configuring
 
 Thus far, you set up optimal security for your web application and Business Central using Red Hat Single Sign-On. In this setup, all components are bound to the `localhost` loopback of your VM.
 
-As an option exercise, try to reproduce what you have done--but this time, bind all the Java VMs to an external NIC of the VM (for example, `eth0`).
+. As an optional exercise, try to reproduce what you have done--but this time, bind all of the Java VMs to an external NIC of the VM (for example, `eth0`).
 
-Use the browser on the host machine to interact with Red Hat Single Sign-On and the `angularjs-ticket-app` in the VM.
+. Use the browser on the host machine to interact with Red Hat Single Sign-On and the `angularjs-ticket-app` in the VM.
