@@ -1,25 +1,26 @@
 :scrollbar:
 :data-uri:
+:linkattrs:
 :toc2:
 
 
-== Decision Server Binary Deployment Lab
+== Realtime Decision Server Binary Deployment Lab
 
 
-In the previous lab of this module, the rules kjar was built during the S2I process on the Decision Server image.
+In the previous lab of this module, the rules KJAR was built during the S2I process on the Realtime Decision Server for OpenShift image.
 
-This approach is suitable for the development phase, but it is not workable if you want to promote the kjar through different environments. There are a number of reasons for this:
+This approach is suitable for the development phase, but it is not workable if you want to promote the KJAR through different environments. There are a number of reasons for this:
 
-* There is no proper version management of the built artifact, so it is difficult to track what exactly is running in OpenShift.
-* Using S2I, the kjar is rebuilt from source code at every deployment. This goes against the "build once, deploy everywhere" principle.
+* There is no proper version management of the build artifact, so it is difficult to track what exactly is running in OpenShift.
+* Using S2I, the KJAR is rebuilt from source code at every deployment. This goes against the "build once, deploy everywhere" principle.
 * Unit tests and other test suites are not executed as part of the S2I build.
-* The S2I build is not really suited for multi-module Maven projects.
+* The S2I build is generally not suited for multi-module Maven projects.
 
 In this lab, you take an alternative approach that is more in line with generally accepted build and deployment best practices.
 
-A Jenkins instance is responsible for building the kjar and managing the kjar artifact version. After a successful build, the kjar is pushed to a Nexus repository.
+A Jenkins instance is responsible for building the KJAR and managing the KJAR artifact version. After a successful build, the KJAR is pushed to a Nexus repository.
 
-Jenkins triggers a new build of the Decision Server image. However, this time it starts not from source code, but from the binary kjar artifact in Nexus.
+Jenkins triggers a new build of the Realtime Decision Server image. However, this time it starts not from source code, but from the binary KJAR artifact in Nexus.
 
 You reuse the Gogs server and the Nexus server from the previous lab.
 
@@ -34,7 +35,7 @@ The Nexus and Gogs containers that you provisioned in the previous lab need to b
 
 == Lab Component Topology
 
-This lab involves quite a few components that support the build, deployment, and execution of a rules application running in OpenShift Container Platform.
+This lab involves a number of components that support the build, deployment, and execution of a rules application running in OpenShift Container Platform.
 
 The following illustrates the component topology and workflow of this lab:
 
@@ -43,7 +44,7 @@ image::images/dserver2_lab_topology.gif[]
 
 :numbered:
 
-== Create Items Using the Gogs Git Server
+== Create Items Using Gogs Git Server
 
 Using your existing Gogs server, you create some new organizations, users, and repositories to support this new lab.
 
@@ -63,14 +64,16 @@ image::images/jenkins_user_git_hooks.png[width="80%"]
 . Create a repository named `policyquote` in the `decision-server-jenkins` organization on the Gogs server.
 
 
-=== Verify `policyquote` Git Setup
+=== Set Up `policyquote` Project
 
-In the lab VM, you should already have cloned the lab assets for this course that contains the `kie-project` for this lab: `bxms-xpaas-policyquote`.
+. Verify that you have the `bxms-xpaas-policyquote` `kie-project` in your lab VM.
+* In the previous lab for this module, you cloned the lab assets that contain this `kie-project`.
 
-If not, clone the assets as follows:
+.. If you have the project in your lab VM, skip to step 2.
+.. If not, clone the assets now:
 
-. In the VM, open a terminal, and change to the lab home folder.
-.. Clone the `Policyquote` project from GitHub:
+... In the VM, open a terminal window, and change to the lab home folder.
+... Clone the `Policyquote` project from GitHub:
 +
 [source,text]
 ----
@@ -85,7 +88,7 @@ $ cd bxms-xpaas-policyquote
 $ git remote add gogs-jenkins http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-jenkins/policyquote.git
 ----
 +
-* Replace `<gogs password>`, `<url of the gogs route>`, and `<gogs username>` with the appropriate values for your environment.
+* Replace `<gogs username>`, `<gogs password>`, and `<url of the gogs route>` with the appropriate values for your environment.
 
 . Push the code to the Gogs server:
 +
@@ -96,24 +99,22 @@ $ git push gogs-jenkins master
 +
 image::images/gogs_policyquote_jenkins.png[]
 
-=== Host the `bxms-advanced-infrastructure-lab` Repository in the Gogs Server
+=== Host `bxms-advanced-infrastructure-lab` Repository in Gogs Server
 
-Later in this lab, you provision a Jenkins container in your OpenShift Container Platform project.
-
-The configuration files for this Jenkins container are found in one of your lab assets for this course: `bxms-advanced-infrastructure-lab`.
+Later in this lab, you provision a Jenkins container in your OpenShift Container Platform project. The configuration files for this Jenkins container are found in the `bxms-advanced-infrastructure-lab` lab assets for this course.
 
 This Git repository--and, subsequently, its Jenkins configuration files--must be made available to the OpenShift build process when it creates your Jenkins container. You allow for this by hosting the `bxms-advanced-infrastructure-lab` repository in your Gogs server.
 
 . On the Gogs server, create a new organization named `xpaas-jenkins`.
 . Add the `jenkins` user to the `xpaas-jenkins` organization.
 . Create a new repository named `bxms-advanced-infrastructure-lab` in the `xpaas-jenkins` organization.
-. In the VM, open a terminal and change to the directory where you cloned this lab's GitHub repo:
+. In the VM, open a terminal window and change to the directory where you cloned this lab's GitHub repository:
 +
 [source,text]
 ----
 $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab
 ----
-. Add a remote git repository pointing to the Gogs server, and push the code to the Gogs server.
+. Add a remote Git repository pointing to the Gogs server, and push the code to the Gogs server:
 +
 [source,text]
 ----
@@ -123,56 +124,66 @@ $ git push gogs master
 +
 image::images/gogs_jenkins_configs.png[]
 
-== Configure the Jenkins Build Server
+== Configure Jenkins Build Server
 
 In this section, you install and configure the Jenkins build server on OpenShift.
 
-Jenkins coordinates the build and deployment cycle of the `Policyquote` kjar. In particular, it does the following:
+Jenkins coordinates the build and deployment cycle of the `Policyquote` KJAR. In particular, it does the following:
 
-* Compiles, tests, and packages the kjar using Maven
+* Compiles, tests, and packages the KJAR using Maven
 * Manages the version of the binary artifact
 * Pushes the binary artifact to Nexus
-* Triggers a new build of the `decision-server`, using the binary kjar artifact as source
+* Triggers a new build of the `decision-server`, using the binary KJAR artifact as source
 ** For this, you use a `marker` project in Gogs
 
 To manage this build pipeline, you use the Pipeline plug-in for Jenkins, which lets you define build pipelines as Groovy scripts, which themselves can be version-controlled following the "infrastructure-as-code" principle.
 
-As a base image for the Jenkins server, you use the Jenkins OpenShift image hosted in the Red Hat Docker repository. The image uses a master/slave architecture for Jenkins, where build jobs are executed on slave nodes. The Jenkins master can automatically detect and register slave nodes running on the same OpenShift cluster. Please refer to the OpenShift product documentation at http://access.redhat.com for more information on the Jenkins image.
+As a base image for the Jenkins server, you use the Jenkins OpenShift image hosted in the Red Hat Docker repository. The image uses a master/slave architecture for Jenkins, where build jobs are executed on slave nodes. The Jenkins master can automatically detect and register slave nodes running on the same OpenShift cluster. Please refer to the OpenShift product documentation on the link:http://access.redhat.com[Red Hat Customer Portal^] for more information on the Jenkins image.
 
-. In the VM, open a terminal, and change to the directory in the cloned lab project that contains the common templates for the xPaaS lab:
+. In the VM, open a terminal window and change to the directory in the cloned lab project that contains the common templates for the xPaaS lab:
 +
 [source,text]
 ----
 $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 ----
-. Review the `xpaas-jenkins-persistent.yaml` template. This is the template for the installation of the Jenkins master and slave. The template defines the following:
+. Review the `xpaas-jenkins-persistent.yaml` template.
+* This is the template for the installation of the Jenkins master and slave that defines the following:
 
-* A RoleBinding object. This is required to give the Jenkins pod enough rights to make API calls to OpenShift, which are needed to automatically discover slave images available in the registry.
-* An ImageStream for the Jenkins master image. You use the Jenkins image hosted on the Red Hat Docker registry (http://registry.access.redhat.com).
-* A BuildConfig for the Jenkins master image. The stock Jenkins image is customized using S2I. The customizations are kept in a Git repository. For this lab, the customizations to apply are in the lab project's `xpaas/common/jenkins-master` directory. The customizations include the following:
-** The list of plug-ins to install, located in `plugins.txt`.
-** A custom Maven `settings.xml` configuration file, which configures the Nexus container as a mirror.
-** A Maven task definition.
-** Jenkins job definitions, located in `configuration/jobs`. The job defines a build pipeline executed by the Pipeline plug-in. The pipeline script is initially empty. You build it as part of the lab.
-* An ImageStream for the S2I build result.
-* A DeploymentConfig for the S2I build result.
-* A BuildConfig for the Jenkins slave image. The image is built from a Docker file and supporting configuration files stored in a Git repository. For this lab, the Docker configuration files are stored in the lab project's `xpaas/common/jenkins-slave` directory. The slave image starts from a base Centos7 image, on which JDK 8, Maven, and the `oc` client are installed.
-* An Imagestream for the built Jenkins slave image. The ImageStream has a label of `role=jenkins-slave`, which allows it to be discovered and registered by the Jenkins master under the name `jdk8`.
-* A Service for the Jenkins master.
-* A Route for the Jenkins master.
-* A PersistentVolumeClaim for the Jenkins volume.
-* Parameters:
-** *APPLICATION_NAME:* The name for the Jenkins applications. The default is `jenkins`.
-** *VOLUME_CAPACITY:* The volume capacity for the PersistentVolumeClaim, in MB. The default is `512`.
+** A RoleBinding object.
+*** This is required to give the Jenkins pod enough rights to make API calls to OpenShift, which are needed to automatically discover slave images available in the registry.
+** An ImageStream for the Jenkins master image.
+*** You use the Jenkins image hosted on the link:http://registry.access.redhat.com[Red Hat Docker registry^].
+** A BuildConfig for the Jenkins master image.
+*** The stock Jenkins image is customized using S2I and the customizations are kept in a Git repository.
+*** For this lab, the customizations to apply are in the lab project's `xpaas/common/jenkins-master` directory, and include the following:
+**** The list of plug-ins to install, located in `plugins.txt`.
+**** A custom Maven `settings.xml` configuration file, which configures the Nexus container as a mirror.
+**** A Maven task definition.
+**** Jenkins job definitions, located in `configuration/jobs`.
+***** The job defines a build pipeline executed by the Pipeline plug-in.
+***** The pipeline script is initially empty. You build it as part of the lab.
+** An ImageStream for the S2I build result.
+** A DeploymentConfig for the S2I build result.
+** A BuildConfig for the Jenkins slave image.
+*** The image is built from a Docker file and supporting configuration files stored in a Git repository.
+*** For this lab, the Docker configuration files are stored in the lab project's `xpaas/common/jenkins-slave` directory.
+*** The slave image starts from a base Centos7 image, on which JDK 8, Maven, and the `oc` client are installed.
+** An ImageStream for the built Jenkins slave image with a label of `role=jenkins-slave`, which allows it to be discovered and registered by the Jenkins master under the name `jdk8`.
+** A Service for the Jenkins master.
+** A Route for the Jenkins master.
+** A PersistentVolumeClaim for the Jenkins volume.
+** Parameters:
+*** `APPLICATION_NAME`: The name for the Jenkins applications. The default is `jenkins`.
+*** `VOLUME_CAPACITY`: The volume capacity for the PersistentVolumeClaim, in MB. The default is `512`.
 +
 [NOTE]
 ====
 If your OpenShift environment does not have access to persistent volumes, you need to use the `xpaas-jenkins.yaml` template, which does not use persistent storage.
-In this case, be aware that your data and configuration is lost when the Jenkins pods disappear.
+In this case, be aware that your data and configuration are lost when the Jenkins pods disappear.
 ====
-** *JENKINS_CONFIGURATION_REPOSITORY:* The repository URL that holds the configuration for the Jenkins master and slave builds.
-** *JENKINS_MASTER_CONFIGURATION_CONTEXT:* The directory in the Jenkins configuration repository that has the configuration for the Jenkins master image.
-** *JENKINS_SLAVE_CONFIGURATION_CONTEXT:* The directory in the Jenkins configuration repository that has the configuration for the Jenkins slave image.
+*** `JENKINS_CONFIGURATION_REPOSITORY`: The repository URL that holds the configuration for the Jenkins master and slave builds.
+*** `JENKINS_MASTER_CONFIGURATION_CONTEXT`: The directory in the Jenkins configuration repository that has the configuration for the Jenkins master image.
+*** `JENKINS_SLAVE_CONFIGURATION_CONTEXT`: The directory in the Jenkins configuration repository that has the configuration for the Jenkins slave image.
 
 . Create a Jenkins application based on the template:
 +
@@ -181,46 +192,46 @@ In this case, be aware that your data and configuration is lost when the Jenkins
 $ oc process -f xpaas-jenkins-persistent.yaml APPLICATION_NAME=jenkins JENKINS_CONFIGURATION_REPOSITORY=http://gogs:3000/xpaas-jenkins/bxms-advanced-infrastructure-lab.git JENKINS_MASTER_CONFIGURATION_CONTEXT=xpaas/common/jenkins-master JENKINS_SLAVE_CONFIGURATION_CONTEXT=xpaas/common/jenkins-slave | oc create -f -
 ----
 
-. After all of the Jenkins application components are up and running, you can log in to the Jenkins master:
+. After all of the Jenkins application components are up and running, log in to the Jenkins master:
 .. Open a browser window and navigate to the URL of the Jenkins route.
 .. Log in with username `admin` and password `password`.
-. The Jenkins master home screen shows two predefined build jobs named `policyquote` and `policyquote-process`. In this lab, you use the `policyquote` job:
+** The Jenkins master home screen shows two predefined build jobs named `policyquote` and `policyquote-process`. In this lab, you use the `policyquote` job:
 +
 image::images/jenkins-master-policyquote.png[]
 +
-.. Click the `policyquote` job, and then click *Configure*.
+. Click the `policyquote` job, and then click *Configure*.
 +
 * Note that the `policyquote` job uses a Pipeline, but does not have a Pipeline script defined yet. You add the Pipeline script in the next steps of the lab.
-.. Return to the Jenkins home screen.
-.. Click *Manage Jenkins -> Manage Plugins*.
-.. Click the *Installed* tab to review the installed plug-ins. This list corresponds to the `plugins.txt` configuration file for the Jenkins master.
-+
+. Return to the Jenkins home screen.
+. Click *Manage Jenkins -> Manage Plugins*.
+. Click the *Installed* tab to review the installed plug-ins.
+* This list corresponds to the `plugins.txt` configuration file for the Jenkins master.
 * The plug-ins listed in `plugin.txt` are installed when you build the image.
-.. Return to the Jenkins home screen.
-.. Click *Manage Jenkins -> Configure System*.
-.. Scroll down to the *Cloud* section. Note the `jdk-jenkins-slave` pod template that was auto-registered. This is the template you are going to use to spawn worker slave nodes for the build pipeline.
+. Return to the Jenkins home screen.
+. Click *Manage Jenkins -> Configure System*.
+. Scroll down to the *Cloud* section.
+. Find the `jdk-jenkins-slave` pod template that was auto-registered.
+* This is the template you are going to use to spawn worker slave nodes for the build pipeline.
 
-== Deploy the Decision Server `marker` Project
+== Deploy Realtime Decision Server `marker` Project
 
-In the first lab of this module, you used the S2I mechanism of the Decision Server image to build and deploy the kjar.
+In the first lab of this module, you used the S2I mechanism of the Realtime Decision Server image to build and deploy the KJAR. In this lab, you use Jenkins to build the KJAR.
 
-In this second lab, you use Jenkins to build the kjar.
+With this approach, there is no need to rebuild the same KJAR on the Realtime Decision Server. You do, however, need to tell the Realtime Decision Server what needs to be deployed.
 
-With this approach, there is no need to rebuild the same kjar on the Decision Server. You do, however, need to tell the Decision Server what needs to be deployed.
+For this you can use a Git project that contains a properties file that has a property pointing to the release ID--Maven group ID, artifact ID, and version--of the KJAR to be deployed.
 
-For this you can use a Git project that contains a properties file that has a property pointing to the release ID--Maven group ID, artifact ID, version--of the kjar to be deployed.
-
-On the Decision Server image, the Git project is cloned, the property file is processed, and the kjars specified in the properties file are downloaded from the Maven repository (Nexus in this case) and deployed as a KIE container on the Decision Server.
+On the Realtime Decision Server image, the Git project is cloned, the property file is processed, and the KJARs specified in the properties file are downloaded from the Maven repository (Nexus in this case) and deployed as a KIE container on the Realtime Decision Server.
 
 . In the lab VM, open a browser window, navigate to the Gogs server on OpenShift, and log in.
 . Create a repository named `policyquote-ocp` in the `decision-server-jenkins` organization on the Gogs server.
-. In the lab VM, open a terminal and change to the lab home folder:
+. In the lab VM, open a terminal window and change to the lab home folder:
 +
 [source,text]
 ----
 $ cd /home/jboss/lab
 ----
-. Create a folder called `policyquote-ocp/.s2i` and change to the `policyquote-ocp` directory:
+. Create a folder named `policyquote-ocp/.s2i` and change to the `policyquote-ocp` directory:
 +
 [source,text]
 ----
@@ -228,7 +239,7 @@ $ mkdir -p policyquote-ocp/.s2i
 $ cd policyquote-ocp
 ----
 
-. Create a file called `environment` in the `policyquote-ocp/.s2i` folder.
+. Create a file named `environment` in the `policyquote-ocp/.s2i` folder:
 +
 [source,text]
 ----
@@ -243,7 +254,7 @@ KIE_CONTAINER_REDIRECT_ENABLED=false
 KIE_CONTAINER_DEPLOYMENT_OVERRIDE=policyquote=com.redhat.gpte.xpaas:policyquote:1.0.0
 ----
 +
-* This tells the S2I build mechanism of the Decision Server to deploy the `1.0.0` version of the `policyquote` kjar in a KIE container named `policyquote`.
+* This tells the S2I build mechanism of the Realtime Decision Server to deploy the `1.0.0` version of the `policyquote` KJAR in a KIE container named `policyquote`.
 
 . Push the project to the Gogs server:
 +
@@ -258,16 +269,16 @@ $ git push gogs master
 +
 image:images/gogs_policyquote_ocp.png[]
 
-== Add the Jenkins Build Pipeline Script
+== Add Jenkins Build Pipeline Script
 
-Here you add the Jenkins build pipeline script to the `policyquote` build job in Jenkins.
+In this section, you add the Jenkins build pipeline script to the `policyquote` build job in Jenkins.
 
 . Open a browser window, navigate to the Jenkins home page on OpenShift, and log in.
 . Click the `policyquote` job, and then click *Configure*.
-. Scroll down to the Pipeline *Definition* section.
+. Scroll down to the Pipeline *Definition* section:
 +
 image::images/policyquote-pipeline.png[]
-. In the *Script* window, paste the following contents:
+. Copy and paste the following script into the *Script* box:
 +
 [source,text]
 ----
@@ -316,26 +327,28 @@ def String getBuildVersion(pom) {
   return getVersionFromPom(pom).minus("-SNAPSHOT") + '.' + env.BUILD_NUMBER
 }
 ----
-+
-* A Jenkins pipeline script is written in Groovy and is typically divided into stages. All the stages run on slave nodes labeled `jdk8`.
-* The `Build` stage checks out the kjar source code project from Gogs.
+
+. Review the script and note the following:
+* A Jenkins pipeline script is written in Groovy and is typically divided into stages. All of the stages run on slave nodes labeled `jdk8`.
+* The `Build` stage checks out the KJAR source code project from Gogs.
 * The build version is determined by removing `SNAPSHOT` from the original version and appending the Jenkins build number to it. So `1.0-SNAPSHOT` becomes `1.0.1`. A new branch is created, and the version of the project is set to the build version using the Maven `versions` plug-in.
-* If the build is successful, the build branch is committed. This allows for tracking whatever is running on the Decision Server back to a particular branch in the source code project.
+* If the build is successful, the build branch is committed. This allows for tracking whatever is running on the Realtime Decision Server back to a particular branch in the source code project.
 * Finally, the project is built using Maven. Test execution is skipped in this phase.
 * In the `Test` stage, unit tests are executed via `mvn test`.
 * If the project also has integration, performance, or behavior-driven test suites, they are executed in their own stages following the test stage. Stages can be run in parallel to speed up build time.
 * In the `Publish` stage, the build artifacts are published to the Nexus repository via `mvn deploy`. The build branch is committed and pushed to the source code repository.
-* In the `Deploy to Dev` stage, the `marker` project you created in the previous step is checked out. The version of the kjar to be deployed as specified in the `.s2i/environment` file is set to the build version, and the change is committed and pushed.
-* A new build of the `policyquote` application on OpenShift is then triggered using the `oc` client, which replaces the current application with a new one containing the latest built kjar.
+* In the `Deploy to Dev` stage, the `marker` project you created in the previous step is checked out. The version of the KJAR to be deployed as specified in the `.s2i/environment` file is set to the build version, and the change is committed and pushed.
+* A new build of the `policyquote` application on OpenShift is then triggered using the `oc` client, which replaces the current application with a new one containing the latest built KJAR.
 * Note that the OpenShift build step is commented out, as the `policyquote` application has not been created yet.
 
 . Save the script.
-. Execute the pipeline by clicking *Build Now* on the `policyquote` build job page. Observe how the build moves through the different stages:
+. Execute the pipeline by clicking *Build Now* on the `policyquote` build job page.
+. Observe how the build moves through the different stages:
 +
 image::images/policyquote-pipeline-build-2.png[]
 +
-* The first `Build` stage is rather slow. The reason for this is that the Nexus repo is not fully seeded before the first build, so build dependencies must be fetched from the public Maven repositories on the Internet.
-* The Jenkins build job is executed on a slave node, which runs on a dedicated pod, spawned for the duration of the build:
+* The first `Build` stage is rather slow. The reason for this is that the Nexus repository is not fully seeded before the first build, so build dependencies must be fetched from the public Maven repositories on the Internet.
+* The Jenkins build job is executed on a slave node, which runs on a dedicated pod spawned for the duration of the build:
 +
 image::images/jenkins-slave-pod.png[]
 +
@@ -343,11 +356,11 @@ image::images/jenkins-slave-pod.png[]
 +
 image::images/policyquote-build-branch.png[]
 +
-* The version of the kjar pom file in the branch file is `1.0.1`:
+* The version of the KJAR pom file in the branch file is `1.0.1`:
 +
 image::images/policyquote-build-branch-version.png[]
 +
-* The Nexus repository contains the `1.0.1` version of the kjar binary archive:
+* The Nexus repository contains the `1.0.1` version of the KJAR binary archive:
 +
 image::images/policyquote-kjar-nexus.png[]
 +
@@ -355,11 +368,11 @@ image::images/policyquote-kjar-nexus.png[]
 +
 image::images/policyquote-deployment-override.png[]
 
-== Deploy the Decision Server Application
+== Deploy Realtime Decision Server Application
 
-Now you can deploy the Decision Server application running the `policyquote` kjar.
+In this section, you deploy the Realtime Decision Server application running the `policyquote` KJAR.
 
-. In the VM, open a terminal and change to the directory in the cloned lab project that contains the templates for the Decision Server lab:
+. In the VM, open a terminal window and change to the directory in the cloned lab project that contains the templates for the Realtime Decision Server lab:
 +
 [source,text]
 ----
@@ -367,7 +380,7 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
 ----
 * Here you use the same template as in the previous lab, but this time you do not pass values for the `KIE_CONTAINER_DEPLOYMENT` and `KIE_CONTAINER_REDIRECT_ENABLED` parameters. Their values are specified in the `marker` project.
 
-. Create an application based on the template, replacing the expressions between `< >` with the correct values for your environment:
+. Create an application based on the template:
 +
 [source,text]
 ----
@@ -379,16 +392,17 @@ $ export nexus_url=http://nexus:8081
 $ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password -p APPLICATION_NAME=$application_name -p SOURCE_REPOSITORY_URL=$source_repo -p IMAGE_STREAM_NAMESPACE=$is_namespace -p MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
 +
-* A build and deployment of the Decision Server application is started:
+* A build and deployment of the Realtime Decision Server application is started:
 +
 image::images/policyquote-binary-build.png[]
 +
 image::images/policyquote-binary-build-completed.png[]
 
 . Check the logs of the build pod using `oc logs policyquote-1-build`.
-* Note that there is no Maven build of the kjar, but rather the kjar and all its dependencies are downloaded from Nexus using `mvn dependency:offline`.
-. After the deployment of the Decision Server has finished, use curl to check the KIE container deployed. You should get the following response:
+* Note that there is no Maven build of the KJAR, but rather the KJAR and all its dependencies are downloaded from Nexus using `mvn dependency:offline`.
+. After the deployment of the Realtime Decision Server has finished, use cURL to check the KIE container deployed:
 +
+.Response
 [source,text]
 ----
 {
@@ -420,19 +434,17 @@ image::images/policyquote-binary-build-completed.png[]
   }
 }
 ----
-. Test the application with curl. Refer to the previous lab of this course for examples of the curl commands.
+. Test the application with the same cURL commands you used in the previous lab.
 
-== Complete and Automate the Jenkins Build Pipeline
+== Complete and Automate Jenkins Build Pipeline
 
-To complete the pipeline, you can automatically trigger a Jenkins build when code is committed and pushed into the `policyquote` source repository. You can also have the Jenkins build automatically start a new build of the Decision Server application at the end of the build pipeline.
+To complete the pipeline, you can automatically trigger a Jenkins build when code is committed and pushed into the `policyquote` source repository. You can also have the Jenkins build automatically start a new build of the Realtime Decision Server application at the end of the build pipeline.
 
-In this section of the lab, you make use of Git hooks (https://git-scm.com/docs/githooks).
-
-In particular, you use the `post-receive` hook. Functionality added to this hook executes from your Gogs container.
+In this section of the lab, you use link:https://git-scm.com/docs/githooks[Git hooks^]. In particular, you use the `post-receive` hook. Functionality added to this hook executes from your Gogs container.
 
 . Open a browser, navigate to the Gogs server, and log in as the `jenkins` user.
 . Navigate to the `decision-server-jenkins/policyquote` repository.
-. Click *Settings -> Git Hooks*.
+. Click *Settings -> Git Hooks*:
 +
 image::images/policyquote-githooks.png[]
 +
@@ -440,7 +452,7 @@ image::images/policyquote-githooks.png[]
 You see the *Git Hooks* option only if the `jenkins` user has been assigned permissions to create Git hooks.
 
 . Click the pencil icon next to *post-receive*.
-. In the *Hook Content* text box, paste the following scriptlet:
+. Copy and paste the following script into the *Hook Content* text box:
 +
 [source,text]
 ----
@@ -478,32 +490,32 @@ done
 .. Replace `<openshift project>` with the name of your OpenShift project.
 .. Save the pipeline.
 
-== Application Life Cycle
+== Observe Application Life Cycle
 
 . Follow the instructions detailed in the previous lab of this module to introduce a change in the `policyquote` project source code.
 . Push your changes to the `decision-server-jenkins/policyquote` repository on Gogs.
-* This should trigger a new build on Jenkins and, if the different build steps are successful, trigger a build and deployment of the Decision Server on OpenShift.
-. Using curl, verify that a new version of the `policyquote` kjar has been deployed on the Decision Server.
+* This triggers a new build on Jenkins and--if the different build steps are successful--a build and deployment of the Realtime Decision Server on OpenShift.
+. Using cURL, verify that a new version of the `policyquote` KJAR is deployed on the Realtime Decision Server.
 
-== Clean Up the Lab Environment
+== Clean Up Lab Environment
 
-This concludes the Decision Server lab.
+This concludes the Realtime Decision Server Binary Deployment lab.
 
-Before moving the the next lab, tear down the `policyquote` application:
-
+. Before moving on to the next lab, tear down the `policyquote` application:
++
 [source,text]
 ----
 $ oc delete all -l "application=policyquote"
 $ for pod in `oc get pod | grep "\-build" | awk '{print $1}'`; do oc delete pod $pod; done
 ----
 
-Leave the Jenkins, Nexus, and Gogs applications running, as you need them for the next lab.
+. Leave the Jenkins, Nexus, and Gogs applications running, as you need them for the next lab.
 
 ifdef::showscript[]
 
 jdk-jenkins-slave-57670ffb65ae1
 
-1)  compare/contrast : Webhooks and githooks
+1)  Compare/contrast : Webhooks and Githooks
 
 
 

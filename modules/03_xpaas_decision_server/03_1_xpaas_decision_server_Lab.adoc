@@ -1,47 +1,46 @@
 :scrollbar:
 :data-uri:
+:linkattrs:
 :toc2:
-:ocdownload: link:https://access.redhat.com/downloads/content/290/ver=3.5/rhel---7/3.5.5.31/x86_64/product-software[OpenShift CLI client]
+:ocdownload: link:https://access.redhat.com/downloads/content/290/ver=3.5/rhel---7/3.5.5.31/x86_64/product-software[OpenShift CLI client^]
 
 
-== Decision Server S2I Deployment Lab
+== Realtime Decision Server S2I Deployment Lab
 
 
-This module covers the Realtime Decision Server feature of JBoss BRMS for OpenShift. The Decision Server runtime is configured for deployment on OpenShift Container Platform. The Decision Server supports source-to-image (S2I) builds, as well as binary deployments starting from prebuilt kjars.
+This lab covers the JBoss BRMS Realtime Decision Server for OpenShift. The Realtime Decision Server for OpenShift runtime is configured for deployment on OpenShift Container Platform. Realtime Decision Server for OpenShift supports source-to-image (S2I) builds, as well as binary deployments starting from prebuilt KJARs.
 
-In this lab, you explore the S2I functionality of the Decision Server.
+In this lab, you explore the S2I functionality of Realtime Decision Server for OpenShift.
 
 .Goals
 
-* Provision the Decision Server in an OpenShift environment
-* Deploy a rules-based `kie-project` to the Decision Server
-* Automate the build and redeployment processes when code changes are made to your `kie-project`
+* Provision Realtime Decision Server for OpenShift
+* Deploy a rules-based `kie-project` to Realtime Decision Server for OpenShift
+* Automate the build and redeployment processes when code changes are made to `kie-project`
 * Investigate various OpenShift deployment strategies to reduce downtime
 
 .Requirements
 
-* Completion of the _Application Development with Red Hat OpenShift_ course offered by Red Hat OPEN and SkillsExchange
+* Completion of a course covering application development with Red Hat OpenShift
 * Familiarity with the `kie-server` API of the JBoss BPM Suite product
 * Experience using Git and Maven
 * Access to GitHub to clone the projects used in this lab
 
 .Lab Environment
-Most of the software utilized in this lab (along with the next lab focused on the OCP _process server_) executes in a remote OCP environment.
-There is some client-side tooling needed for these labs.  In particular:
+Most of the software utilized in this lab executes in a remote OpenShift Container Platform environment. Some client-side tooling is needed for this lab. In particular:
 
 * {ocdownload} (`oc`)
 * Git
 * Maven 3.3.* (or more recent)
-* curl
-
-NOTE: For those using the virtual machine for this course, the above listed tooling is already installed.
-For those not using the virtual machine for this course, please install the above listed tooling at this time.
+* cURL
++
+NOTE: If you are using the course VM, this tooling is already installed and you do not need to do anything. If you are not using the course VM, you need to install the tooling now.
 
 == Lab Component Topology
 
 This lab involves quite a few components that support the build, deployment, and execution of a rules application running in OpenShift Container Platform.
 
-The following illustrates the component topology and workflow of this lab:
+The following graphic illustrates the component topology and workflow of this lab:
 
 image::images/dserver1_lab_topology.gif[]
 
@@ -49,28 +48,27 @@ image::images/dserver1_lab_topology.gif[]
 
 :numbered:
 
-== Set Up the OpenShift Lab Environment
+== Set Up OpenShift Lab Environment
 
 === Register
 
-In this section of the lab, you register for the ability to create a project in your remote OpenShift lab environment.
+In this section of the lab, you register for the authorization to create a project in your remote OpenShift lab environment.
 
-. In your browser, navigate to the link:https://labs.opentlc.com/[OPENTLC lab portal]:
+. In your browser, navigate to the link:https://labs.opentlc.com/[OPENTLC lab portal^].
+. Enter your OPENTLC username and password and click *Login*:
 +
 image::images/cf_login.png[]
-
-. Enter your OPENTLC username and password and click *Login*.
-. Navigate to *Services -> Catalogs -> OPENTLC Middleware Solutions Labs -> BXMS_Infra*:
+. Navigate to *Services -> Catalogs -> All Services -> OPENTLC Middleware Solutions Labs -> BXMS_Infra*:
 +
 image::images/cf_course_selection_project.png[]
 
-. Click *Order* in the panel on the right.
+. Click *Order*.
 
-. In the next panel, click *Submit* in the lower right corner.
+. On the next screen, click *Submit* in the lower right corner.
 +
 image::images/cf_submit_button.png[]
 +
-. Expect to receive an email with contents similar to the following:
+. Check your email for a message from Red Hat similar to the following:
 +
 -----
 You have been enrolled in the OPENTLC BXMS_INFRA OpenShift environment.
@@ -78,89 +76,88 @@ You can access your environment by going to https://master.na.openshift.opentlc.
 
 NOTICE: Your environment will expire and be deleted in 14 day(s) at 2017-02-07 00:00:00 -0500. In order to conserve resources we cannot archive or restore any data in this environment. All data will be lost upon expiration.
 -----
-+
-This email confirms that your OpenShift project was created.
-Please save this email.
-+
-Pay particular attention to the URL of the OCP master node referenced in this email.
-You will be navigating to this OCP master node for the duration of this course.
+* This email confirms that your OpenShift project was created. Please save this email.
+. Make a note of the URL of the OpenShift Container Platform master node referenced in the email.
+* You use this URL throughout the remainder of this course.
 
-=== Use your OCP Project
+=== Use Your OpenShift Container Platform Project
 
-. At the command line of your workstation (pre-installed with the _oc_ utility), log in to the OpenShift environment:
+. At the command line of your workstation (pre-installed with the `oc` utility), log in to the OpenShift environment:
 +
 [source,text]
 ----
 $ oc login <URL of OCP Master node listed in the confirmation email>
 ----
 
-* You will be prompted for your OPENTLC SSO credentials.
+. When prompted, enter your OPENTLC SSO credentials.
 
-. Notice that an OCP project will have already been created for you :
+. Observe that an OpenShift Container Platform project has already been created for you:
 +
+[source,text]
 -----
 $ oc project
 Using project "jbride-test-bxms-infra" on server "https://xxx.xxx.openshift.opentlc.com:443".
 -----
-+
-Going forward, all CLI commands will target this project.
+* Going forward, all CLI commands target this project.
 
-. Make sure you can access your project using the OpenShift web console:
+. Make sure you can access your project using the OpenShift Container Platform web console:
 .. Open a browser.
-.. Navigate to the master node of OpenShift (URL was provided to you in the confirmation email when registering for the _BXMS_INFRA_ OCP lab environment
+.. Navigate to the OpenShift Container Platform master node using the URL that was provided to you in the confirmation email.
 
-.. Log in using the same credentials you used for the CLI.
+.. Log in using your OPENTLC SSO credentials:
 +
 image::images/ocp_home_page.png[]
 
-=== Clone the Lab Assets
+=== Clone Lab Assets
 
 If you did not clone the lab assets for this course to your VM in a previous lab, you must do so now:
 
 . In a terminal window, change to the `lab` directory of your VM.
-. Run the following:
+. Run the following command:
 +
 [source,text]
 -----
 $ git clone https://github.com/gpe-mw-training/bxms-advanced-infrastructure-lab.git
 -----
 
-== Configure the Gogs Git Server
+== Configure Gogs Git Server
 
-=== Install the Server
+=== Install Server
 
-For all xPaaS labs in this course, you need a Git server to host the code that you build and deploy on the Decision Server and Process Server. For this, you use Gogs, a GitHub-like Git server written in Go (https://gogs.io/).
+For all of the xPaaS labs in this course, you need a Git server to host the code that you build and deploy on Realtime Decision Server and Intelligent Process Server. For this, you use link:https://gogs.io/[Gogs^], a GitHub-like Git server written in Go.
 
-. In the VM:
-.. Open a terminal.
-.. Change to the directory in the cloned lab project that contains the common templates for the XPaaS labs:
+. In the VM, open a terminal window.
+. Change to the directory in the cloned lab project that contains the common templates for the xPaaS labs:
 +
 [source,text]
 ----
 $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 ----
-. Review the `xpaas-gogs-persistent.yaml` template. This is a template for an installation of Gogs backed by a PostgreSQL database. The template defines:
-* A Service for the Gogs server and the PostgreSQL server
-* A Route for the Gogs server
-* An ImageStream for the Gogs image. This image is hosted on DockerHub
-* A DeploymentConfig for the Gogs pod
-* A DeploymentConfig for the PostgreSQL pod. The data directory of PostgreSQL is mounted as a volume
-* A PersistentVolumeClaim for the Gogs volume
-* A PersistentVolumeClaim for the PostgreSQL volume
-* Parameters:
-** *APPLICATION_NAME:* The name for the application (default is `gogs`)
-** *POSTGRESQL_USER:* The generated name of the user for the PostgreSQL database
-** *GOGS_POSTGRESQL_PASSWORD:* The generated password of the user for the PostgreSQL database
-** *VOLUME_CAPACITY:* The volume capacity for the PersistentVolumeClaim, in MB (default is `512`)
+. Review the `xpaas-gogs-persistent.yaml` template.
+* This is a template for an installation of Gogs backed by a PostgreSQL database that defines the following:
+** A Service for the Gogs server and the PostgreSQL server
+** A Route for the Gogs server
+** An ImageStream for the Gogs image that is hosted on DockerHub
+** A DeploymentConfig for the Gogs pod
+** A DeploymentConfig for the PostgreSQL pod
+*** The data directory of PostgreSQL is mounted as a volume
+** A PersistentVolumeClaim for the Gogs volume
+** A PersistentVolumeClaim for the PostgreSQL volume
+** Parameters:
+*** `APPLICATION_NAME`: The name for the application (default is `gogs`)
+*** `POSTGRESQL_USER`: The generated name of the user for the PostgreSQL database
+*** `GOGS_POSTGRESQL_PASSWORD`: The generated password of the user for the PostgreSQL database
+*** `VOLUME_CAPACITY`: The volume capacity for the `PersistentVolumeClaim`, in MB (default is `512`)
 
-. Create an application based on the template. Specify values for the parameters if you do not want to use the defaults:
+. Create an application based on the template and specify values for the parameters if you do not want to use the defaults:
 +
 [source,text]
 ----
 $ oc process -f xpaas-gogs-persistent.yaml APPLICATION_NAME=gogs POSTGRESQL_USER=gogs GOGS_POSTGRESQL_PASSWORD=gogs VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
-. Wait a few minutes for the `gogs` and `postgreslq-gogs` containers to build and deploy. After that time, only these two containers should display a status of `Running`:
+. Wait a few minutes for the `gogs` and `postgresql-gogs` containers to build and deploy.
+.. Confirm that only these two containers display a status of `Running`:
 +
 [source,text]
 -----
@@ -172,7 +169,7 @@ postgresql-gogs-1-ctngm   1/1     Running   0          4m
 
 === Understand the Code
 
-Research and attempt to answer the following questions:
+. Research and make sure you can answer the following questions:
 
 * What is the full URL that indicates where the Gogs image used in this lab is hosted?
 ** How did you determine this URL?
@@ -180,21 +177,22 @@ Research and attempt to answer the following questions:
 * What is the port exposed by the service to the `postgresql` container to which the Gogs application connects?
 
 ifdef::showscript[]
+Answers:
 
-1) https://hub.docker.com/r/openshiftdemos/gogs/
-  - ImageStream of DockerImage is:  openshiftdemos/gogs:latest    ..... which implies Dockerhub.
-  - URL provides link to source code of gogs image used for OCP
-2)  5432
+* https://hub.docker.com/r/openshiftdemos/gogs/
+  - ImageStream of DockerImage is:  openshiftdemos/gogs:latest    ..... which implies DockerHub.
+  - URL provides link to source code of Gogs image used for OpenShift Container Platform.
+*  5432
 
 endif::showscript[]
 
-=== Set Up the Server: Modify Entries in `/etc/gogs/conf/app.ini`
+=== Set Up Server
 
-After you have set up all of the OpenShift resources, you need to set up the Gogs server.
+After you have set up all of the OpenShift resources, you need to set up the Gogs server. First you modify the entries in `/etc/gogs/conf/app.ini` and then you make the changes permanent.
 
-The Gogs configurations are stored in a file within the running container at  `/etc/gogs/conf/app.ini`.
+==== Modify Entries in `/etc/gogs/conf/app.ini`
 
-First you make the initial configuration changes via a web UI.
+The Gogs configurations are stored in a file within the running container at  `/etc/gogs/conf/app.ini`. You make the initial configuration changes via a web UI.
 
 . Determine the URL of your Gogs server:
 +
@@ -203,25 +201,23 @@ First you make the initial configuration changes via a web UI.
 $ oc get route
 -----
 .  Open a browser and navigate to the `gogs` route URL.
-+
-The Gogs installation screen appears:
+* The Gogs installation screen appears:
 +
 image::images/gogs-installation-screen.png[]
 
-. Enter the following values:
-* *Database type:* `PostgreSQL`
-* *Database Host:* `postgresql-gogs:5432`
-* *Database user:* `gogs`
-* *Database password:* `gogs`
-* *Database name:* `gogs`
-* *SSL Mode:* `disable`
+. Complete the form as follows:
+* *Database Type*: *PostgreSQL*
+* *Host*: `postgresql-gogs:5432`
+* *User*: `gogs`
+* *Password*: `gogs`
+* *Database Name*: `gogs`
+* *SSL Mode*: `disable`
 * *Application Name*: `Gogs: Go Git Service`
-* *Application URL:* `http://<gogs route>`
-+
+* *Application URL*: `http://<gogs route>`
 * Leave all other settings as is.
 
-. Click the *Install Gogs* button.
-* You are redirected to the *Sign in* screen. Leave the browser window open for now.
+. Click *Install Gogs*.
+* The *Sign in* screen appears. Leave the browser window open for now.
 
 . Find the name of the Gogs pod:
 +
@@ -229,7 +225,7 @@ image::images/gogs-installation-screen.png[]
 ----
 $ gogspod=$(oc get pod | grep "^gogs" | awk '{print $1}')
 ----
-. Review the changes made to the `gogs` configuration file in the existing container:
+. Review the changes made to the Gogs configuration file in the existing container:
 +
 [source,text]
 -----
@@ -251,9 +247,9 @@ PASSWD   = gogs
 
 -----
 
-=== Set Up the Server: Make `gogs` Configuration Changes Permanent
+==== Make Gogs Configuration Changes Permanent
 
-Next you ensure that the changes you made are permanent, so that any new `gogs` container replacing the existing one continues to use your configuration changes.
+Next you make sure that the changes you made are permanent, so that any new Gogs container replacing the existing one continues to use your configuration changes.
 
 To do so, you extract the configuration file from the Gogs pod and mount it as a ConfigMap in the container to make it persistent.
 
@@ -283,117 +279,116 @@ $ oc set volume dc/gogs --add --overwrite --name=config-volume -m /etc/gogs/conf
 ----
 * This causes a redeployment of the Gogs pod.
 
-. Wait until the `gogs` pod has been re-created and has a `RUNNING` status.
+. Wait for the Gogs pod to be created, then verify that it has a `RUNNING` status.
 
-. Create an account and a repository on the Gogs server:
-.. Go back to the Gogs login page in your browser.
-.. Click *Register*.
+. Create an account and repository on the Gogs server:
+.. Go back to the Gogs *Sign In* screen in your browser.
+.. Click *Register*:
 +
 image::images/gogs_register.png[]
-.. Create an account. Be sure to remember the username and password combination.
+.. Create an account. Be sure to note the username and password.
 .. Log in with your username and password.
 
 
-=== Configure `decision-server-s2i` organization in Gogs
+=== Configure `decision-server-s2i` Organization in Gogs
 
 . Create an organization named `decision-server-s2i`:
-.. Click *+* at the upper right.
-.. Click *New Organization*.
+.. In the top right, click image:images/gogs_add_icon.png[] (*Add*) and select *New Organization*.
+
+.. For *Organization Name*, enter `decision-server-s2i`, then click *Create Organization*:
 +
 image::images/gogs_new_org.png[]
-.. For the organization name, enter `decision-server-s2i`.
-.. Click the *Create Organization* button.
-.. Check that you are a member of the new organization and listed as `owner`.
-.. From the dashboard of the `decision-server-s2i`, click the blue box at the far right: *View decision-server-s2i*.
+.. Verify that you are a member of the new organization and listed as the owner.
+.. From the `decision-server-s2i` dashboard, click *View decision-server-s2i*:
 +
 image::images/view_dserver.png[]
-.. Click the *Owners* link and confirm that your userId is affiliated with this Owners group.
+.. Click the *Owners* link and confirm that your user ID is affiliated with this Owners group.
 
 . Create a `policyquote` repository in the `decision-server-s2i` organization:
-.. Click the `+` symbol in the upper right, and select *New Repository*.
-.. Make sure the repository is not private. (Do not check that box.)
-.. Make sure the *Initialize this repository with selected file and template* box is unchecked.
+.. In the top right, click image:images/gogs_add_icon.png[] (*Add*) and select *New Repository*.
+.. Complete the *New Repository* form as follows:
+** *Owner*: *decision-server-s2i*
+** *Repository Name*: `policyquote`
+** *Visibility*: Unchecked
+** *Initialize this repository with selected files and template*: Unchecked
 +
 image::images/create_new_repo.png[]
 +
-.. Click *Create repository*.
-+
-* Later in the lab, you push your BRMS project to this repository.
+.. Click *Create Repository*.
 
-== Configure the Nexus Maven Repository Server
+* Later in the lab, you push your JBoss BRMS project to this repository.
 
-The S2I build of the Decision Server relies heavily on Maven to build and deploy the BRMS project source code. To avoid needing to download the Maven dependencies at every build cycle, you can configure a Nexus repository as a proxy. The Maven build downloads the dependencies it needs from the Nexus proxy rather than the internet, which speeds up the build considerably.
+== Configure Nexus Maven Repository Server
+
+The S2I build of Realtime Decision Server relies heavily on Maven to build and deploy the JBoss BRMS project source code. To avoid needing to download the Maven dependencies at every build cycle, you can configure a Nexus repository as a proxy. The Maven build downloads the dependencies it needs from the Nexus proxy rather than the Internet, which speeds up the build considerably.
 
 In this section, you install and configure a Nexus server in your OpenShift project.
 
-=== Install
+=== Install Server
 
-. In the VM, open a terminal and change to the directory in the cloned lab project that contains the common templates for the xPaaS labs:
+. In the VM, open a terminal window and change to the directory in the cloned lab project that contains the common templates for the xPaaS labs:
 +
 [source,text]
 ----
 $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/common
 ----
 
-. Review the `xpaas-nexus-persistent.yaml` template. This is a template for the installation of Nexus. The template defines:
-* A Service for the Nexus server
-* A Route for the Nexus server
-* An ImageStream for the Nexus docker image, which is hosted on DockerHub
-* A DeploymentConfig for the Nexus pod
-* A PersistentVolumeClaim for the Nexus volume, which holds the Nexus configuration and storage
-* Parameters:
-** *APPLICATION_NAME:* The name for the application (default is `nexus`)
-** *VOLUME_CAPACITY:* The volume capacity for the PersistentVolumeClaim, in MB (default is `512`)
+. Review the `xpaas-nexus-persistent.yaml` template.
+* This is a template for the installation of Nexus that defines the following:
+** A Service for the Nexus server
+** A Route for the Nexus server
+** An ImageStream for the Nexus docker image, which is hosted on DockerHub
+** A DeploymentConfig for the Nexus pod
+** A PersistentVolumeClaim for the Nexus volume, which holds the Nexus configuration and storage
+** Parameters:
+*** `APPLICATION_NAME`: The name for the application (default is `nexus`)
+*** `VOLUME_CAPACITY`: The volume capacity for the `PersistentVolumeClaim`, in MB (default is `512`)
 
-. Create an application based on the template. Specify values for the parameters if you do not want to use the defaults:
+. Create an application based on the template and specify values for the parameters if you do not want to use the defaults:
 +
 [source,text]
 ----
 $ oc process -f xpaas-nexus-persistent.yaml APPLICATION_NAME=nexus VOLUME_CAPACITY=512Mi | oc create -f -
 ----
 
-=== Configure
+=== Configure Server
 
-Once all the components of your application are up, you are ready to configure the Nexus server.
-More specifically, you need to add the Red Hat enterprise Maven repository to the list of proxied repositories.
+Once all of the components of your application are up, you are ready to configure the Nexus server. More specifically, you need to add the Red Hat Enterprise Maven repository to the list of proxied repositories.
 
 . In a browser window, navigate to the URL of the Nexus route.
 . Log in with the username `admin` and password `admin123`.
-. In the left navigation panel, click *Repositories*.
-.. Click the *Add* icon in the top menu to access the list of options.
-.. Click  *Proxy Repository*.
+. In the menu on the left, click *Repositories*.
+.. Click the *Add* icon at the top to access the list of options.
+.. Select *Proxy Repository*.
 .. On the *New Proxy Repository* screen, enter the following values:
-* *Repository ID:* `redhat-ga`
-* *Repository Name:* `Red Hat GA`
-* *Remote Storage Location:* `https://maven.repository.redhat.com/ga/`
-+
+* *Repository ID*: `redhat-ga`
+* *Repository Name*: `Red Hat GA`
+* *Remote Storage Location*: `https://maven.repository.redhat.com/ga/`
 * Leave the other fields as is.
 .. Click *Save*.
 
 . Add the Red Hat GA repository to the public repository group:
-.. In the left navigation panel, click *Repositories*.
+.. In the menu on the left, click *Repositories*.
 .. Select *Public Repositories*.
-.. In the bottom panel, click the *Configuration* tab.
-.. Make sure that the *Red Hat GA* repository is in the *Ordered Group Repositories* panel:
+.. In the *Public Repositories* section at the bottom of the screen, click the *Configuration* tab.
+.. Make sure that the *Red Hat GA* repository is in the *Ordered Group Repositories* list:
 +
 image::images/nexus-redhat-repo.png[]
 +
 .. Click *Save*.
 
-== `policyquote` Sample Application
+== Add `policyquote` Sample Application
 
-This lab uses a sample application called  `policyquote`.
-
-The `policyquote` application is a fairly simple JBoss BRMS application that calculates the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a rule flow process) and a domain model in a single Maven project.
+This lab uses a sample application called `policyquote`. The `policyquote` application is a fairly simple JBoss BRMS application that calculates the price of a car insurance policy based on driver and car data. The project consists of a number of rules (including a ruleflow process) and a domain model in a single Maven project.
 
 [NOTE]
-The S2I build mechanism imposes certain limitations on the project structure. Multi-module Maven projects are not well supported. Specifically for kjars, all dependencies (like a domain model jar) should be available in a Maven repository before the build kicks off.
+The S2I build mechanism imposes certain limitations on the project structure. Multi-module Maven projects are not well supported. Specifically for KJARs, all dependencies (like a domain model JAR) need to be available in a Maven repository before the build kicks off.
 
 When using binary deployments, you have more flexibility on how to structure your project.
 
 In this part of the lab, you clone the `policyquote` project from GitHub, and push it into the Gogs server on OpenShift to act as the source for your S2I builds.
 
-. In the virtual machine, open a terminal and change to the lab `home` folder.
+. In the VM, open a terminal window and change to the lab `home` folder:
 +
 [source,text]
 ----
@@ -412,8 +407,8 @@ $ git clone https://github.com/gpe-mw-training/bxms-xpaas-policyquote
 $ cd bxms-xpaas-policyquote
 $ git remote add gogs-s2i http://<gogs username>:<gogs password>@<url of the gogs route>/decision-server-s2i/policyquote.git
 ----
-
-* Replace `<gogs password>`,`<url of the gogs route>` and `<gogs username>` with the appropriate values for your environment.
++
+NOTE: Replace `<gogs username>`, `<gogs password>`, and `<url of the gogs route>` with the appropriate values for your environment.
 
 . Push the code to the Gogs server:
 +
@@ -424,23 +419,23 @@ $ git push gogs-s2i master
 . In your browser, return to the home page of your `decision-server-s2i` repository hosted in your `gogs` container:
 +
 image::images/seeded_gogs_repo.png[]
-. Observe that your repository is now seeded with the `policyquote` project.
+* Note that your repository is now seeded with the `policyquote` project.
+
 . Review the code and rules in this application.
-.. Notice that the project includes a drools _ruleflow_ artifact:  _PolicyQuote.rf_
-+
-If you were to view this ruleflow file in JBoss Developer Studio (assuming JBDS is installed with the _Integration Stack_ of plugins), you'd see that the ruleflow is as follows:
+* Note that the project includes a Drools `ruleflow` artifact, `PolicyQuote.rf`.
+* If you view this ruleflow file in JBoss Developer Studio installed with the _Integration Stack_ of plug-ins, you can see that the ruleflow looks like this:
 +
 image::images/policy-quote-rule-flow.png[]
 .. Study each of the rule files found in this project.
-*** What are the names of the rules affiliated with the _calculation_ ruleflow-group ?
-*** What are the names of the rules affiliated with the _surcharge_ ruleflow-group ?
+*** What are the names of the rules affiliated with the calculation `ruleflow-group`?
+*** What are the names of the rules affiliated with the surcharge `ruleflow-group`?
 
 
-== Decision Server S2I Templates
+== Import Realtime Decision Server S2I Templates
 
-To create Decision Server applications on OpenShift, you can start from a template that you import into your OpenShift project. Because you can have several templates using the same Decision Server image, you can create an image stream for that image so that you can reuse it in several templates.
+To create Realtime Decision Server applications on OpenShift, you can start from a template that you import into your OpenShift project. Because you can have several templates using the same Realtime Decision Server image, you can create an image stream for that image so that you can reuse it in several templates.
 
-. In the VM, open a terminal, and change to the directory in the cloned lab project that contains the templates for the Decision Server lab:
+. In the VM, open a terminal window, and change to the directory in the cloned lab project that contains the templates for the Realtime Decision Server lab:
 +
 [source,text]
 ----
@@ -448,42 +443,42 @@ $ cd /home/jboss/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server
 ----
 
 . Review the `decisionserver-63-is.yaml` definition file.
-* This file defines the ImageStream for the Decision Server 6.3 image, hosted in the Red Hat's Docker registry.
+* This file defines the ImageStream for the Realtime Decision Server 6.3 image, hosted in Red Hat's Docker registry.
 * The latest version of this image is 1.3.
 
-. Create the ImageStream for the Decision Server image:
+. Create the ImageStream for the Realtime Decision Server image:
 +
 [source,text]
 ----
 $ oc create -f decisionserver-63-is.yaml
 ----
 
-. Review the `decisionserver-basic-s2i.yaml` template. Note the following:
-+
-* The template defines:
+. Review the `decisionserver-basic-s2i.yaml` template.
+* The template defines the following:
 
-** A BuildConfig for the S2I build. The BuildConfig defines a source build that points to a Git repo, as well as the builder image, through the ImageStream you defined earlier. The build is triggered through a webhook whenever you push new code to the Git repository, or by a change in the builder image.
+** A BuildConfig for the S2I build. The BuildConfig defines a source build that points to a Git repository, as well as the builder image, through the ImageStream you defined earlier. The build is triggered through a webhook whenever you push new code to the Git repository, or by a change in the builder image.
 ** An ImageStream for the image created as a result of the build.
 ** A DeploymentConfig for the pods running the image created as result of the build. The number of replicas is set to `1`.
-** A Service for the Decision Server.
-** A Route for the Decision Server.
+** A Service for the Realtime Decision Server.
+** A Route for the Realtime Decision Server.
 ** Parameters:
-*** *KIE_CONTAINER_DEPLOYMENT:* Describes which kjars need to be deployed on the Decision Server, in the format `containerId=groupId:artifactId:version|c2=g2:a2:v2`.
-*** *KIE_CONTAINER_REDIRECT_ENABLED:* Enables redirect functionality for KIE containers. This should be set to `true` when different versions of the same kjar are to be deployed side-by-side. The default is `true`.
-*** *KIE_SERVER_USER:* The username to access the Decision Server REST or JMS interface. The default is `kieserver`.
-*** *KIE_SERVER_PASSWORD:* The password to access the Decision Server REST or JMS interface. The default is a generated value.
-*** *APPLICATION_NAME:* The name for the application.
-*** *HOSTNAME_HTTP:* The custom hostname for the HTTP service route. Leave blank to use the default hostname generated by OpenShift.
-*** *SOURCE_REPOSITORY_URL:* The Git source URI for application. A value is required.
-*** *SOURCE_REPOSITORY_REF:* The Git branch/tag reference to build. The default is `master`.
-*** *CONTEXT_DIR:* The path within the Git project to build. Leave blank to use the root project directory.
-*** *GITHUB_WEBHOOK_SECRET:* The GitHub trigger secret. This is added to the webhook URL. The default is a generated value.
-*** *GENERIC_WEBHOOK_SECRET:* The generic build trigger secret. This is added to the webhook URL. The default is a generated value.
-*** *IMAGE_STREAM_NAMESPACE:* The namespace in which the ImageStreams for Red Hat xPaaS images are installed. These ImageStreams are normally installed in the `openshift` namespace. You  only need to modify this if you have installed the ImageStreams in a different namespace or project (which is the case in this lab).
-*** *MAVEN_MIRROR_URL:* The URL of the Maven mirror--that is, the Nexus server.
-* This template does not contain a database service
-** Decision Server does not use persistence
-* Decision Server uses an insecure route--HTTP, not HTTPS
+*** `KIE_CONTAINER_DEPLOYMENT`: Describes which KJARs need to be deployed on the Realtime Decision Server, in the format `containerId=groupId:artifactId:version|c2=g2:a2:v2`.
+*** `KIE_CONTAINER_REDIRECT_ENABLED`: Enables redirect functionality for KIE containers. This should be set to `true` when different versions of the same KJAR are to be deployed side-by-side. The default is `true`.
+*** `KIE_SERVER_USER`: The username to access the Realtime Decision Server REST or JMS interface. The default is `kieserver`.
+*** `KIE_SERVER_PASSWORD`: The password to access the Realtime Decision Server REST or JMS interface. The default is a generated value.
+*** `APPLICATION_NAME`: The name for the application.
+*** *`HOSTNAME_HTTP`: The custom hostname for the HTTP service route. Leave blank to use the default hostname generated by OpenShift.
+*** `SOURCE_REPOSITORY_URL`: The Git source URI for application. A value is required.
+*** `SOURCE_REPOSITORY_REF`: The Git branch/tag reference to build. The default is `master`.
+*** `CONTEXT_DIR`: The path within the Git project to build. Leave blank to use the root project directory.
+*** `GITHUB_WEBHOOK_SECRET`: The GitHub trigger secret. This is added to the webhook URL. The default is a generated value.
+*** `GENERIC_WEBHOOK_SECRET`: The generic build trigger secret. This is added to the webhook URL. The default is a generated value.
+*** `IMAGE_STREAM_NAMESPACE`: The namespace in which the ImageStreams for Red Hat xPaaS images are installed. These ImageStreams are normally installed in the `openshift` namespace. You need to modify this only if you have installed the ImageStreams in a different namespace or project (which is the case in this lab).
+*** `MAVEN_MIRROR_URL`: The URL of the Maven mirror--that is, the Nexus server.
+* This template does not contain a database service.
+** Realtime Decision Server does not use persistence.
+* Realtime Decision Server uses an insecure route--HTTP, not HTTPS.
+
 . Import the template into your OpenShift project:
 +
 [source,text]
@@ -491,11 +486,11 @@ $ oc create -f decisionserver-63-is.yaml
 $ oc create -f decisionserver-basic-s2i.yaml
 ----
 
-== Create Your Openshift Decision Server Application
+== Create Realtime Decision Server for OpenShift Container
 
-Everything is now in place to create a OpenShift application for your BRMS project.
+Everything is now in place to create a Realtime Decision Server container for your JBoss BRMS project.
 
-. In the VM, open a terminal and run the following, replacing `<name of your OpenShift project>` with the appropriate value:
+. In the VM, open a terminal window and run the following:
 +
 [source,text]
 ----
@@ -507,10 +502,10 @@ $ export is_namespace=$(oc project | awk '{gsub(/"/,"",$3); print $3}')
 $ export kie_container_deployment="policyquote=com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT"
 $ oc new-app --template=decisionserver63-basic-s2i -p KIE_SERVER_PASSWORD=$kieserver_password -p APPLICATION_NAME=$application_name -p SOURCE_REPOSITORY_URL=$source_repo -p IMAGE_STREAM_NAMESPACE=$is_namespace -p KIE_CONTAINER_DEPLOYMENT=$kie_container_deployment -p KIE_CONTAINER_REDIRECT_ENABLED=false -p MAVEN_MIRROR_URL=$nexus_url/content/groups/public/
 ----
-+
-* Note that the `KIE_CONTAINER_REDIRECT_ENABLED` environment variable is set to `false`. This means that the name of the KIE container for your application will be `policyquote`, as defined in `KIE_CONTAINER_DEPLOYMENT`.
 
-. Check the progress of the build by locating the builder pod (named `policyquote-app-1-build`) and checking the logs either in the OpenShift console or via the OpenShift CLI:
+* Note that the `KIE_CONTAINER_REDIRECT_ENABLED` environment variable is set to `false`. This means that the name of the KIE container for your application is `policyquote`, as defined in `KIE_CONTAINER_DEPLOYMENT`.
+
+. Check the progress of the build by locating the builder pod (named `policyquote-app-1-build`) and checking the logs either in the OpenShift Container Platform web console or via the OpenShift CLI:
 +
 [source,text]
 ----
@@ -533,44 +528,41 @@ I0908 06:51:52.519695       1 sti.go:288] Successfully pushed 172.30.1.250:5000/
 +
 * The image built by the builder pod is pushed to the OpenShift internal registry. This triggers the deployment of the image.
 
-. Monitor the deployment of the application by locating the pod (named `policyquote-app-1-xxxxx`) and checking the logs either in the OpenShift console or via the OpenShift CLI.
+. Monitor the deployment of the application by locating the pod (named `policyquote-app-1-xxxxx`) and checking the logs either in the OpenShift Container Platform web console or via the OpenShift CLI.
 +
-* After some time, you see something like the following:
+* After some time, expect to see something like the following:
 +
 [source,text]
 ----
 06:53:27,949 INFO  [org.kie.server.services.impl.KieServerImpl] (EJB default - 1) Container policyquote (for release id com.redhat.gpte.xpaas:policyquote:1.0-SNAPSHOT) successfully started
 ----
 +
-* By that time, the service and the route have started, and your Decision Server application is ready to serve requests.
+* By that time, the service and the route have started, and your Realtime Decision Server application is ready to serve requests.
 +
 image::images/policyquote-application-ose.png[]
 
-== View Decision Server status
+== View Realtime Decision Server Status
 
-. Before you execute your deployed `policyquote` application, investigate the details of the API exposed by the Decision Server:
+. Before you execute your deployed `policyquote` application, investigate the details of the API exposed by the Realtime Decision Server:
 
-.. Determine the route to the `policyquote` application deployed to a `decision-server` container in OpenShift:
+.. Determine the route to the `policyquote` application deployed to a decision-server container in OpenShift:
 +
 [source,text]
 -----
 $ oc get route | grep policyquote
 -----
-.. In your browser, navigate to: `<policyquote app route>/kie-server/docs`.
-.. Pay particular attention to the API that accepts a HTTP POST at the following uri:  `server/containers/instances/{id}`
+.. In your browser, navigate to `<policyquote app route>/kie-server/docs`.
+.. Pay particular attention to the API that accepts an HTTP POST at the `server/containers/instances/{id}` URI:
 +
 image::images/kie-server-api-post.png[]
 +
-NOTE: Notice the use of the term _containers_ in the URI of the above resource.
-The word _container_ is highly overloaded in the world of software.
-The use of the word _container_ in this specific context refers to the Decision Server construct: _KIE Container_.
-It does not refer to a OpenShift / Kubernetes _container_.
+NOTE: Notice the use of the term _containers_ in the URI of this resource. The word "container" is highly overused in the world of software. In this specific context, it refers to the Realtime Decision Server construct, _KIE Container_. It does not refer to an OpenShift/Kubernetes container.
 
-* This resource URI drives the stateless rules engine of the _decision-server_ application.
+* This resource URI drives the stateless rules engine of the decision-server application.
 
-* The _id_ specified in the resource URI refers to the identifier of the container to invoke. In this case it is called `policyquote`.
+* The ID specified in the resource URI refers to the identifier of the container to invoke. In this case it is called `policyquote`.
 
-. You can test your application using the REST API exposed by the Decision Server, using `curl`:
+. Use `curl` to test your application via the REST API exposed by the Realtime Decision Server:
 .. In a terminal window, run the following:
 +
 [source,text]
@@ -578,15 +570,14 @@ It does not refer to a OpenShift / Kubernetes _container_.
 $ export policyquote_app=<URL of the policyquote app route>
 $ export kieserver_password=kieserver1!
 ----
-.. To check the health of the server:
+.. Check the health of the server:
 +
 [source,text]
 ----
 $ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password "$policyquote_app/kie-server/services/rest/server"
 ----
 +
-* Response:
-+
+.Sample Output
 [source,text]
 ----
 {
@@ -608,14 +599,14 @@ $ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password
   }
 }
 ----
-.. To check which KIE containers are deployed on the server:
+.. Check which KIE containers are deployed on the server:
 +
 [source,text]
 ----
 $ curl -X GET -H "Accept: application/json" --user kieserver:$kieserver_password "$policyquote_app/kie-server/services/rest/server/containers"
 ----
-Response:
 +
+.Response
 [source,text]
 ----
 {
@@ -648,23 +639,23 @@ Response:
 }
 ----
 
-=== Test `policyquote` application
+=== Test `policyquote` Application
 
-. To test your application, you need to send a correctly formatted payload. The `/xpaas/decision-server` directory of the lab contains an example, formatted as JSON.
-.. Open the `policyquote-payload.json` payload file and study its contents.
+To test your application, you need to send a correctly formatted payload. The `/xpaas/decision-server` directory of the lab contains an example, formatted as JSON.
 
-* Notice how the various batch commands found in this json payload file correspond to similar java _Command_ objects found in the `rule` and `process` directories described in the following links:
-** https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/rule[rule commands]
-**https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/process[process commands].
-.. Make sure you are in the `xpaas/decision-server` directory, and run the following:
+. Open the `policyquote-payload.json` payload file and study its contents.
+
+* Note how the various batch commands found in this JSON payload file correspond to similar Java _Command_ objects found in the `rule` and `process` directories described in the following links:
+**  link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/rule[Rule commands^]
+** link:https://github.com/droolsjbpm/drools/tree/master/drools-core/src/main/java/org/drools/core/command/runtime/process[Process commands^]
+. Make sure you are in the `xpaas/decision-server` directory, and run the following:
 +
 [source,text]
 ----
 $ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote"
 ----
 +
-Response:
-+
+.Response
 [source,text]
 ----
 {
@@ -725,26 +716,28 @@ Response:
 }
 ----
 +
-NOTE: In the response, pay particular attention to the `price` field of the Policy. This is set as a result of the execution of the rules in your application.
+NOTE: In the response, pay particular attention to the policy's `price` field. This is set as a result of the execution of the rules in your application.
 
-.. To filter out the `price` field, use `grep`:
+. Filter out the `price` field using `grep`:
 +
 [source,text]
 ----
 $ curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote" | grep '"price"'
 ----
 +
+.Sample Output
 [source,text]
 ----
   "price" : 300,
 ----
-. Experiment by changing some values in the `policyquote-payload.json` payload file for the Driver and Policy objects and checking if you get another result from the server. Review the rules in the project to get an idea of the fields you need to change to influence the calculated price.
+. Experiment by changing some values in the `policyquote-payload.json` payload file for the driver and policy objects and seeing if you get another result from the server.
+. Review the rules in the project to get an idea of the fields you need to change to influence the calculated price.
 
-== Application Life Cycle
+== Observe Application Life Cycle
 
-Here you introduce a change in one of the rules of your application, and observe what happens when you push the change to the Git repository.
+In this section, you introduce a change in one of the rules of your application, and observe what happens when you push the change to the Git repository.
 
-=== Configure a Webhook to the OpenShift BuildConfig Object
+=== Configure Webhook to OpenShift BuildConfig Object
 
 First you need to define a webhook in your `policyquote` repository on Gogs. This webhook is triggered by a push of new code. The webhook calls the OpenShift API to start a new S2I build.
 
@@ -755,34 +748,31 @@ First you need to define a webhook in your `policyquote` repository on Gogs. Thi
 oc describe bc policyquote-app
 ----
 
-. From the response, copy the URL of the GitHub webhook. It should look like the following:
+. From the response, copy the URL of the GitHub webhook, which looks similar this:
 +
 [source,text]
 ----
 https://<OpenShift URL>:8443/oapi/v1/namespaces/xpaas/buildconfigs/policyquote-app/webhooks/<secret>/github
 ----
 . Open a browser window and navigate to the `policyquote` repository on Gogs.
-. Click *Settings* at the upper right.
+. Click *Settings*:
 +
 image::images/gogs-repository-settings.png[]
-. On the *Settings* screen,, click *Webhooks > Add Webhook*.
-. Click *Gogs*.
-. Paste the webhook URL obtained from the BuildConfig into the *Payload URL* text box.
-+
-* Leave *Content Type* as `application/json`.
-* Leave *Secret* blank.
-* Make sure *Just the push event* is selected.
-* Make sure the *Active* box is checked.
+. On the *Settings* screen, select *Webhooks -> Add Webhook*.
+. Click *Gogs* and complete the form as follows:
+* *Payload URL*: Paste the webhook URL obtained from the BuildConfig
+* *Content Type*: *application/json*
+* *Secret*: Leave blank
+* *Just the push event*: Selected
+* *Active*: Checked
 . Click *Add Webhook*.
 
-=== Change the Rules and Test Your Change
+=== Change Rules and Test
 
 . In a terminal window, change to the root of the cloned `bxms-xpaas-policyquote` project.
 
 . Open the `src/main/resources/RiskyAdults.drl` file for editing.
-. Change the price in the rule action to `350`.
-+
-* The rule should now look like:
+. Change the price in the rule action to `350`:
 +
 [source,text]
 ----
@@ -805,14 +795,15 @@ rule "RiskyAdults"
 
 end
 ----
-. As the project contains some unit tests for your rules, you need to make a change there as well. Open the `src/test/java/com/redhat/gpte/policyquote/rules/RiskyAdultsTest.java` file for editing.
-. Change the assert around line 62 to:
+. Open the `src/test/java/com/redhat/gpte/policyquote/rules/RiskyAdultsTest.java` file for editing.
+* As the project contains some unit tests for your rules, you need to make a change here as well.
+. Change the assert around line 62 to the following:
 +
 [source,text]
 ----
 Assert.assertEquals(350, policy.getPrice().intValue());
 ----
-. Optionally, you can test if the project builds sucessfully by doing a local Maven build:
+. Test if the project builds successfully by doing a local Maven build:
 +
 [source,text]
 ----
@@ -831,7 +822,7 @@ EOF
 $ git commit -m "raised the price for risky adults"
 $ git push gogs-s2i master
 ----
-. Check in the OpenShift web console that a new build is triggered by the code push:
+. In the OpenShift Container Platform web console, check that a new build is triggered by the code push:
 +
 image::images/openshift-s2i-new-build.png[]
 +
@@ -841,7 +832,7 @@ image::images/openshift-s2i-new-build.png[]
 image::images/openshift-s2i-new-deployment.png[]
 
 . Test the new deployment:
-.. Change the directory to: `~/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server`.
+.. Change to the `~/lab/bxms-advanced-infrastructure-lab/xpaas/decision-server` directory.
 .. Run the following:
 +
 [source,text]
@@ -849,37 +840,40 @@ image::images/openshift-s2i-new-deployment.png[]
 curl -s -X POST -H "Content-Type: application/json" -H "Accept: application/json" --user kieserver:$kieserver_password -d @policyquote-payload.json "$policyquote_app/kie-server/services/rest/server/containers/instances/policyquote" | grep '"price"'
 ----
 +
+.Sample Output
 [source,text]
 ----
   "price" : 350,
 ----
-* The price should now be `350` instead of `300`.
+* Expect the price to be `350` instead of `300`.
 
-=== Scaling out and Rolling Deployment
+=== Scale-Out and Define Rolling Deployment
 
-As you have noticed during the build and deployment triggered by a code change, there is a time span during which the application is unavailable. This happens roughly between the moment that the S2I build is finished and the new deployment becomes active. This includes the time needed by the Decision Server to start up.
+As you have noticed during the build and deployment triggered by a code change, there is a time span during which the application is unavailable. This happens roughly between the moment that the S2I build is finished and the new deployment becomes active. This includes the time needed by Realtime Decision Server to start up.
 
 This downtime is not that serious in a development phase, but it is probably not acceptable in a production environment.
 
 By scaling out your application and defining a rolling upgrade strategy, you can ensure that your application remains available--even if that means that during a limited time span both the old and new versions are deployed concurrently.
 
-Here you introduce the changes required directly in the DeploymentConfig of your application. Alternatively, you could create the changes in the template, load it into the OpenShift project, tear down the existing application, and create a new one based on the modified template.
+In this section, you introduce the required changes directly in your application's DeploymentConfig. Alternatively, you can create the changes in the template, load the template into the OpenShift project, tear down the existing application, and create a new one based on the modified template.
 
-. In a terminal window, run the following:
+. Select one of the following methods for editing the DeploymentConfig:
+.. If you are comfortable using vi, run the following command in a terminal window:
 +
 [source,text]
 ----
 $ oc edit dc policyquote-app
 ----
 +
-* This opens the DeploymentConfig definition in YAML format in vi.
+** This opens the DeploymentConfig definition in YAML format in vi.
+
+.. Alternatively, if you are unfamiliar with vi, you can also edit the DeploymentConfig directly in the OpenShift Container Platform web console:
 +
-. Alternatively, if you are unfamiliar with vi, you can also edit the DeploymentConfig directly in the OpenShift web console:
-+
-.. Navigate to the `policyquote` deployment
-.. Click *Actions*.
-.. Click *Edit YAML*. This opens a window in which you can edit the YAML file.
-. Change the `spec/replicas` and the `spec/strategy` section to match the following content. Note that YAML is indentation-sensitive.
+... Navigate to the `policyquote` deployment.
+... Click *Actions*.
+... Click *Edit YAML*.
+*** This opens a window in which you can edit the YAML file.
+. Change the `spec/replicas` and the `spec/strategy` sections to match the following content, keeping in mind that YAML is indentation-sensitive:
 +
 [source,text]
 ----
@@ -908,12 +902,12 @@ image::images/policyquote-deployment-scaled.png[]
 +
 * Requests to the application are now balanced between the two pods.
 
-. Use curl to test that your application is working correctly. Repeat the steps in the earlier procedure to make a change in the code of the application:
+. Use cURL to test that your application is working correctly by repeating the steps to make a change in the application's code:
 .. This time, change the price in the `Risky Adult` rule to `400`.
 .. Remember to change the unit test accordingly.
 .. Build locally, commit, and push the change.
 
-. To monitor the availability of the application, use the curl command in a loop:
+. To monitor the availability of the application, use the cURL command in a loop:
 +
 [source,text]
 ----
@@ -924,15 +918,15 @@ $ while [ true ]; do curl -s -X POST -H "Content-Type: application/json" -H "Acc
 +
 image::images/policyquote-deployment-rolling.png[]
 +
-* If you launched the curl command in a loop, you should have noticed no interruption in the responsiveness of the application. When the new application pods become active, the application responds with a price of `400` rather than `350`.
+* Because you launched the cURL command in a loop, expect to see no interruption in the responsiveness of the application.
+. When the new application pods become active, confirm that the application responds with a price of `400` rather than `350`.
 
-== Clean Up the Lab Environment
+== Clean Up Lab Environment
 
 This concludes the first lab of this module. To save resources on OpenShift, you can tear down the `policyquote` application.
 
-. Leave the Nexus and Gogs applications running, as you need them for the next lab.
 . In a terminal window, run the following:
-
++
 [source,text]
 ----
 $ oc delete dc policyquote-app
@@ -942,23 +936,24 @@ $ oc delete is policyquote-app
 $ oc delete bc policyquote-app
 $ for pod in `oc get pod | grep "\-build" | awk '{print $1}'`; do oc delete pod $pod; done
 ----
+. Leave the Nexus and Gogs applications running, as you need them for the next lab.
 
 ifdef::showscript[]
 
-nice job with decision server lab.  still going through it.  really like the use of the ConfigMap object for the gogs server
-i think it would be valuable to:
-1)  point out to students that there are existing decision server templates in the openshift namespace
-2)  our rationale for not leveraging those templates directly as is.  Sounds like one reason is the desire to isolate and re-use the decision server image stream (edited)
+Nice job with decision server lab.  Still going through it.  Really like the use of the ConfigMap object for the Gogs server.
+I think it would be valuable to point out the following:
+1)  There are existing decision server templates in the OpenShift namespace.
+2)  Our rationale for not leveraging those templates directly as is.  Sounds like one reason is the desire to isolate and re-use the decision server image stream (edited)
 
 Actually there are a couple of reasons to use our own template and image stream:
-* The imagestream and templates are not installed by default on OCP < 3.3 (at least not the latest versions)
-* The templates in the openshift namespace miss the MAVEN_MIRROR parameter, which makes it a lot harder to leverage nexus as a maven proxy
-* The templates in the openshift namespace have a lot of parameters (especially the process server templates) that are not required and might confuse students
+* The image stream and templates are not installed by default on OpenShift Container Platform < 3.3 (at least not the latest versions)
+* The templates in the OpenShift namespace miss the MAVEN_MIRROR parameter, which makes it a lot harder to leverage nexus as a maven proxy
+* The templates in the OpenShift namespace have a lot of parameters (especially the process server templates) that are not required and might confuse students
 * In general I think in real life most people will come up with templates customized to their needs, rather than using the provided ones.
-These should be more considered as examples or blueprints.
+These should be considered as examples or blueprints.
 
 
-2)  study and elaborate on:
+3)  Study and elaborate on:
   - KIE_CONTAINER_DEPLOYMENT
   - KIE_CONTAINER_REDIRECT_ENABLED
 
