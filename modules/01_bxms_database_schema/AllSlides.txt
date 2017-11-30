@@ -1,5 +1,6 @@
 
 include::cover.adoc[]
+include::course_start_page.adoc[]
 include::m01s01_topics.adoc[]
 include::m01s02_persistence_1.adoc[]
 include::m01s03_persistence_2.adoc[]
