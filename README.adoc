@@ -1,3 +1,12 @@
-= BxMS Advanced Infrastructure
+= Red Hat JBoss BPM Suite 6 Implementation
 
+Contents:  
+1: bxms database schema
+2: bxms security 
+3: xpaas decision server 
+4: xpaas process server
+
+== Version
+1.0 - initial version
+2.0 - ILT to ELAB conversion
 
