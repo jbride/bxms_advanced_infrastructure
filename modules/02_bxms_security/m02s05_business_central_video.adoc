@@ -1,6 +1,6 @@
 :scrollbar:
 :data-uri:
-:noaudio:
+
 
 == Business Central User Interface
 

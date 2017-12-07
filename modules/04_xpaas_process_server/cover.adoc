@@ -1,4 +1,4 @@
-:noaudio:
+
 
 ifdef::revealjs_slideshow[]
 

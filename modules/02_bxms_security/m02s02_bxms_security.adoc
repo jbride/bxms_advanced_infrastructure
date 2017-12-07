@@ -1,6 +1,6 @@
 :scrollbar:
 :data-uri:
-:noaudio:
+
 
 == Security in JBoss BPM Suite
 * Business Central UI application

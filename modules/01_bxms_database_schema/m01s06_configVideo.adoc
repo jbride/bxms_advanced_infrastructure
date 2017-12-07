@@ -1,6 +1,6 @@
 :scrollbar:
 :data-uri:
-:noaudio:
+
 
 == Persistence in JBoss BPM Suite
 .Configuration and Deployments Video

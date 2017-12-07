@@ -1,6 +1,6 @@
 :scrollbar:
 :data-uri:
-:noaudio:
+
 
 == Integration with Red Hat Single Sign-On
 
