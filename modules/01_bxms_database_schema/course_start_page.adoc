@@ -1,6 +1,6 @@
 :scrollbar:
 :data-uri:
-
+:noaudio:
 
 
 == Course Navigation Tips
@@ -20,7 +20,7 @@ a|* To receive credit for completing a module, you must click the *Complete Modu
 
 ifdef::showscript[]
 
-=== Transcript
+Transcript:
 
 Here are a few tips to help you navigate through this course. 
 
