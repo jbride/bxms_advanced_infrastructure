@@ -58,7 +58,7 @@ In this section of the lab, you register for the authorization to create a proje
 . Enter your OPENTLC username and password and click *Login*:
 +
 image::images/cf_login.png[]
-. Navigate to *Services -> Catalogs -> All Services -> OPENTLC Middleware Solutions Labs -> BXMS_Infra*:
+. Navigate to *Services -> Catalogs -> All Services -> OPENTLC OpenShift Labs -> OPENTLC OpenShift 3.9 Shared Access*:
 +
 image::images/cf_course_selection_project.png[]
 
