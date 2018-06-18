@@ -10,3 +10,4 @@ Contents:
 1.0 - initial version
 2.0 - ILT to ELAB conversion
 2.1 - Jan 17, 2018 - Removed assessment placeholders & updated toc.properties to reflect no quizzes or final assessment
+2.2 - Jun 18, 2018 - Update 03_1_xpaas_decision_server_Lab.adoc
