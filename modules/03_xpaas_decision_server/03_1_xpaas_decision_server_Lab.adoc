@@ -59,20 +59,16 @@ In this section of the lab, you register for the authorization to create a proje
 +
 image::images/cf_login.png[]
 . Navigate to *Services -> Catalogs -> All Services -> OPENTLC OpenShift Labs -> OPENTLC OpenShift 3.9 Shared Access*:
-+
-image::images/cf_course_selection_project.png[]
 
 . Click *Order*.
 
 . On the next screen, click *Submit* in the lower right corner.
 +
-image::images/cf_submit_button.png[]
-+
 . Check your email for a message from Red Hat similar to the following:
 +
 -----
-You have been enrolled in the OPENTLC BXMS_INFRA OpenShift environment.
-You can access your environment by going to https://master.na.openshift.opentlc.com:443 and logging in as jbride-test.
+You have been enrolled in the OPENTLC OpenShift environment.
+You can access your environment by going to https://master.na39.openshift.opentlc.com:443 and logging in as jbride-test.
 
 NOTICE: Your environment will expire and be deleted in 14 day(s) at 2017-02-07 00:00:00 -0500. In order to conserve resources we cannot archive or restore any data in this environment. All data will be lost upon expiration.
 -----
